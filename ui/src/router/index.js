@@ -19,10 +19,6 @@ const routes = [
         name: 'register',
     },
     {
-        path: '/register',
-        name: 'register',
-    },
-    {
         path: '/chat',
         name: 'chat',
     },
