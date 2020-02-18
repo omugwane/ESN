@@ -1,13 +1,25 @@
 const User = require('../models/User');
+const bcrypt = require('bcrypt-nodejs');
 
 exports.registerUser = function (req, res) {
     let user = new User();
-    user.content = req.body.content;
+
+    user.username = req.body.username;
+    user.password = bcrypt.hashSync(req.body.password);
+    user.firstName=req.body.firstName;
+    user.lastName=req.body.lastName;
+    user.email=req.body.email;
+    user.phone=req.body.phone;
+    user.role=req.body.role;
+
+    
+
     user.save((err) => {
         if (err) {
+            
             res.status(500).json(err);
         } else {
-            res.status(200).json({ "message" : "success", data: []})
+           res.status(200).json({ "message" : "success", data: []})
         }
     });
 }
