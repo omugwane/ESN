@@ -6,7 +6,7 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-import ChatBroadcaster from './lib/ChatBroadcaster'
+//import ChatBroadcaster from './lib/ChatBroadcaster'
 
 const configDB = require('./config/DB');
 
@@ -64,11 +64,11 @@ app.use(function(err, req, res, next) {
 });
 
 
-export const chatBroadcaster = new ChatBroadcaster();
+/*export const chatBroadcaster = new ChatBroadcaster();
 io.on('connection', (socket) => {
   // console.log('a user is connected', socket)
 chatBroadcaster.subscribe(socket);
-})
+})*/
 
 
 module.exports = app;
