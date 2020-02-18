@@ -6,6 +6,6 @@ const userController = require("../controllers/UserController");
 /* GET users listing. */
 router.get('/', userController.getAllUsers);
 router.delete('/:userId', userController.deleteUser);
-router.patch('/:userId', userController.updateUser);
+router.put('/:userId', userController.updateUser);
 
 module.exports = router;
