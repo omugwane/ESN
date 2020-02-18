@@ -1,3 +1,5 @@
+let User = require('../models/User');
+
 exports.registerUser = function (req, res) {
 
 }
@@ -7,12 +9,13 @@ exports.getAllUsers = function (req, res) {
 }
 
 exports.deleteUser = async (req, res)=> {
-    try{
-        const deletedUser = User.remove({_id:req.params.userId});
-        res.status(200).res({ message: "User deleted successfully" });
-    }catch(err){
-        res.status(500).json({message:err});
-    }
+    User.deleteOne({_id:req.params.userId}, (err, result) => {
+        if (err) {
+            res.status(500).json({message:err});
+        } else {
+            res.status(200).json({ message: "User deleted successfully" });
+        }
+    });
 };
 
 exports.updateUser = async (req, res)=> {
@@ -21,7 +24,7 @@ exports.updateUser = async (req, res)=> {
             {_id:req.params.userId},
             {$set:{username:req.body.username}}
         );
-        res.status(200).res({message:"User updated"});
+        res.status(200).json({message:"User updated"});
     }catch(err){
         res.status(500).json({message:err});
     }
