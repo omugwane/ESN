@@ -13,6 +13,7 @@ const configDB = require('./config/DB');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const chatsRouter = require('./routes/chats');
+const jwt = require('jsonwebtoken');
 
 let app = express();
 
@@ -45,7 +46,7 @@ app.use(bodyParser.json());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/chats', chatsRouter);
+app.use('/chats',validateUser,chatsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -62,6 +63,19 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.send('error');
 });
+
+function validateUser(req, res, next) {
+  jwt.verify(req.headers['x-access-token'], process.env.JWT_KEY, function(err, decoded) {
+    if (err) {
+      res.status(403).json({status:"error", message: err.message, data:null});
+    }else{
+      // add user id to request
+      req.body.userId = decoded.id;
+      next();
+    }
+  });
+  
+}
 
 
 /*export const chatBroadcaster = new ChatBroadcaster();
