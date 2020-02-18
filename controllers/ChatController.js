@@ -1,5 +1,6 @@
 const Chat = require('../models/Chat');
 
+//get all chats
 exports.getAllChats = function (req, res) {
     Chat.find({}, (err, docs) => {
 
@@ -15,6 +16,7 @@ exports.getAllChats = function (req, res) {
     });
 }
 
+//save chat
 exports.saveChat = function (req, res) {
     let chat = new Chat();
     chat.content = req.body.content;
@@ -27,6 +29,7 @@ exports.saveChat = function (req, res) {
     });
 }
 
+//get chat by id
 exports.getChatByID = function (req, res) {
     Chat.findById(req.params.chat_id, (err, doc) => {
          if (err) {
@@ -40,6 +43,7 @@ exports.getChatByID = function (req, res) {
     });
 }
 
+//get chat by username
 exports.getChatsByUsername = function (req, res) {
     let filter = { author: req.username._id };
     Chat.find(filter).populate('author', (err, docs) => {
@@ -53,3 +57,26 @@ exports.getChatsByUsername = function (req, res) {
         }
     });
 }
+
+//delete a chat
+exports.deleteChat = async(req,res)=> {
+    try{
+        const deletedMessage= Chat.remove({_id:req.params.chatId});
+        res.status(200).res({ message: "Chat deleted successfully" });
+    }catch(err){
+        res.status(500).json({message:err});
+    }
+};
+
+//update a chat
+exports.updateChat=async (req,res)=>{
+    try{
+        const updatedMessage=await Chat.updateOne(
+            {_id:req.params.chatId},
+            {$set:{content:req.body.content}}
+        );
+        res.status(200).res({message:"chat updated"});
+    }catch(err){
+        res.status(500).json({message:err});
+    }
+};
