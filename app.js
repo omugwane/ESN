@@ -6,6 +6,8 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
+import ChatBroadcaster from './lib/ChatBroadcaster'
+
 const configDB = require('./config/DB');
 
 const indexRouter = require('./routes/index');
@@ -28,9 +30,10 @@ db.on('error', function(err) {
 	console.log(err);
 });
 
+const port = process.env.PORT || 3000;
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -59,5 +62,13 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.send('error');
 });
+
+
+export const chatBroadcaster = new ChatBroadcaster();
+io.on('connection', (socket) => {
+  // console.log('a user is connected', socket)
+chatBroadcaster.subscribe(socket);
+})
+
 
 module.exports = app;

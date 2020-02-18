@@ -1,57 +1,36 @@
 <template>
-    <div class="page-wrapper">
-        <div class="header">
-            Logged in: <span>{{loggedInUsername.toUpperCase()}}</span>
+    <div id="chat-room">
+        <div id="chats">
+            <div v-for="(chat,index) in chats"
+                 :key="index"
+                 :class="(chat.username === loggedInUsername)? 'sent-msg-box': 'received-msg-box'">
+                <div class="message"
+                     :class="(chat.username === loggedInUsername)? 'sent': 'received'">
+                    <h6 class="chat-owner">{{(chat.username === loggedInUsername)?
+                        'Me':`${chat.username}`}}</h6>
+                    <div class="msg-body"> {{chat.body}}</div>
+                </div>
+            </div>
         </div>
-        <div class="body">
-            <div id="side-bar">
-                <div class="page-title">
-                    <h4 class="display-5 text-center">ESN</h4>
-                </div>
-                <div class="side-menu">
-                    <div class="menu-item">
-                        <a href="#">Chat</a>
-                    </div>
-                    <div class="menu-item">
-                        <a href="#">All users</a>
-                    </div>
-                </div>
-                <div class="side-footer">
-                    <button type="button">Sign out</button>
-                </div>
-            </div>
-            <div id="chat-room">
-                <div id="chats">
-                    <div v-for="(chat,index) in chats"
-                         :key="index"
-                         :class="(chat.username === loggedInUsername)? 'sent-msg-box': 'received-msg-box'">
-                        <div class="message"
-                             :class="(chat.username === loggedInUsername)? 'sent': 'received'">
-                            <h6 class="chat-owner">{{(chat.username === loggedInUsername)?
-                                'Me':`${chat.username}`}}</h6>
-                            <div class="msg-body"> {{chat.body}}</div>
-                        </div>
-                    </div>
-                </div>
-                <div id="chat-form">
-                    <input class="input-chat" type="text" placeholder="Enter message">
-                    <button type="button" class="btn-post-chat">Post</button>
-                </div>
-            </div>
+        <div id="chat-form">
+            <input class="input-chat" type="text" placeholder="Enter message">
+            <button type="button" class="btn-post-chat">
+                <span class="mdi mdi-send mdi-24px"></span>
+            </button>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "Chat",
+        name: "ChatRoom",
         created() {
             this.getAllChats();
         },
         data() {
             return {
-                loggedInUsername: 'bapt',
                 loading: false,
+                loggedInUsername: 'bapt',
                 chats: [
                     {
                         username: 'username',
@@ -91,85 +70,10 @@
 </script>
 
 <style lang="scss" scoped>
-
-    /*xs: < 600px*/
-    /*sm: 600px > < 960px*/
-    /*md: 960px > < 1264px* */
-    /*lg: 1264px* > < 1904px* */
-    /*xl: > 1904px* */
     @import "src/assets/colors";
-
-    $header-height: 64px;
-    $side-width: 20%;
-    $chat-form-height: 64px;
-    $received-chat-bg-color: #FFEDE6;
-    $sent-chat-bg-color: #E8D1DC;
-
-    .page-wrapper {
-        position: relative;
-    }
-
-    .page-title {
-        color: $primary;
-    }
-
-    .header {
-        border-bottom: 1px solid $secondary;
-        height: $header-height;
-        background-color: #E6E6E6;
-        display: flex;
-        padding: 8px 24px;
-        justify-content: flex-end;
-        align-items: center;
-
-        span {
-            margin-left: 16px;
-            font-weight: bold;
-            font-size: 1.5em;
-        }
-    }
-
-    #side-bar {
-        color: $primary;
-        background-color: $secondary;
-        height: 100vh;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: $side-width;
-        display: flex;
-        flex-direction: column;
-
-        .page-title {
-            height: $header-height;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-bottom: 1px solid $primary;
-        }
-
-        .side-menu {
-            flex-grow: 1;
-
-            .menu-item {
-                text-align: center;
-                margin-top: 8px;
-
-                a {
-                    color: $primary;
-                }
-            }
-        }
-
-        .side-footer {
-            margin-bottom: 8px;
-            padding: 8px 16px;
-            text-align: center;
-        }
-    }
+    @import "src/assets/sizes";
 
     #chat-room {
-        margin-left: $side-width;
         background-color: #E6E6E6;
         min-height: calc(100vh - #{$header-height});
         position: relative;
