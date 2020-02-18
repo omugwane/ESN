@@ -2,10 +2,10 @@
   "name": "s20-esn-rw1",
   "version": "0.0.0",
   "private": true,
-  "main": "app.js",
+  "main": "./bin/www",
   "scripts": {
     "start": "node ./bin/www",
-    "devStart": "nodemon server.js"
+    "devStart": "node ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
