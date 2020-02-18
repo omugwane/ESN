@@ -1,16 +1,18 @@
+require('dotenv').config()
 const User = require('../models/User');
 const bcrypt = require('bcrypt-nodejs');
+const jwt = require('jsonwebtoken');
 
 exports.registerUser = function (req, res) {
     let user = new User();
 
     user.username = req.body.username;
     user.password = bcrypt.hashSync(req.body.password);
-    user.firstName=req.body.firstName;
-    user.lastName=req.body.lastName;
-    user.email=req.body.email;
-    user.phone=req.body.phone;
-    user.role=req.body.role;
+    user.firstName = req.body.firstName;
+    user.lastName = req.body.lastName;
+    user.email = req.body.email;
+    user.phone = req.body.phone;
+    user.role = req.body.role;
 
     user.save((err) => {
         if (err) {
@@ -20,6 +22,27 @@ exports.registerUser = function (req, res) {
            res.status(200).json({ "message" : "success", data: []})
         }
     });
+}
+
+exports.login = async(req,res)=>{
+    
+    User.findOne({username:req.body.username}, function(err, userInfo){
+        if (err) {
+         next(err);
+        } else {
+   if(bcrypt.compareSync(req.body.password, userInfo.password)) {
+      // console.log(process.env.JWT_KEY)
+      
+   const token = jwt.sign({id: userInfo._id}, process.env.JWT_KEY, { expiresIn: '1h' });
+   res.json({status:"success", message: "user found!!!", data:{user: userInfo, token:token}});
+   }
+   else
+   {
+   res.json({status:"error", message: "Invalid email/password!!!", data:null});
+   }
+        }
+       });
+    
 }
 
 exports.getAllUsers = function (req, res) {
@@ -59,4 +82,6 @@ exports.updateUser = async (req, res)=> {
         res.status(500).json({message:err});
     }
 };
+
+
 
