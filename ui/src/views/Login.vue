@@ -2,7 +2,7 @@
     <div class="page-wrapper">
         <div class="card mt-md-5 login-card">
             <div class="card-body">
-                <h1 class="display-5 text-center">ESN Login</h1>
+                <h1 class="display-5 text-center page-title">ESN Login</h1>
 
                 <form class="mt-sm-5">
                     <div class="form-group">
@@ -17,9 +17,12 @@
                                class="form-control" id="password">
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block">Log in</button>
+                    <button @click="login" type="button" class="btn btn-primary btn-block my-2">Log in</button>
+
                     <small class="d-block">
-                        Not already registered? click <a href="">here</a> to register
+                        Not already registered? click
+                        <router-link :to="{name: 'register'}"><a href="">here</a></router-link>
+                        to register
                     </small>
                 </form>
             </div>
@@ -38,13 +41,18 @@
         },
         methods: {
             login() {
-
+                this.$router.push({name: 'chat'})
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
+    @import "src/assets/colors";
+
+    .page-title {
+        color: $secondary;
+    }
 
     .page-wrapper {
         display: flex;

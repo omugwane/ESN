@@ -10,6 +10,9 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 import './assets/bootstrap.scss'
 
+//Material design icons
+import '@mdi/font/css/materialdesignicons.css'
+
 Vue.config.productionTip = false
 
 new Vue({
