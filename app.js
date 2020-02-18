@@ -1,17 +1,19 @@
 var createError = require('http-errors');
 var express = require('express');
-var path = require('path');
 var cookieParser = require('cookie-parser');
+var path = require('path');
 var logger = require('morgan');
+import ChatBroadcaster from './lib/ChatBroadcaster'
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
 
+const port = process.env.PORT || 3000;
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -37,5 +39,13 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+export const chatBroadcaster = new ChatBroadcaster();
+io.on('connection', (socket) => {
+  // console.log('a user is connected', socket)
+chatBroadcaster.subscribe(socket);
+})
+
 
 module.exports = app;
