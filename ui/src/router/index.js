@@ -1,14 +1,17 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from "../views/Login";
-import Chat from "../views/Chat";
+import MainContainer from "../views/MainContainer";
+import PublicChatRoom from "../components/PublicChatRoom";
+import AllCitizens from "../components/AllCitizens";
+import UserRegistration from "../views/UserRegistration";
 
 Vue.use(VueRouter)
 
 const routes = [
     {
         path: '/',
-        name: 'Home',
+        name: 'home',
         component: Login
     },
     {
@@ -19,16 +22,24 @@ const routes = [
     {
         path: '/register',
         name: 'register',
+        component: UserRegistration
     },
     {
-        path: '/chat',
-        name: 'chat',
-        component: Chat
+        path: '/',
+        component: MainContainer,
+        children: [
+            {
+                path: 'chat',
+                name: 'chat',
+                component: PublicChatRoom
+            },
+            {
+                path: 'citizens',
+                name: 'all-citizens',
+                component: AllCitizens
+            },
+        ]
     },
-    {
-        path: '/users',
-        name: 'users',
-    }
 ]
 
 const router = new VueRouter({
