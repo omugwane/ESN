@@ -1,7 +1,9 @@
+require('dotenv').config()
 const User = require('../models/User');
 const bcrypt = require('bcrypt-nodejs');
 const mongoose = require('mongoose');
 const Roles = require('../lib/Role');
+const jwt = require('jsonwebtoken');
 
 exports.registerUser = function (req, res) {
     let user = new User();
@@ -22,6 +24,27 @@ exports.registerUser = function (req, res) {
             res.status(200).json({"message": "success", data: []})
         }
     });
+}
+
+exports.login = async(req,res)=>{
+    
+    User.findOne({username:req.body.username}, function(err, userInfo){
+        if (err) {
+         next(err);
+        } else {
+   if(bcrypt.compareSync(req.body.password, userInfo.password)) {
+      // console.log(process.env.JWT_KEY)
+      
+   const token = jwt.sign({id: userInfo._id}, process.env.JWT_KEY, { expiresIn: '1h' });
+   res.json({status:"success", message: "user found!!!", data:{user: userInfo, token:token}});
+   }
+   else
+   {
+   res.json({status:"error", message: "Invalid email/password!!!", data:null});
+   }
+        }
+       });
+    
 }
 
 exports.getAllUsers = function (req, res) {
@@ -61,4 +84,6 @@ exports.updateUser = async (req, res) => {
         res.status(500).json({message: err});
     }
 };
+
+
 
