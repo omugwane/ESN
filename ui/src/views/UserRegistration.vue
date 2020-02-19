@@ -29,17 +29,17 @@
                             </div>
                             <div class="form-group">
                                 <!--                                <label for="password">Password</label>-->
-                                <input type="password" v-model="lastName" placeholder="Enter Last name"
+                                <input type="text" v-model="lastName" placeholder="Enter Last name"
                                        class="form-control">
                             </div>
 
                             <div class="form-group">
-                                <input type="password" v-model="email" placeholder="Enter Email"
+                                <input type="email" v-model="email" placeholder="Enter Email"
                                        class="form-control">
                             </div>
 
                             <div class="form-group">
-                                <input type="password" v-model="phone" placeholder="Phone" class="form-control">
+                                <input type="text" v-model="phone" placeholder="Phone" class="form-control">
                             </div>
                         </b-card>
                     </b-collapse>
@@ -76,7 +76,20 @@
         },
         methods: {
             register() {
+                let data = {
+                    username: this.username,
+                    password: this.password,
+                    firstName: this.firstName,
+                    lastName: this.lastName,
+                    email: this.email,
+                    phone: this.phone,
+                }
 
+                this.$http.post('http://localhost:3000/users', data).then(function (response) {
+                    console.log("Register", response)
+                }).catch(err => {
+                    console.log("Register", err)
+                })
             }
         }
     }
