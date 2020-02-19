@@ -3,11 +3,11 @@
         <div id="chats">
             <div v-for="(chat,index) in chats"
                  :key="index"
-                 :class="(chat.username === loggedInUsername)? 'sent-msg-box': 'received-msg-box'">
+                 :class="(chat.author === loggedInUsername)? 'sent-msg-box': 'received-msg-box'">
                 <div class="message"
-                     :class="(chat.username === loggedInUsername)? 'sent': 'received'">
-                    <h6 class="chat-owner">{{(chat.username === loggedInUsername)?
-                        'Me':`${chat.username}`}}</h6>
+                     :class="(chat.author === loggedInUsername)? 'sent': 'received'">
+                    <h6 class="chat-owner">{{(chat.author === loggedInUsername)?
+                        'Me':`${chat.author}`}}</h6>
                     <div class="msg-body"> {{chat.content}}</div>
                 </div>
             </div>
@@ -32,14 +32,13 @@
         name: "ChatRoom",
         created() {
             let user = this.$cookies.get('user')
-            console.log("Logged in user", user)
-
+            this.loggedInUsername = user.username;
             this.getAllChats();
         },
         data() {
             return {
                 loading: false,
-                loggedInUsername: 'bapt',
+                loggedInUsername: '',
                 newChat: '',
                 chats: [
                     /*{
@@ -53,15 +52,16 @@
         methods: {
             postChat() {
                 let vm = this;
+                let newChat = {
+                    author: vm.loggedInUsername,
+                    target: '',
+                    content: vm.newChat
+                }
                 if (vm.newChat.trim().length !== 0) {
-                    vm.$http.post(api.SAVE_CHAT,
-                        {
-                            username: vm.loggedInUsername,
-                            target: '',
-                            content: vm.newChat
-                        }
-                    ).then(({data}) => {
-                        vm.chats = data.data
+                    vm.$http.post(api.SAVE_CHAT, newChat).then(({data}) => {
+                       console.log(data)
+                        vm.chats = vm.chats.concat(newChat);
+                        vm.newChat = ''
                     }).catch((err) => {
                         alert(err)
                     })
