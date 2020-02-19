@@ -19,6 +19,8 @@ exports.getAllChats = function (req, res) {
 //save chat
 exports.saveChat = function (req, res) {
     let chat = new Chat();
+    chat.author = req.body.author;
+    chat.target = req.body.target
     chat.content = req.body.content;
     chat.save((err) => {
         if (err) {
