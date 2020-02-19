@@ -3,9 +3,8 @@ const mongoose = require("mongoose");
 const chatSchema = mongoose.Schema({
 
  	author: {
- 		type: mongoose.Schema.Types.ObjectId,
- 		ref: 'User',
- 		required: false
+		type: String,
+		required: true
  	},
 
  	content: {
