@@ -11,17 +11,23 @@
                     <div class="msg-body"> {{chat.body}}</div>
                 </div>
             </div>
+            <p v-if="chats.length < 1" class="text-center mt-3">
+                <small>No chats available yet!</small>
+            </p>
         </div>
         <div id="chat-form">
-            <input class="input-chat" type="text" placeholder="Enter message">
-            <button type="button" class="btn-post-chat">
-                <span class="mdi mdi-send mdi-24px"></span>
+            <input @keyup.enter="postChat"
+                    v-model="newChat" class="input-chat" type="text" placeholder="Enter message">
+            <button @click="postChat" type="button" class="btn-post-chat">
+                <span class="mdi mdi-send mdi-24px"/>
             </button>
         </div>
     </div>
 </template>
 
 <script>
+    import * as api from "../api";
+
     export default {
         name: "ChatRoom",
         created() {
@@ -31,36 +37,41 @@
             return {
                 loading: false,
                 loggedInUsername: 'bapt',
+                newChat: '',
                 chats: [
-                    {
+                    /*{
                         username: 'username',
                         body: "This one adds a right triangle on the left, flush at the top by using .tri-right and\n" +
                             ".left-top to specify the location."
-                    },
-                    {
-                        username: 'bapt',
-                        body: "This one adds a right triangle on the left, flush at the top by using .tri-right and\n" +
-                            ".left-top to specify the location."
-                    },
-                    {
-                        username: 'username',
-                        body: "This one adds a right triangle on the left, flush at the top by using .tri-right and\n" +
-                            ".left-top to specify the location."
-                    },
-                    {
-                        username: 'bapt',
-                        body: "This one adds a right triangle on the left, flush at the top by using .tri-right and\n" +
-                            ".left-top to specify the location."
-                    }
+                    },*/
                 ]
             }
         },
         methods: {
             postChat() {
-
+                let vm = this;
+                if (vm.newChat.trim().length !== 0) {
+                    vm.$http.post(api.SAVE_CHAT,
+                        {
+                            username: vm.loggedInUsername,
+                            target: '',
+                            content: vm.newChat
+                        }
+                    ).then(({data}) => {
+                        vm.chats = data.data
+                    }).catch((err) => {
+                        alert(err)
+                    })
+                } else
+                    alert("Can not post empty chat!")
             },
             getAllChats() {
-
+                let vm = this;
+                vm.$http.get(api.GET_ALL_CHATS).then(({data}) => {
+                    vm.chats = data.data
+                }).catch((err) => {
+                    alert(err)
+                })
             },
             logout() {
 

@@ -5,10 +5,11 @@
             <li class="list-group-item"
                 v-for="citizen in citizens" :key="citizen.username">
                 <div class="citizen-names">
-                    {{citizen.username}} (<span>{{citizen.firstName+ ', '+citizen.lastName}}</span>)
+                    {{citizen.username}} <span v-if="citizen.firstName.trim()!==''">({{citizen.firstName+ ', '+citizen.lastName}})</span>
                 </div>
                 <div class="citizen-details">
-                    <small><span class="mdi mdi-email"/> {{citizen.email}}</small> <small><span class="mdi mdi-phone"/> {{citizen.phone}}</small>
+                    <small><span class="mdi mdi-email"/> {{citizen.email}}</small> <small><span class="mdi mdi-phone"/>
+                    {{citizen.phone}}</small>
                 </div>
             </li>
         </ul>
@@ -16,39 +17,36 @@
 </template>
 
 <script>
+    import * as api from '../api'
+
     export default {
         name: "AllCitizens",
         created() {
-
+            this.getAllCitizens()
         },
         data() {
             return {
                 citizens: [
-                    {
+                    /*{
                         username: "Bapt",
                         firstName: "Jean Baptiste",
                         lastName: "Tuyizere",
                         email: 'jtuyizer@andrew.cmu.edu',
                         phone: '0786500579'
-                    },
-                    {
-                        username: "Claude",
-                        firstName: "Jean Baptiste",
-                        lastName: "Tuyizere",
-                        email: 'jtuyizer@andrew.cmu.edu',
-                        phone: '0786500579'
-                    },
-                    {
-                        username: "Jackson",
-                        firstName: "Jean Baptiste",
-                        lastName: "Tuyizere",
-                        email: 'jtuyizer@andrew.cmu.edu',
-                        phone: '0786500579'
-                    },
+                    },*/
                 ]
             }
         },
-        methods: {}
+        methods: {
+            getAllCitizens() {
+                let vm = this;
+                vm.$http.get(api.GET_ALL_USERS).then(({data}) => {
+                    vm.citizens = data.data
+                }).catch((err) => {
+                    alert(err)
+                })
+            }
+        }
     }
 </script>
 
