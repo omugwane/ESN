@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import store from './store'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueCookies from 'vue-cookies';
@@ -14,10 +15,34 @@ import '@mdi/font/css/materialdesignicons.css'
 Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
-// axios.defaults.headers.common['Authorization'] = store.state.api.bearerToken
-// const constants = require('./constants')
-// axios.defaults.headers.post['x-access-token'] = constants.token
-// "Content-Type": "application/x-www-form-urlencoded",
+
+axios.interceptors.request.use(function (config) {
+    let token = Vue.$cookies.get('token')
+    config.headers = {
+        Accept: "application/json, text/plain, */*",
+        'x-access-token': token
+    }
+    // console.log("token", token)
+    console.log("Request interceptor", config)
+    return config;
+}, function (error) {
+    return Promise.reject(error);
+});
+
+axios.interceptors.response.use(function (response) {
+    // Do something with response data
+    return response;
+}, function (error) {
+    /*
+       When the server responds with UnAuthorized access error,
+       go back the user to the login page
+    */
+    if (error.response.status === 403) {
+        router.push({name: 'login'})
+    }
+    return Promise.reject(error);
+});
+
 Vue.use(VueAxios, axios)
 Vue.use(VueCookies)
 
@@ -32,6 +57,6 @@ Vue.config.productionTip = false
 
 new Vue({
     router,
-    // store,
+    store,
     render: h => h(App)
 }).$mount('#app')

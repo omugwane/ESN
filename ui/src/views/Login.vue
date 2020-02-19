@@ -59,19 +59,20 @@
                 let vm = this;
 
                 vm.$http.post(api.LOGIN, {
-                    email: vm.username,
+                    username: vm.username,
                     password: vm.password,
-                }).then(response => {
+                }).then(({data}) => {
                     //Setting cookies
-                    let user = {username: response.data.user.username};
+                    let user = {username: data.data.user.username};
                     vm.$cookies.config('1d');
                     vm.$cookies.set('user', user);
 
-                    vm.$store.state.token = response.data.token
+                    vm.$cookies.set('token', data.data.token);
 
                     vm.$router.push({name: 'chat'});
+
                 }).catch(error => {
-                    alert("Login failed. Either username or password is incorrect")
+                    alert("Either username or password is incorrect!")
                     console.log(error)
                 }).finally(() => {
                 });
