@@ -31,7 +31,8 @@ exports.saveChat = function (req, res) {
 
 //get chat by id
 exports.getChatByID = function (req, res) {
-    Chat.findById(req.params.chat_id, (err, doc) => {
+    Chat.findById(req.params.chatId, (err, doc) => {
+        console.log(doc);
          if (err) {
             res.status(404).json({ data: Null });
         } else {
@@ -62,7 +63,7 @@ exports.getChatsByUsername = function (req, res) {
 exports.deleteChat = async(req,res)=> {
     try{
         const deletedMessage= Chat.remove({_id:req.params.chatId});
-        res.status(200).res({ message: "Chat deleted successfully" });
+        res.status(200).json({ message: "Chat deleted successfully" });
     }catch(err){
         res.status(500).json({message:err});
     }
@@ -75,7 +76,7 @@ exports.updateChat=async (req,res)=>{
             {_id:req.params.chatId},
             {$set:{content:req.body.content}}
         );
-        res.status(200).res({message:"chat updated"});
+        res.status(200).json({message:"chat updated"});
     }catch(err){
         res.status(500).json({message:err});
     }
