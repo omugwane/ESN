@@ -2,7 +2,7 @@
     <div class="citizens-list-wrapper">
         <h4 class="display-4">ESN citizens directory</h4>
         <div class="wrapper">
-            <ul class="list-group">
+            <ul class="list-group" v-if="citizens.length > 0">
                 <li class="list-group-item"
                     v-for="citizen in citizens" :key="citizen.username">
                     <div class="citizen-names">
@@ -15,6 +15,9 @@
                     </div>
                 </li>
             </ul>
+            <div class="text-center" v-else>
+                <small>No citizens available yet</small>
+            </div>
         </div>
     </div>
 </template>
@@ -57,7 +60,7 @@
     @import "../assets/sizes";
 
     .wrapper {
-        min-height: calc(100vh - #{$header-height});
+        /*min-height: calc(100vh - #{$header-height});*/
     }
 
     .citizens-list-wrapper {
@@ -74,6 +77,9 @@
             display: flex;
             align-items: center;
             flex-flow: wrap;
+            @media (max-width: 600px) {
+                display: block;
+            }
         }
 
         .display-4 {
@@ -101,7 +107,7 @@
             @media (max-width: 600px) {
                 margin-left: 0px;
                 small {
-                    display: block;
+                    display: block!important;
                 }
             }
             @media (min-width: 600px) {
