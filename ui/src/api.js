@@ -1,4 +1,5 @@
 let baseUrl = 'http://localhost:3000/'
+export const LOGIN = baseUrl + 'users/login';
 
 export const GET_ALL_CHATS = baseUrl + 'chats/';
 export const SAVE_CHAT = baseUrl + 'chats/';

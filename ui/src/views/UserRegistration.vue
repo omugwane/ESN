@@ -59,6 +59,7 @@
 
 <script>
     import {BCollapse} from 'bootstrap-vue'
+    import * as api from "../api";
 
     export default {
         name: "UserRegistration",
@@ -76,6 +77,7 @@
         },
         methods: {
             register() {
+                let vm = this;
                 let data = {
                     username: this.username,
                     password: this.password,
@@ -85,11 +87,17 @@
                     phone: this.phone,
                 }
 
-                this.$http.post('http://localhost:3000/users', data).then(function (response) {
-                    console.log("Register", response)
-                }).catch(err => {
-                    console.log("Register", err)
-                })
+                if (vm.username.trim().length > 0 && vm.password.trim().length > 0) {
+                    vm.$http.post(api.REGISTER_USER, data).then(function (response) {
+                        console.log(response)
+                        vm.router.push({name: 'all-citizens'})
+                    }).catch(err => {
+                        console.log("Register", err)
+                        alert("Sorry! An error occurred while trying to register")
+                    })
+                } else {
+                    alert("Username and Password are required!")
+                }
             }
         }
     }

@@ -8,7 +8,7 @@
                      :class="(chat.username === loggedInUsername)? 'sent': 'received'">
                     <h6 class="chat-owner">{{(chat.username === loggedInUsername)?
                         'Me':`${chat.username}`}}</h6>
-                    <div class="msg-body"> {{chat.body}}</div>
+                    <div class="msg-body"> {{chat.content}}</div>
                 </div>
             </div>
             <p v-if="chats.length < 1" class="text-center mt-3">
@@ -17,7 +17,7 @@
         </div>
         <div id="chat-form">
             <input @keyup.enter="postChat"
-                    v-model="newChat" class="input-chat" type="text" placeholder="Enter message">
+                   v-model="newChat" class="input-chat" type="text" placeholder="Enter message">
             <button @click="postChat" type="button" class="btn-post-chat">
                 <span class="mdi mdi-send mdi-24px"/>
             </button>
@@ -31,6 +31,9 @@
     export default {
         name: "ChatRoom",
         created() {
+            let user = this.$cookies.get('user')
+            console.log("Logged in user", user)
+
             this.getAllChats();
         },
         data() {
@@ -41,7 +44,7 @@
                 chats: [
                     /*{
                         username: 'username',
-                        body: "This one adds a right triangle on the left, flush at the top by using .tri-right and\n" +
+                        content: "This one adds a right triangle on the left, flush at the top by using .tri-right and\n" +
                             ".left-top to specify the location."
                     },*/
                 ]

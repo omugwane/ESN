@@ -1,18 +1,21 @@
 <template>
     <div class="citizens-list-wrapper">
         <h4 class="display-4">ESN citizens directory</h4>
-        <ul class="list-group">
-            <li class="list-group-item"
-                v-for="citizen in citizens" :key="citizen.username">
-                <div class="citizen-names">
-                    {{citizen.username}} <span v-if="citizen.firstName.trim()!==''">({{citizen.firstName+ ', '+citizen.lastName}})</span>
-                </div>
-                <div class="citizen-details">
-                    <small><span class="mdi mdi-email"/> {{citizen.email}}</small> <small><span class="mdi mdi-phone"/>
-                    {{citizen.phone}}</small>
-                </div>
-            </li>
-        </ul>
+        <div class="wrapper">
+            <ul class="list-group">
+                <li class="list-group-item"
+                    v-for="citizen in citizens" :key="citizen.username">
+                    <div class="citizen-names">
+                        {{citizen.username}} <span v-if="citizen.firstName.trim()!==''">({{citizen.firstName+ ', '+citizen.lastName}})</span>
+                    </div>
+                    <div class="citizen-details">
+                        <small><span class="mdi mdi-email"/> {{citizen.email}}</small> <small><span
+                            class="mdi mdi-phone"/>
+                        {{citizen.phone}}</small>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -51,12 +54,20 @@
 </script>
 
 <style lang="scss" scoped>
+    @import "../assets/sizes";
+
+    .wrapper {
+        min-height: calc(100vh - #{$header-height});
+    }
 
     .citizens-list-wrapper {
         margin: 16px;
         overflow-y: auto;
-        @media (min-height: 600px) {
+        @media (min-width: 601px) {
             margin: 16px 20%;
+        }
+        @media (max-width: 600px) {
+            margin: 8px 16px;
         }
 
         .list-group-item {
@@ -70,6 +81,10 @@
             font-weight: 300;
             line-height: 1.2;
             margin-bottom: 16px;
+            @media (max-width: 600px) {
+                margin: 8px;
+                font-size: 1.5rem;
+            }
         }
 
         .citizen-names {

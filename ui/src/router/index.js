@@ -31,12 +31,18 @@ const routes = [
             {
                 path: 'chat',
                 name: 'chat',
-                component: PublicChatRoom
+                component: PublicChatRoom,
+                meta: {
+                    requiresAuth: true,
+                }
             },
             {
                 path: 'citizens',
                 name: 'all-citizens',
-                component: AllCitizens
+                component: AllCitizens,
+                meta: {
+                    requiresAuth: true,
+                }
             },
         ]
     },

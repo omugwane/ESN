@@ -73,7 +73,10 @@
 
             },
             logout() {
-                this.$router.push({name: 'login'})
+                if (window.$cookies.isKey('user')) {
+                    window.$cookies.remove('user');
+                    this.$router.push({name: 'login'});
+                }
             }
         }
     }

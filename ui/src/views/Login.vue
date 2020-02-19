@@ -14,7 +14,8 @@
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" v-model="password" placeholder="Enter password"
-                               class="form-control" id="password">
+                               class="form-control" id="password"
+                               @keyup.enter="login">
                     </div>
 
                     <button @click="login" type="button" class="btn btn-primary btn-block my-2">Log in</button>
@@ -31,6 +32,8 @@
 </template>
 
 <script>
+    import * as api from "../api";
+
     export default {
         name: "Login",
         data() {
@@ -40,9 +43,39 @@
             }
         },
         methods: {
+            // login() {
+            //     this.$router.push({name: 'chat'})
+            // }
             login() {
-                this.$router.push({name: 'chat'})
-            }
+                let vm = this;
+                /*vm.errorLoggingIn = false;
+                this.$validator.validateAll().then(() => {
+                    if (!this.errors.any()) {*/
+                vm.authenticate();
+                /*  }
+              });*/
+            },
+            authenticate() {
+                let vm = this;
+
+                vm.$http.post(api.LOGIN, {
+                    email: vm.username,
+                    password: vm.password,
+                }).then(response => {
+                    //Setting cookies
+                    let user = {username: response.data.user.username};
+                    vm.$cookies.config('1d');
+                    vm.$cookies.set('user', user);
+
+                    vm.$store.state.token = response.data.token
+
+                    vm.$router.push({name: 'chat'});
+                }).catch(error => {
+                    alert("Login failed. Either username or password is incorrect")
+                    console.log(error)
+                }).finally(() => {
+                });
+            },
         }
     }
 </script>
