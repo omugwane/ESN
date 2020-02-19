@@ -90,7 +90,7 @@
                 if (vm.username.trim().length > 0 && vm.password.trim().length > 0) {
                     vm.$http.post(api.REGISTER_USER, data).then(function (response) {
                         console.log(response)
-                        vm.router.push({name: 'all-citizens'})
+                        vm.$router.push({name: 'all-citizens'})
                     }).catch(err => {
                         console.log("Register", err)
                         alert("Sorry! An error occurred while trying to register")
