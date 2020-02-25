@@ -26,7 +26,7 @@
 </template>
 
 <script>
-    import * as api from "../api";
+    import * as api from "../helpers/api";
 
     export default {
         name: "ChatRoom",
@@ -49,6 +49,21 @@
                 ]
             }
         },
+        sockets: {
+            connect() {
+                console.log("Connected")
+            },
+
+            disconnect() {
+                console.log("Disconnected")
+            },
+            newPublicChat(data) {
+                if (data.author !== this.loggedInUsername) {
+                    // console.log("SocketIO data", data)
+                    this.chats = this.chats.concat(data);
+                }
+            }
+        },
         methods: {
             postChat() {
                 let vm = this;
@@ -58,8 +73,8 @@
                     content: vm.newChat
                 }
                 if (vm.newChat.trim().length !== 0) {
-                    vm.$http.post(api.SAVE_CHAT, newChat).then(({data}) => {
-                       console.log(data)
+                    vm.$http.post(api.SAVE_CHAT, newChat).then(() => {
+                        // console.log(data)
                         vm.chats = vm.chats.concat(newChat);
                         vm.newChat = ''
                     }).catch((err) => {
@@ -76,9 +91,6 @@
                     alert(err)
                 })
             },
-            logout() {
-
-            }
         }
     }
 </script>

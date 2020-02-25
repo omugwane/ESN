@@ -59,7 +59,7 @@
 
 <script>
     import {BCollapse} from 'bootstrap-vue'
-    import * as api from "../api";
+    import * as api from "../helpers/api";
 
     export default {
         name: "UserRegistration",

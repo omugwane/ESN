@@ -9,38 +9,27 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 import './assets/bootstrap.scss'
 import '@mdi/font/css/materialdesignicons.css'
 
+import VueSocketIO from 'vue-socket.io';
+
+const interceptors = require('./helpers/axiosInterceptors')
+
+Vue.use(new VueSocketIO({
+    debug: true,
+    connection: 'http://localhost:3000',
+}))
 
 // Install BootstrapVue
 Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
 
-axios.interceptors.request.use(function (config) {
-    let token = Vue.$cookies.get('token')
-    config.headers = {
-        Accept: "application/json, text/plain, */*",
-        'x-access-token': token
-    }
-    // console.log("token", token)
-    console.log("Request interceptor", config)
-    return config;
-}, function (error) {
+axios.interceptors.request.use(interceptors.configRequest, (error) => {
     return Promise.reject(error);
 });
 
-axios.interceptors.response.use(function (response) {
-    // Do something with response data
+axios.interceptors.response.use((response) => {
     return response;
-}, function (error) {
-    /*
-       When the server responds with UnAuthorized access error,
-       go back the user to the login page
-    */
-    if (error.response.status === 403) {
-        router.push({name: 'login'})
-    }
-    return Promise.reject(error);
-});
+}, interceptors.checkTokenError);
 
 Vue.use(VueAxios, axios)
 Vue.use(VueCookies)
