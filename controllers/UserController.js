@@ -26,25 +26,23 @@ exports.registerUser = function (req, res) {
     });
 }
 
-exports.login = async(req,res)=>{
-    
-    User.findOne({username:req.body.username}, function(err, userInfo){
+exports.login = async (req, res) => {
+
+    User.findOne({username: req.body.username}, function (err, userInfo) {
         if (err) {
-         next(err);
+            next(err);
         } else {
-   if(bcrypt.compareSync(req.body.password, userInfo.password)) {
-      // console.log(process.env.JWT_KEY)
-      
-   const token = jwt.sign({id: userInfo._id}, process.env.JWT_KEY, { expiresIn: '1h' });
-   res.json({status:"success", message: "user found!!!", data:{user: userInfo, token:token}});
-   }
-   else
-   {
-   res.json({status:"error", message: "Invalid email/password!!!", data:null});
-   }
+            if (bcrypt.compareSync(req.body.password, userInfo.password)) {
+                // console.log(process.env.JWT_KEY)
+
+                const token = jwt.sign({id: userInfo._id}, process.env.JWT_KEY, {expiresIn: '1h'});
+                res.json({status: "success", message: "user found!!!", data: {user: userInfo, token: token}});
+            } else {
+                res.json({status: "error", message: "Invalid email/password!!!", data: null});
+            }
         }
-       });
-    
+    });
+
 }
 
 exports.getAllUsers = function (req, res) {

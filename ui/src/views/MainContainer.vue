@@ -35,34 +35,12 @@
     export default {
         name: "Chat",
         created() {
-            this.getAllChats();
+            let user = this.$cookies.get('user')
+            this.loggedInUsername = user.username;
         },
         data() {
             return {
-                loggedInUsername: 'bapt',
-                loading: false,
-                chats: [
-                    {
-                        username: 'username',
-                        body: "This one adds a right triangle on the left, flush at the top by using .tri-right and\n" +
-                            ".left-top to specify the location."
-                    },
-                    {
-                        username: 'bapt',
-                        body: "This one adds a right triangle on the left, flush at the top by using .tri-right and\n" +
-                            ".left-top to specify the location."
-                    },
-                    {
-                        username: 'username',
-                        body: "This one adds a right triangle on the left, flush at the top by using .tri-right and\n" +
-                            ".left-top to specify the location."
-                    },
-                    {
-                        username: 'bapt',
-                        body: "This one adds a right triangle on the left, flush at the top by using .tri-right and\n" +
-                            ".left-top to specify the location."
-                    }
-                ]
+                loggedInUsername: '',
             }
         },
         methods: {

@@ -23,7 +23,7 @@
 </template>
 
 <script>
-    import * as api from '../api'
+    import * as api from '../helpers/api'
 
     export default {
         name: "AllCitizens",
