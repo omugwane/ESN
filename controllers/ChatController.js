@@ -24,6 +24,8 @@ exports.saveChat = (req, res) => {
     chat.author = req.body.author;
     chat.target = req.body.target
     chat.content = req.body.content;
+    chat.status=req.status;
+    chat.receiver=req.receiver;
     chat.save((err) => {
         // console.log("ChatController", chatBroadcaster)
         if (err) {

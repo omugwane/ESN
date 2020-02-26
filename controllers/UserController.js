@@ -75,7 +75,7 @@ exports.updateUser = async (req, res) => {
     try {
         const updatedUser = await User.updateOne(
             {_id: req.params.userId},
-            {$set: {username: req.body.username}}
+            {$set: {username: req.body.username,status: req.body.status}}
         );
         res.status(200).json({message: "User updated"});
     } catch (err) {

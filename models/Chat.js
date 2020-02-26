@@ -16,11 +16,17 @@ const chatSchema = mongoose.Schema({
  	    type: String,
         required: false
     },
-
+	status: {
+		type: String,
+	   required: false
+  	},
  	postedAt: {
  		type: Date, default: Date.now,
- 	}
-
+ 	},
+	receiver: {
+		type: String,
+		required: true
+ 	},
  });
 
 module.exports = mongoose.model("Chat", chatSchema);
