@@ -17,7 +17,12 @@ const jwt = require('jsonwebtoken');
 let app = express();
 
 // Set up the database
-mongoose.connect(configDB.database);
+const env = process.env.NODE_ENV || 'development';
+const dbConfig = configDB[env];
+
+// console.log("Config ", configDB[process.env.NODE_ENV])
+// mongoose.connect(dbConfig.url);
+mongoose.connect(configDB.production.url);
 let db = mongoose.connection;
 
 // Check connection
