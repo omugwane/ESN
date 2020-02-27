@@ -1,18 +1,51 @@
 <template>
-    <ChatRoom/>
+    <div id="chat-room">
+        <div id="chats">
+            <div v-for="(chat,index) in chats"
+                 :key="index"
+                 :class="(chat.author === loggedInUsername)? 'sent-msg-box': 'received-msg-box'">
+                <div class="message"
+                     :class="(chat.author === loggedInUsername)? 'sent': 'received'">
+                    <div class="heading">
+                        <div class="title">
+                            <h6 class="chat-owner">{{(chat.author === loggedInUsername)?
+                                'Me':`${chat.author}`}}</h6>
+                            <small class="citizen-status">Status: Not available</small>
+                        </div>
+                        <small>{{new Date()}}</small>
+                    </div>
+                    <div class="msg-body"> {{chat.content}}</div>
+                </div>
+            </div>
+            <p v-if="chats.length < 1" class="text-center mt-3">
+                <small>No chats available yet!</small>
+            </p>
+        </div>
+        <div id="chat-form">
+            <input @keyup.enter="postChat"
+                   v-model="newChat" class="input-chat" type="text" placeholder="Enter message">
+            <button @click="postChat" type="button" class="btn-post-chat">
+                <span class="mdi mdi-send mdi-24px"/>
+            </button>
+        </div>
+    </div>
 </template>
 
 <script>
     import * as api from "../helpers/api";
-    import ChatRoom from "./ChatRoom";
 
     export default {
-        name: "PublicChatRoom",
-        components: {ChatRoom},
+        name: "ChatRoom",
+        props: {
+            chatWithCitizen: {
+                type: Object,
+                default: null
+            }
+        },
         created() {
             let user = this.$cookies.get('user')
             this.loggedInUsername = user.username;
-            // this.getAllChats();
+            this.getAllChats();
         },
         data() {
             return {
@@ -24,11 +57,11 @@
         },
         sockets: {
             connect() {
-                // console.log("Connected")
+                console.log("Connected")
             },
 
             disconnect() {
-                // console.log("Disconnected")
+                console.log("Disconnected")
             },
             newPublicChat(data) {
                 if (data.author !== this.loggedInUsername) {
@@ -71,10 +104,11 @@
 <style lang="scss" scoped>
     @import "src/assets/colors";
     @import "src/assets/sizes";
+    @import "src/assets/includes";
 
     #chat-room {
         background-color: #E6E6E6;
-        min-height: calc(100vh - #{$header-height});
+        max-height: calc(100vh - #{$header-height});
         position: relative;
         display: flex;
         flex-direction: column;
@@ -119,17 +153,32 @@
             line-height: 1.5em;
         }
     }
+    .heading {
+        margin: 8px 16px -4px 16px;
+        padding-bottom: 8px;
+
+        .title {
+            display: flex;
+            flex-flow: wrap;
+            align-items: center;
+
+            .chat-owner {
+                text-transform: capitalize;
+            }
+
+            .citizen-status {
+                margin-left: 8px;
+            }
+        }
+    }
 
     .received-msg-box {
         .message {
             background-color: $received-chat-bg-color;
         }
 
-        .chat-owner {
-            margin: 8px 16px -4px 16px;
-            padding-bottom: 8px;
+        .heading {
             border-bottom: 1px solid $sent-chat-bg-color;
-            text-transform: capitalize
         }
     }
 
@@ -141,11 +190,10 @@
             background-color: $sent-chat-bg-color;
         }
 
-        .chat-owner {
-            margin: 8px 16px -4px 16px;
-            padding-bottom: 8px;
+        .heading {
+            //margin: 8px 16px -4px 16px;
+            //padding-bottom: 8px;
             border-bottom: 1px solid $received-chat-bg-color;
-            text-align: right;
         }
     }
 
@@ -157,8 +205,9 @@
     #chats {
         padding: 8px 16px;
         flex-grow: 1;
-        overflow-y: auto;
         height: calc(100vh - #{$header-height} - #{$chat-form-height});
+        @include scroll-bar(0.3em);
+        overflow-y: auto;
     }
 
     #chat-form {
