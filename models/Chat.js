@@ -25,7 +25,7 @@ const chatSchema = mongoose.Schema({
  	},
 	receiver: {
 		type: String,
-		required: true
+		// required: true
  	},
  });
 
