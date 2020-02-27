@@ -32,15 +32,7 @@
         },
         data() {
             return {
-                citizens: [
-                    /*{
-                        username: "Bapt",
-                        firstName: "Jean Baptiste",
-                        lastName: "Tuyizere",
-                        email: 'jtuyizer@andrew.cmu.edu',
-                        phone: '0786500579'
-                    },*/
-                ]
+                citizens: []
             }
         },
         methods: {

@@ -9,6 +9,13 @@
                     <h4 class="display-5 text-center">ESN</h4>
                 </div>
                 <div class="side-menu">
+
+                    <div class="menu-item">
+                        <router-link :to="{name: 'private-chat'}">
+                            <a>Private Chat</a>
+                        </router-link>
+                    </div>
+
                     <div class="menu-item">
                         <router-link :to="{name: 'chat'}">
                             <a>Public Chat</a>
@@ -33,7 +40,7 @@
 
 <script>
     export default {
-        name: "Chat",
+        name: "MainContainer",
         created() {
             let user = this.$cookies.get('user')
             this.loggedInUsername = user.username;
@@ -44,12 +51,6 @@
             }
         },
         methods: {
-            postChat() {
-
-            },
-            getAllChats() {
-
-            },
             logout() {
                 if (window.$cookies.isKey('user')) {
                     window.$cookies.remove('user');
@@ -135,6 +136,7 @@
 
     #content {
         margin-left: $side-width;
+        margin-right: 20px;
     }
 
 

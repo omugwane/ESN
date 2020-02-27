@@ -5,6 +5,7 @@ import MainContainer from "../views/MainContainer";
 import PublicChatRoom from "../components/PublicChatRoom";
 import AllCitizens from "../components/AllCitizens";
 import UserRegistration from "../views/UserRegistration";
+import PrivateChatRoom from "../components/PrivateChatRoom";
 
 Vue.use(VueRouter)
 
@@ -29,7 +30,7 @@ const routes = [
         component: MainContainer,
         children: [
             {
-                path: 'chat',
+                path: 'public-chat',
                 name: 'chat',
                 component: PublicChatRoom,
                 meta: {
@@ -44,6 +45,14 @@ const routes = [
                     requiresAuth: true,
                 }
             },
+            {
+                path: 'private-chat',
+                name: 'private-chat',
+                component: PrivateChatRoom,
+                meta: {
+                    requiresAuth: true
+                }
+            }
         ]
     },
 ]
