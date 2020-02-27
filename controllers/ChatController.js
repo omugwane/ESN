@@ -1,6 +1,7 @@
 const Chat = require('../models/Chat');
 // const chatBroadcaster = require('../bin/www')
 const App = require('../app');
+const chatRepository = require('../repositories/ChatRepository')
 
 //get all chats
 exports.getAllChats = function (req, res) {
@@ -20,21 +21,20 @@ exports.getAllChats = function (req, res) {
 
 //save chat
 exports.saveChat = (req, res) => {
-    let chat = new Chat();
-    chat.author = req.body.author;
-    chat.target = req.body.target
-    chat.content = req.body.content;
-    chat.status=req.status;
-    chat.receiver=req.receiver;
-    chat.save((err) => {
-        // console.log("ChatController", chatBroadcaster)
-        if (err) {
-            res.status(500).json(err);
-        } else {
-            chatBroadcaster.broadcast(chat)
-            res.status(200).json({"message": "success", data: []})
-        }
-    });
+    let chat = {
+        author: req.body.author,
+        target: req.body.target,
+        content: req.body.content,
+        status: req.body.status,
+        receiver: req.body.receiver
+    }
+
+    if (chatRepository.saveChat(chat)) {
+        res.status(500).json(err);
+    } else {
+        chatBroadcaster.broadcast(chat)
+        res.status(200).json({"message": "success", data: []})
+    }
 }
 
 //get chat by id
