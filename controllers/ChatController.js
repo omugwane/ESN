@@ -1,6 +1,6 @@
 const Chat = require('../models/Chat');
 // const chatBroadcaster = require('../bin/www')
-const App = require('../app');
+const add = require('../app');
 const chatRepository = require('../repositories/ChatRepository')
 
 //get all chats
