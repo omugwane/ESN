@@ -6,9 +6,11 @@ const chatRepository = require('../repositories/ChatRepository')
 //a method to retrive all chats from the database. it does not take
 //any arguments. it call the chatRepository.getAllChats(callback) method
 exports.getAllChats = function (req, res) {
+
     let callback=(docs)  => {
 
         if (docs===null) {
+
             res.status(500).json({data: Null});
         } else {
             let responseObject = {
@@ -16,9 +18,9 @@ exports.getAllChats = function (req, res) {
             }
             res.status(200).json(responseObject);
         }
-
     }
     chatRepository.getAllChats(callback)
+
 }
 
 //a method that retrives chats by the given username. it takes a 

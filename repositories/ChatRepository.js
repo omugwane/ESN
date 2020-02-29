@@ -1,15 +1,18 @@
 const Chat = require('../models/Chat');
 
+
 //method to save the details of a user's chat to the database.
 //it takes an object containing the details of a chat as an 
 //argument and a callback as arguments
 exports.saveChat = (chatData,callback) => {
+
     let chat = new Chat();
     chat.author = chatData.author;
     chat.target = chatData.target
     chat.content = chatData.content;
     chat.status = chatData.status;
     chat.receiver = chatData.receiver;
+
 
     let callback1= (err) => {
 
@@ -21,9 +24,13 @@ exports.saveChat = (chatData,callback) => {
     }
     chat.save(callback1)
     /*chat.save((err) => {
+=======
+    chat.save((err) => {
+>>>>>>> 0ef96b666afb6ff14de71e9d3181eff9e9c2444e
         if (err)
-            return false;
+            callback(null)
         else
+<<<<<<< HEAD
             return true
     });*/
 };
@@ -50,11 +57,14 @@ exports.getAllChats = (callback)=> {
 exports.getChatsByUsername = (filter,callback)=> {
     let chat = new Chat();
     let callback1 = (err, docs) => {
+
         if (err) {
             callback(null)
         } else {
             callback(docs)
         }
     }
+
     chat.find(filter,callback1);
+
 }

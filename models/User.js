@@ -11,7 +11,7 @@ const userSchema = mongoose.Schema({
     role: String,
     status: String
 });*/
-const chatSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
 
     username: {
        type: String,
