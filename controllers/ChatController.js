@@ -5,9 +5,9 @@ const chatRepository = require('../repositories/ChatRepository')
 
 //get all chats
 exports.getAllChats = function (req, res) {
-    Chat.find({}, (err, docs) => {
 
-        if (err) {
+    let callback = (docs) => {
+        if (docs === null) {
             res.status(500).json({data: Null});
         } else {
             let responseObject = {
@@ -15,8 +15,9 @@ exports.getAllChats = function (req, res) {
             }
             res.status(200).json(responseObject);
         }
+    }
 
-    });
+    chatRepository.getChats(callback)
 }
 
 //save chat

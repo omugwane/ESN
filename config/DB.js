@@ -7,7 +7,8 @@ module.exports = {
         dialect: 'mongodb',
     },
     test: {
-        url: path + 'esn-tests' + '?retryWrites=true&w=majority',
+        // url: path + 'esn-tests' + '?retryWrites=true&w=majority',
+        url: 'mongodb://127.0.0.1:27017/esn-tests',
         dialect: 'mongodb',
     },
     production: {
