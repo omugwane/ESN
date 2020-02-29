@@ -3,11 +3,12 @@ const Chat = require('../models/Chat');
 const add = require('../app');
 const chatRepository = require('../repositories/ChatRepository')
 
-//get all chats
+//a method to retrive all chats from the database. it does not take
+//any arguments. it call the chatRepository.getAllChats(callback) method
 exports.getAllChats = function (req, res) {
-    Chat.find({}, (err, docs) => {
+    let callback=(docs)  => {
 
-        if (err) {
+        if (docs===null) {
             res.status(500).json({data: Null});
         } else {
             let responseObject = {
@@ -16,10 +17,32 @@ exports.getAllChats = function (req, res) {
             res.status(200).json(responseObject);
         }
 
-    });
+    }
+    chatRepository.getAllChats(callback)
 }
 
-//save chat
+//a method that retrives chats by the given username. it takes a 
+//response and request object as arguments and returns a jason object of the retrived
+//chats. it call chatRepository.getChatsByUsername(filter,callback) method
+exports.getChatsByUsername = function (req, res) {
+    let filter = {
+        author: req.params.username
+    }
+    let callback=(docs)=>{
+        if(docs===null){
+            res.status(500).json({data: Null});
+        }else{
+            let responseObject = {
+                data: docs,
+            }
+            res.status(200).json(responseObject);
+        }
+    }
+    chatRepository.getChatsByUsername(filter,callback)
+}
+
+//method to save chats to the database. it takes as arguments request and response 
+//objects and returns a jason object. it calls chatRepository.saveChat method.
 exports.saveChat = (req, res) => {
     let chat = {
         author: req.body.author,
@@ -28,13 +51,20 @@ exports.saveChat = (req, res) => {
         status: req.body.status,
         receiver: req.body.receiver
     }
-
-    if (chatRepository.saveChat(chat)) {
+    if(docs===null){
+        res.status(500).json({data: Null});
+    }else{
+        let responseObject = {
+            data: docs,
+        }
+        res.status(200).json(responseObject);
+    }
+    /*if (chatRepository.saveChat(chat)) {
         res.status(500).json(err);
     } else {
         chatBroadcaster.broadcast(chat)
         res.status(200).json({"message": "success", data: []})
-    }
+    }*/
 }
 
 //get chat by id
@@ -52,20 +82,6 @@ exports.getChatByID = function (req, res) {
     });
 }
 
-//get chat by username
-exports.getChatsByUsername = function (req, res) {
-    let filter = {author: req.username._id};
-    Chat.find(filter).populate('author', (err, docs) => {
-        if (err) {
-            res.status(404).json({data: Null});
-        } else {
-            let responseObject = {
-                data: docs,
-            }
-            res.status(200).json(responseObject);
-        }
-    });
-}
 
 //delete a chat
 exports.deleteChat = async (req, res) => {
