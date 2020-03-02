@@ -28,7 +28,10 @@
                     </div>
                 </div>
                 <div class="side-footer">
-                    <button type="button" @click="logout">Sign out</button>
+                    <button type="button" @click="logout">
+                        <span class="btn-label">Sign out</span>
+                        <span class="mdi mdi-logout"></span>
+                    </button>
                 </div>
             </div>
             <div id="content">
@@ -121,6 +124,10 @@
                 text-align: center;
                 margin-top: 8px;
 
+                @media(max-width: 600px) {
+                    font-size: 14px;
+                    padding: 4px;
+                }
                 a {
                     color: $primary;
                 }
@@ -131,12 +138,28 @@
             margin-bottom: 8px;
             padding: 8px 16px;
             text-align: center;
+            button{
+                border-radius: 8px;
+                padding: 4px 8px;
+                border: 1px solid $dark-5;
+                @media(max-width: 600px) {
+                    font-size: 14px;
+                }
+                .btn-label{
+                    @media(max-width: 600px){
+                        display: none;
+                    }
+                }
+            }
         }
     }
 
     #content {
         margin-left: $side-width;
         margin-right: 20px;
+        @media(max-width: 600px) {
+            margin-right: 0px;
+        }
     }
 
 

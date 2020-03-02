@@ -8,8 +8,8 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 // import * as VeeValidate from 'vee-validate'
 import './assets/bootstrap.scss'
 import '@mdi/font/css/materialdesignicons.css'
-
 import VueSocketIO from 'vue-socket.io';
+import vMediaQuery from 'v-media-query'
 
 const interceptors = require('./helpers/axiosInterceptors')
 
@@ -17,6 +17,7 @@ Vue.use(new VueSocketIO({
     debug: true,
     connection: 'http://localhost:3000',
 }))
+Vue.use(vMediaQuery)
 
 // Install BootstrapVue
 Vue.use(BootstrapVue)
