@@ -54,7 +54,7 @@ exports.getAllChats = (callback)=> {
 //a method to retrive chats from the database by username. it takes the 
 //username and a callback as arguments and returns a an object containing
 //the user's chats.
-exports.getChatsByUsername = (filter,callback)=> {
+exports.getChatsByUsername = (username,callback)=> {
     let chat = new Chat();
     let callback1 = (err, docs) => {
 
@@ -65,6 +65,6 @@ exports.getChatsByUsername = (filter,callback)=> {
         }
     }
 
-    chat.find(filter,callback1);
+    chat.find({author: username},callback1);
 
 }
