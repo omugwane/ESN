@@ -22,6 +22,11 @@
                         </router-link>
                     </div>
                     <div class="menu-item">
+                        <router-link :to="{name: 'share-status'}">
+                            <a>Share Status</a>
+                        </router-link>
+                    </div>
+                    <div class="menu-item">
                         <router-link :to="{name: 'all-citizens'}">
                             <a>All Citizens</a>
                         </router-link>
