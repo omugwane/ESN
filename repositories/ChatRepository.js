@@ -23,16 +23,6 @@ exports.saveChat = (chatData,callback) => {
         }
     }
     chat.save(callback1)
-    /*chat.save((err) => {
-=======
-    chat.save((err) => {
->>>>>>> 0ef96b666afb6ff14de71e9d3181eff9e9c2444e
-        if (err)
-            callback(null)
-        else
-<<<<<<< HEAD
-            return true
-    });*/
 };
 
 //method to retrive all chats from the database. it takes a callback
