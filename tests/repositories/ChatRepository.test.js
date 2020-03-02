@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 let ChatRepository = require('../../repositories/ChatRepository')
 // let DB = require('../../config/DB')
-// let Chat = require('../../models/Chat')
+let Chat = require('../../models/Chat')
 
 const dbHandler = require('./../db-handler');
 
