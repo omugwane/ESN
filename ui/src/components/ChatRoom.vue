@@ -120,6 +120,10 @@
         position: relative;
         width: 40%;
         height: auto;
+        @media (max-width: 600px) {
+           margin: 0 8px;
+            width: 100%;
+        }
 
         &.received:after {
             content: ' ';
@@ -208,6 +212,11 @@
         height: calc(100vh - #{$header-height} - #{$chat-form-height});
         @include scroll-bar(0.3em);
         overflow-y: auto;
+
+        @media (max-width: 600px) {
+            margin: 0 8px;
+        }
+
     }
 
     #chat-form {
