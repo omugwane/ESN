@@ -54,7 +54,7 @@ describe('Chat Repository', () => {
             if (err)
                 done.fail(error)
             else{
-                ChatRepository.getChatsByUsername('username', (result) => {
+                ChatRepository.getChatsByUsername('username', (chats) => {
                     try {
                         expect(chats.length).toBeGreaterThan(0);
                         done()
