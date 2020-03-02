@@ -42,19 +42,17 @@ describe('Chat Repository', () => {
         })
     })
 
-    it('Should get Chats by Username successfully',done=>{
+    it('Should get Chats by Username successfully', done => {
         let chat = new Chat();
-        chat.author = 'kaka';
+        chat.author = 'Trump'; //This is the username of the user who authored the chat
         chat.target = ''
-        chat.content = 'Hello Ka';
-        chat.status = 'sdjjh';
+        chat.content = 'Hi there';
+        chat.status = 'Not available';
         chat.receiver = null;
 
-        chat.save((err) => {
-            if (err)
-                done.fail(error)
-            else{
-                ChatRepository.getChatsByUsername('username', (chats) => {
+        ChatRepository.saveChat(chat, (savedChat) => {
+            try {
+                ChatRepository.getChatsByUsername(chat.author, (chats) => {
                     try {
                         expect(chats.length).toBeGreaterThan(0);
                         done()
@@ -62,7 +60,9 @@ describe('Chat Repository', () => {
                         done.fail(error)
                     }
                 })
+            } catch (error) {
+                done.fail(error)
             }
-        })
+        });
     })
 })
