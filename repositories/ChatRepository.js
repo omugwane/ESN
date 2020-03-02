@@ -38,7 +38,6 @@ exports.saveChat = (chatData,callback) => {
 //method to retrive all chats from the database. it takes a callback
 //as an argument and returns an object of the retrived chats.
 exports.getAllChats = (callback)=> {
-    let chat = new Chat();
     let callback1= (err, docs) => {
 
         if (err) {
@@ -48,14 +47,13 @@ exports.getAllChats = (callback)=> {
         }
 
     }
-    chat.find({},callback1);
+    Chat.find({},callback1);
 }
 
 //a method to retrive chats from the database by username. it takes the 
 //username and a callback as arguments and returns a an object containing
 //the user's chats.
 exports.getChatsByUsername = (username,callback)=> {
-    let chat = new Chat();
     let callback1 = (err, docs) => {
 
         if (err) {
@@ -65,6 +63,6 @@ exports.getChatsByUsername = (username,callback)=> {
         }
     }
 
-    chat.find({author: username},callback1);
+    Chat.find({author: username},callback1);
 
 }
