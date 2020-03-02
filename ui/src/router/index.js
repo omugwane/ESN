@@ -6,6 +6,7 @@ import PublicChatRoom from "../components/PublicChatRoom";
 import AllCitizens from "../components/AllCitizens";
 import UserRegistration from "../views/UserRegistration";
 import PrivateChatRoom from "../components/PrivateChatRoom";
+import ShareStatus from "../components/ShareStatus";
 
 Vue.use(VueRouter)
 
@@ -41,6 +42,14 @@ const routes = [
                 path: 'citizens',
                 name: 'all-citizens',
                 component: AllCitizens,
+                meta: {
+                    requiresAuth: true,
+                }
+            },
+            {
+                path: 'status',
+                name: 'share-status',
+                component: ShareStatus,
                 meta: {
                     requiresAuth: true,
                 }
