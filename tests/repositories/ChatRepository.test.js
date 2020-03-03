@@ -25,7 +25,7 @@ afterAll(async () => await dbHandler.closeDatabase());
 describe('Chat Repository', () => {
     it('Should save a chat successfully', done => {
         let chat = {
-            author: 'kaka',
+            sender: 'kaka',
             target: '',
             content: 'Hello Ka',
             status: 'sdjjh',
@@ -34,7 +34,7 @@ describe('Chat Repository', () => {
 
         ChatRepository.saveChat(chat, (result) => {
             try {
-                expect(result.author).toBe(chat.author)
+                expect(result.sender).toBe(chat.sender)
                 done()
             } catch (error) {
                 done.fail(error)
@@ -44,7 +44,7 @@ describe('Chat Repository', () => {
 
     it('Should get Chats by Username successfully', done => {
         let chat = new Chat();
-        chat.author = 'Trump'; //This is the username of the user who authored the chat
+        chat.sender = 'Trump'; //This is the username of the user who authored the chat
         chat.target = ''
         chat.content = 'Hi there';
         chat.status = 'Not available';
@@ -52,7 +52,7 @@ describe('Chat Repository', () => {
 
         ChatRepository.saveChat(chat, (savedChat) => {
             try {
-                ChatRepository.getChatsByUsername(chat.author, (chats) => {
+                ChatRepository.getChatsByUsername(chat.sender, (chats) => {
                     try {
                         expect(chats.length).toBeGreaterThan(0);
                         done()

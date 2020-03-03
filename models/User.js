@@ -45,7 +45,8 @@ const userSchema = mongoose.Schema({
      },
      status: {
         type: String,
-        required: true
+        required: true,
+         default: null
      },
      timeStamp: {
         type: Date, default: Date.now,
