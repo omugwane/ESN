@@ -7,9 +7,9 @@ const chatRepository = require('../repositories/ChatRepository')
 //any arguments. it call the chatRepository.getAllChats(callback) method
 exports.getAllChats = function (req, res) {
 
-    let callback=(docs)  => {
+    let callback = (docs) => {
 
-        if (docs===null) {
+        if (docs === null) {
             res.status(500).json({data: null});
         } else {
             let responseObject = {
@@ -26,39 +26,36 @@ exports.getAllChats = function (req, res) {
 //response and request object as arguments and returns a jason object of the retrived
 //chats. it call chatRepository.getChatsByUsername(filter,callback) method
 exports.getChatsByUsername = function (req, res) {
-    let filter = {
-        sender: req.params.username
-    }
-    let callback=(docs)=>{
-        if(docs===null){
-            res.status(500).json({data: Null});
-        }else{
+    let callback = (docs) => {
+        if (docs === null) {
+            res.status(500).json({data: null});
+        } else {
             let responseObject = {
                 data: docs,
             }
             res.status(200).json(responseObject);
         }
     }
-    chatRepository.getChatsByUsername(filter,callback)
+    chatRepository.getChatsByUsername(req.params.username, callback)
 }
 
 exports.getPrivateChats = function (req, res) {
 
-        let username1= req.params.username1;
-        let username2= req.params.username2;
+    let username1 = req.params.username1;
+    let username2 = req.params.username2;
 
 
-    let callback=(docs)=>{
-        if(docs===null){
+    let callback = (docs) => {
+        if (docs === null) {
             res.status(500).json({data: null});
-        }else{
+        } else {
             let responseObject = {
                 data: docs,
             }
             res.status(200).json(responseObject);
         }
     }
-    chatRepository.getPrivateChats(username1,username2,callback)
+    chatRepository.getPrivateChats(username1, username2, callback)
 }
 
 //method to save chats to the database. it takes as arguments request and response 
@@ -70,9 +67,9 @@ exports.saveChat = (req, res) => {
         status: req.body.status,
         receiver: req.body.receiver
     }
-    if(docs===null){
+    if (docs === null) {
         res.status(500).json({data: null});
-    }else{
+    } else {
         let responseObject = {
             data: docs,
         }
