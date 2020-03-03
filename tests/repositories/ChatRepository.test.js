@@ -86,5 +86,59 @@ describe('Chat Repository', () => {
             }
         });
     })
+    it('Should get 0 public chats if all the saved chats are private', done => {
+        let chat = new Chat();
+        chat.sender = 'Trump'; //This is the username of the user who authored the chat
+        chat.content = 'Hi there';
+        chat.status = 'Not available';
+        chat.receiver = 'Donald';
+
+        ChatRepository.saveChat(chat, (savedChat) => {
+            try {
+                ChatRepository.getAllChats((chats) => {
+                    try {
+                        expect(chats.length).toBe(0);
+                        done()
+                    } catch (error) {
+                        done.fail(error)
+                    }
+                })
+            } catch (error) {
+                done.fail(error)
+            }
+        });
+    })
+    it('Should get all private chats successfully betwween two users', (done) => {
+        let chat = new Chat();
+        chat.sender = 'Laurette';
+        chat.content = 'Hey';
+        chat.status = 'Undefined';
+        chat.receiver = 'Baptiste';
+
+        let chat1 = new Chat();
+        chat.sender = 'Baptiste';
+        chat.content = 'How are you?';
+        chat.status = 'Undefined';
+        chat.receiver = 'Laurette';
+
+        chat.save((err1) => {
+            console.log("Chat 1 error",err1)
+            chat1.save((err2) => {
+                try {
+                    ChatRepository.getPrivateChats('Baptiste','Laurette',(chats) => {
+                        try {
+                            console.log(chats)
+                            expect(chats.length).toBe(2);
+                            done()
+                        } catch (error) {
+                            done.fail(error)
+                        }
+                    })
+                } catch (error) {
+                    done.fail(error)
+                }
+            });
+        });
+    })
 
 })

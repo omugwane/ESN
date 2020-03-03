@@ -37,7 +37,7 @@ exports.getAllUsers = (callback)=> {
         }
 
     }
-    user.find({},callback1);
+    User.find({},callback1);
 }
 
 
@@ -55,9 +55,8 @@ exports.registerUser = (userData,callback) => {
     user.phone = userData.phone;
     user.role = userData.role;
     user.status = userData.status;
-    user.timeStamp = userData.timeStamp;
 
-    user.find({username: userData.username},function(err,users){
+    User.find({username: userData.username},function(err,users){
         if(users && users.length === 0){
             user.save(function(err){
             if(err)
@@ -83,7 +82,7 @@ exports.getUserByUsername = (username,callback)=> {
         }
     }
 
-    user.find({username: username},callback1);
+    User.find({username: username},callback1);
 
 }
 

@@ -32,7 +32,7 @@ describe('User Repository', () => {
             role: 'Citizen',
             status: 'OK'
         }
-        UserRepository.saveUser(user, (result) => {
+        UserRepository.registerUser(user, (result) => {
             try {
                 expect(result.username).toBe(user.username)
                 done()
