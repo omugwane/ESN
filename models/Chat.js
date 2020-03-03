@@ -20,6 +20,7 @@ const chatSchema = mongoose.Schema({
  	},
 	receiver: {
 		type: String,
+		default: null
 		// required: true
  	},
  });
