@@ -5,7 +5,7 @@ const app = require('../../app').app;
 // app.use('/chats', chatsRouter);
 
 describe('Chats routes', () => {
-    test('Should get all saved chats', (done) => {
+    test('Should get all saved public chats', (done) => {
         request(app).get('/chats').then((response) => {
             try{
                 expect(response.statusCode).toBe(200);
