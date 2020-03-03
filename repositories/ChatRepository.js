@@ -8,7 +8,6 @@ exports.saveChat = (chatData,callback) => {
 
     let chat = new Chat();
     chat.sender = chatData.sender;
-    chat.target = chatData.target
     chat.content = chatData.content;
     chat.status = chatData.status;
     chat.receiver = chatData.receiver;
@@ -37,7 +36,7 @@ exports.getAllChats = (callback)=> {
         }
 
     }
-    Chat.find({},callback1);
+    Chat.find({receiver: null},callback1);
 }
 
 //a method to retrive chats from the database by username. it takes the 
