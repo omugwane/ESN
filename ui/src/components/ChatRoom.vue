@@ -33,6 +33,7 @@
 
 <script>
     import * as api from "../helpers/api";
+    import eventBus from '../main'
 
     export default {
         name: "ChatRoom",
@@ -46,6 +47,17 @@
             let user = this.$cookies.get('user')
             this.loggedInUsername = user.username;
             this.getAllChats();
+        },
+        mounted() {
+            eventBus.$on('new-chat-message', (chat) => {
+                //Checking if the chat is from the citizen currently being chatted with
+                //and that the receiver is the loggedInUsername
+                if (chat && this.chatWithCitizen && this.chatWithCitizen.username === chat.sender && chat.receiver === this.loggedInUsername) {
+                    this.chats = this.chats.concat(data);
+                } else if (chat && !chat.receiver) { //Checking if the chat is a public chat(Public chat has no receiver)
+                    this.chats = this.chats.concat(data);
+                }
+            })
         },
         data() {
             return {
@@ -121,7 +133,7 @@
         width: 40%;
         height: auto;
         @media (max-width: 600px) {
-           margin: 0 8px;
+            margin: 0 8px;
             width: 100%;
         }
 
@@ -157,6 +169,7 @@
             line-height: 1.5em;
         }
     }
+
     .heading {
         margin: 8px 16px -4px 16px;
         padding-bottom: 8px;

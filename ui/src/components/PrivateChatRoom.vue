@@ -35,6 +35,7 @@
 <script>
     import * as api from "../helpers/api";
     import ChatRoom from "./ChatRoom";
+    import {eventBus} from "../main";
 
     export default {
         name: "PrivateChatRoom",
@@ -42,12 +43,21 @@
         created() {
             this.getAllCitizens()
         },
+        mounted() {
+            /*eventBus.$on('new-chat-message', (chat) => {
+                //Checking if the chat is from the citizen currently being chatted with
+                //and that the receiver is the loggedInUsername
+                if (chat && this.chatWithCitizen && this.chatWithCitizen.username === chat.sender && chat.receiver === this.loggedInUsername) {
+                    // this.chats = this.chats.concat(data);
+                }
+            })*/
+        },
         data() {
             return {
                 citizens: [],
-                chatWithCitizen: null,
-                stack: [],
-                showCitizensList: true,
+                loggedInUsername: '',
+                chatWithCitizen: null, // The user whom to chat with
+                showCitizensList: true, //This variable shows or hides the list of citizens to chat with for UI responsiveness
             }
         },
         watch: {

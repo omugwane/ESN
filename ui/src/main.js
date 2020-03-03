@@ -42,6 +42,10 @@ router.beforeEach((to, from, next) => {
     next();
 })
 
+//This eventBus is a message passing channel where components can subscribe to receive
+//particular event or publish event for other to listen for
+export const eventBus = new Vue();
+
 Vue.config.productionTip = false
 
 new Vue({
