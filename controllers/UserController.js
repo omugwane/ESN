@@ -18,24 +18,28 @@ exports.registerUser = function (req, res) {
         role: Roles.CITIZEN
     }
 
-    if (userRepository.registerUser(user)) {
-        res.status(500).json(err);
-    } else {
-        res.status(200).json({ "message": "success", data: [] })
-    }
+    userRepository.registerUser(user, (savedUser) => {
+        if (savedUser)
+            res.status(200).json({"message": "success", data: savedUser})
+        else
+            res.status(500).json({
+                "message": "Registration failed! It might be that the username is already taken.",
+                data: null
+            });
+    })
 }
 
 // Login
 exports.login = async (req, res) => {
     userRepository.getUserByUsername(req.body.username, (user) => {
         if (user === null) {
-            next("Error occurred");
+            res.status(401).json({status: "error", message: "Username not registered!", data: null});
         } else {
-            if (bcrypt.compareSync(req.body.password, user.password)) {
-                const token = jwt.sign({ id: user._id }, process.env.JWT_KEY, { expiresIn: '1h' });
-                res.json({ status: "success", message: "user found!!!", data: { user: user, token: token } });
+            if (user.validPassword(req.body.password)) {
+                const token = jwt.sign({id: user._id}, process.env.JWT_KEY, {expiresIn: '1h'});
+                res.status(200).json({status: "success", message: "user found!!!", data: {user: user, token: token}});
             } else {
-                res.json({ status: "error", message: "Invalid email/password!!!", data: null });
+                res.status(401).json({status: "error", message: "Invalid password!!!", data: null});
             }
         }
     });
@@ -45,9 +49,9 @@ exports.login = async (req, res) => {
 // Get all users
 exports.getAllUsers = function (req, res) {
 
-    let callback=(docs)  => {
+    let callback = (docs) => {
 
-        if (docs===null) {
+        if (docs === null) {
 
             res.status(500).json({data: Null});
         } else {
@@ -60,7 +64,7 @@ exports.getAllUsers = function (req, res) {
     userRepository.getAllUsers(callback)
 }
 
-exports.deleteUser = async (req, res) => {
+/*exports.deleteUser = async (req, res) => {
     User.deleteOne({ _id: req.params.userId }, (err, result) => {
         if (err) {
             res.status(500).json({ message: err });
@@ -68,27 +72,30 @@ exports.deleteUser = async (req, res) => {
             res.status(200).json({ message: "User deleted successfully" });
         }
     });
-};
+};*/
 
 exports.updateUser = async (req, res) => {
     try {
         const updatedUser = await User.updateOne(
-            { _id: req.params.userId },
-            { $set: { username: req.body.username, status: req.body.status } }
+            {_id: req.params.userId},
+            {$set: {username: req.body.username, status: req.body.status}}
         );
-        res.status(200).json({ message: "User updated" });
+        res.status(200).json({message: "User updated"});
     } catch (err) {
-        res.status(500).json({ message: err });
+        res.status(500).json({message: err});
     }
 };
 
 exports.updateUserStatus = async (req, res) => {
-    userRepository.updateUserStatus(req.params.username,req.body.status,function(user){
-        if(user){
-            res.status(200).json({ "message": "success", data: user })
+    userRepository.updateUserStatus(req.params.username, req.body.status, function (user) {
+        if (user) {
+            res.status(200).json({message: "success", data: user})
         }
 
-        res.status(500).json(err);
+        res.status(500).json({
+            message: "Updating user status failed. It might be that the username is incorrect",
+            data: null
+        });
     })
 };
 

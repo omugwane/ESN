@@ -5,10 +5,10 @@ const userController = require("../controllers/UserController");
 
 /* GET users listing. */
 router.get('/', userController.getAllUsers);
-router.delete('/:userId', userController.deleteUser);
+// router.delete('/:userId', userController.deleteUser);
 router.put('/:userId', userController.updateUser);
 router.post('/', userController.registerUser);
 router.post('/login', userController.login);
-router.patch('/:username', userController.updateUserStatus);
+router.put('/:username', userController.updateUserStatus);
 
 module.exports = router;

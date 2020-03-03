@@ -4,7 +4,7 @@ const User = require('../models/User');
 //method to save the details of a user's chat to the database.
 //it takes an object containing the details of a chat as an
 //argument and a callback as arguments
-exports.saveChat = (userData,callback) => {
+exports.saveChat = (userData, callback) => {
 
     let user = new User();
     user.sender = userData.sender;
@@ -13,7 +13,7 @@ exports.saveChat = (userData,callback) => {
     user.receiver = userData.receiver;
 
 
-    let callback1= (err) => {
+    let callback1 = (err) => {
 
         if (err) {
             callback(null)
@@ -26,9 +26,9 @@ exports.saveChat = (userData,callback) => {
 
 //method to retrive all chats from the database. it takes a callback
 //as an argument and returns an object of the retrived chats.
-exports.getAllUsers = (callback)=> {
+exports.getAllUsers = (callback) => {
     let user = new User();
-    let callback1= (err, docs) => {
+    let callback1 = (err, docs) => {
 
         if (err) {
             callback(null)
@@ -37,15 +37,14 @@ exports.getAllUsers = (callback)=> {
         }
 
     }
-    User.find({},callback1);
+    User.find({}, callback1);
 }
 
 
 //method to save the details of a user to the database.
 //it takes an object containing the details of a user as an 
 //argument and a callback as arguments
-exports.registerUser = (userData,callback) => {
-
+exports.registerUser = (userData, callback) => {
     let user = new User();
     user.username = userData.username;
     user.password = user.generateHash(userData.password);
@@ -57,47 +56,45 @@ exports.registerUser = (userData,callback) => {
     user.status = userData.status;
     user.timeStamp = userData.timeStamp;
 
-    User.find({username: userData.username},function(err,users){
-        if(users && users.length === 0){
-            user.save(function(err){
-            if(err)
-              callback(null)
-            else
-              callback(user)
+    User.find({username: userData.username}, (err, users) => {
+        if (users && users.length === 0) {
+            user.save((err) => {
+                if (err)
+                    callback(null)
+                else
+                    callback(user)
             })
         }
     })
 
-    };
+};
 
 //a method to get a single user by their username. it takes the username and a 
 //callback as an argument and returns the details of the user
-exports.getUserByUsername = (username,callback)=> {
-    let user = new User();
-    let callback1 = (err, docs) => {
-
+exports.getUserByUsername = (username, callback) => {
+    let callback1 = (err, user) => {
         if (err) {
             callback(null)
         } else {
-            callback(docs)
+            callback(user)
         }
     }
 
-    User.find({username: username},callback1);
+    User.findOne({username: username}, callback1);
 
 }
 
 //a method to update the status of a user. It takes a username, status
 //and a callback as parameters and returns 
-exports.updateUserStatus = (username,status,callback) => {
-        user.findOne({username: username},function(err,user){
-        if(user){
+exports.updateUserStatus = (username, status, callback) => {
+    User.findOne({username: username}, function (err, user) {
+        if (user) {
             user.status = status;
-            user.save(function(err){
-            if(err)
-              callback(null)
-            else
-              callback(user)
+            user.save(function (err) {
+                if (err)
+                    callback(null)
+                else
+                    callback(user)
             })
         }
     })

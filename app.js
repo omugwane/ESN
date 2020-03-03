@@ -19,9 +19,11 @@ let app = express();
 // Set up the database
 const env = process.env.NODE_ENV || 'development';
 const dbConfig = configDB[env];
-
 mongoose.connect(dbConfig.url);
-// mongoose.connect(configDB.production.url);
+
+console.log("Env ", env)
+console.log("dbConfig.url ", dbConfig.url)
+
 let db = mongoose.connection;
 
 // Check connection

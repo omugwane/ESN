@@ -1,24 +1,13 @@
 const request = require('supertest');
 const app = require('../../app').app;
- 
-describe('user routes', () => {
-    it.only('Should get all users', (done) => {
-        request(app).get('/users').then((response) => {
-            try{
-                expect(response.statusCode).toBe(200);
-                done();
-            }catch (e) {
-                done.fail(e);
-            }
-        });
-    });
 
-    it('Should delete a user by user id', (done) => {
-        request(app).delete('/users').send({userId:''}).then((response) => {
-            try{
+describe('user routes', () => {
+    it('Should get all users', (done) => {
+        request(app).get('/users').then((response) => {
+            try {
                 expect(response.statusCode).toBe(200);
                 done();
-            }catch (e) {
+            } catch (e) {
                 done.fail(e);
             }
         });
@@ -26,20 +15,21 @@ describe('user routes', () => {
 
     it('Should save a user', (done) => {
         request(app).post('/users')
-        .send({
-            username:'me',
-            password :'1234',
-            firstName: 'firstName',
-            lastName :'lastName',
-            email : 'email',
-            phone : 'phone',
-            role :'Citizen',
-            status : 'OK'
-        }).then((response) => {
-            try{
+            .send({
+                username: 'me',
+                password: '1234',
+                firstName: 'firstName',
+                lastName: 'lastName',
+                email: 'email',
+                phone: 'phone',
+                role: 'Citizen',
+                status: 'OK'
+            }).then((response) => {
+            try {
+                console.log("Saving user", response.body)
                 expect(response.statusCode).toBe(200);
                 done();
-            }catch (e) {
+            } catch (e) {
                 done.fail(e);
             }
         });
@@ -47,28 +37,27 @@ describe('user routes', () => {
 
     it('Should log a user into the application', (done) => {
         request(app).post('/users/login').send({
-            username:'me',
-            password :'1234'
+            username: 'me',
+            password: '1234'
         }).then((response) => {
-            try{
+            try {
+                console.log("Login ", response.body)
                 expect(response.statusCode).toBe(200);
                 done();
-            }catch (e) {
+            } catch (e) {
                 done.fail(e);
             }
         });
     });
 
     it('Should update a user\'s status', (done) => {
-        request(app).patch('/users/username')
-        .send({username:''}).send({
-            username:'me',
-            status :'ok'
-        }).then((response) => {
-            try{
+        request(app).put('/users/me')
+            .send({status: 'Help'}).then((response) => {
+            try {
+                console.log("Update user status:  ", response.body)
                 expect(response.statusCode).toBe(200);
                 done();
-            }catch (e) {
+            } catch (e) {
                 done.fail(e);
             }
         });
