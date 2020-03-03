@@ -67,6 +67,12 @@ exports.saveChat = (req, res) => {
         status: req.body.status,
         receiver: req.body.receiver
     }
+<<<<<<< HEAD
+    if (chatRepository.saveChat(chat)) {
+        res.status(500).json(err);
+    } else {
+        res.status(200).json({ "message": "success", data: [] })
+=======
     if (docs === null) {
         res.status(500).json({data: null});
     } else {
@@ -76,6 +82,7 @@ exports.saveChat = (req, res) => {
         chatBroadcaster.broadcast(chat)
         res.status(200).json(responseObject);
 
+>>>>>>> 2d463a832960ae0d33b657f600981b2d14d7e78b
     }
 }
 
