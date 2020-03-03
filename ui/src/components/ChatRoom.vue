@@ -10,7 +10,9 @@
                         <div class="title">
                             <h6 class="chat-owner">{{(chat.author === loggedInUsername)?
                                 'Me':`${chat.author}`}}</h6>
-                            <small class="citizen-status">Status: Not available</small>
+                            <small class="citizen-status" :style="{color: getStatusColor(chat.status)}">
+                                Status: {{(chat.status.toUpperCase() === 'UNDEFINED') ? 'Not available':`${chat.status.toUpperCase()}`}}
+                            </small>
                         </div>
                         <small>{{new Date()}}</small>
                     </div>
@@ -33,6 +35,8 @@
 
 <script>
     import * as api from "../helpers/api";
+    import {eventBus} from '../main'
+    import {STATUSES} from '../helpers/statuses'
 
     export default {
         name: "ChatRoom",
@@ -47,6 +51,17 @@
             this.loggedInUsername = user.username;
             this.getAllChats();
         },
+        mounted() {
+            eventBus.$on('new-chat-message', (chat) => {
+                //Checking if the chat is from the citizen currently being chatted with
+                //and that the receiver is the loggedInUsername
+                if (chat && this.chatWithCitizen && this.chatWithCitizen.username === chat.sender && chat.receiver === this.loggedInUsername) {
+                    this.chats = this.chats.concat(data);
+                } else if (chat && !chat.receiver) { //Checking if the chat is a public chat(Public chat has no receiver)
+                    this.chats = this.chats.concat(data);
+                }
+            })
+        },
         data() {
             return {
                 loading: false,
@@ -55,22 +70,10 @@
                 chats: []
             }
         },
-        sockets: {
-            connect() {
-                console.log("Connected")
-            },
-
-            disconnect() {
-                console.log("Disconnected")
-            },
-            newPublicChat(data) {
-                if (data.author !== this.loggedInUsername) {
-                    // console.log("SocketIO data", data)
-                    this.chats = this.chats.concat(data);
-                }
-            }
-        },
         methods: {
+            getStatusColor(status) {
+                return STATUSES[status.toUpperCase()].colorCode
+            },
             postChat() {
                 let vm = this;
                 let newChat = {
@@ -120,7 +123,7 @@
         width: 40%;
         height: auto;
         @media (max-width: 600px) {
-           margin: 0 8px;
+            margin: 0 8px;
             width: 100%;
         }
 
@@ -156,6 +159,7 @@
             line-height: 1.5em;
         }
     }
+
     .heading {
         margin: 8px 16px -4px 16px;
         padding-bottom: 8px;
