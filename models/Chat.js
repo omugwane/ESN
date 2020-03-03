@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const chatSchema = mongoose.Schema({
 
- 	author: {
+ 	sender: {
 		type: String,
 		required: true
  	},
@@ -11,11 +11,6 @@ const chatSchema = mongoose.Schema({
  		type: String,
  		required: true
  	},
-
-    target: {
- 	    type: String,
-        required: false
-    },
 	status: {
 		type: String,
 	   required: false

@@ -7,7 +7,7 @@ const Chat = require('../models/Chat');
 exports.saveChat = (chatData,callback) => {
 
     let chat = new Chat();
-    chat.author = chatData.author;
+    chat.sender = chatData.sender;
     chat.target = chatData.target
     chat.content = chatData.content;
     chat.status = chatData.status;
@@ -53,6 +53,6 @@ exports.getChatsByUsername = (username,callback)=> {
         }
     }
 
-    Chat.find({author: username},callback1);
+    Chat.find({sender: username},callback1);
 
 }

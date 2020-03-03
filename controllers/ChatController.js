@@ -28,7 +28,7 @@ exports.getAllChats = function (req, res) {
 //chats. it call chatRepository.getChatsByUsername(filter,callback) method
 exports.getChatsByUsername = function (req, res) {
     let filter = {
-        author: req.params.username
+        sender: req.params.username
     }
     let callback=(docs)=>{
         if(docs===null){
@@ -47,7 +47,7 @@ exports.getChatsByUsername = function (req, res) {
 //objects and returns a jason object. it calls chatRepository.saveChat method.
 exports.saveChat = (req, res) => {
     let chat = {
-        author: req.body.author,
+        sender: req.body.sender,
         target: req.body.target,
         content: req.body.content,
         status: req.body.status,
