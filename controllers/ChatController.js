@@ -70,15 +70,10 @@ exports.saveChat = (req, res) => {
         status: req.body.status,
         receiver: req.body.receiver
     }
-    if(docs===null){
-        res.status(500).json({data: null});
-    }else{
-        let responseObject = {
-            data: docs,
-        }
-        chatBroadcaster.broadcast(chat)
-        res.status(200).json(responseObject);
-
+    if (chatRepository.saveChat(chat)) {
+        res.status(500).json(err);
+    } else {
+        res.status(200).json({ "message": "success", data: [] })
     }
 }
 
