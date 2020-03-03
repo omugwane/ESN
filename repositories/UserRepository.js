@@ -54,7 +54,6 @@ exports.registerUser = (userData, callback) => {
     user.phone = userData.phone;
     user.role = userData.role;
     user.status = userData.status;
-    user.timeStamp = userData.timeStamp;
 
     User.find({username: userData.username}, (err, users) => {
         if (users && users.length === 0) {
