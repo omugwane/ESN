@@ -42,6 +42,8 @@
 </template>
 
 <script>
+    import {eventBus} from '../main'
+
     export default {
         name: "MainContainer",
         created() {
@@ -51,6 +53,18 @@
         data() {
             return {
                 loggedInUsername: '',
+            }
+        },
+        sockets: {
+            connect() {
+                // console.log("Connected")
+            },
+
+            disconnect() {
+                // console.log("Disconnected")
+            },
+            newPublicChat(chat) {
+                eventBus.$emit('new-chat-message',chat)
             }
         },
         methods: {
