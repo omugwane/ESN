@@ -33,7 +33,7 @@
 
 <script>
     import * as api from "../helpers/api";
-    import eventBus from '../main'
+    import {eventBus} from '../main'
 
     export default {
         name: "ChatRoom",
@@ -65,21 +65,6 @@
                 loggedInUsername: '',
                 newChat: '',
                 chats: []
-            }
-        },
-        sockets: {
-            connect() {
-                console.log("Connected")
-            },
-
-            disconnect() {
-                console.log("Disconnected")
-            },
-            newPublicChat(data) {
-                if (data.author !== this.loggedInUsername) {
-                    // console.log("SocketIO data", data)
-                    this.chats = this.chats.concat(data);
-                }
             }
         },
         methods: {
