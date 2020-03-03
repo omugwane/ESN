@@ -51,7 +51,7 @@ exports.getPrivateChats = function (req, res) {
 
     let callback=(docs)=>{
         if(docs===null){
-            res.status(500).json({data: Null});
+            res.status(500).json({data: null});
         }else{
             let responseObject = {
                 data: docs,
