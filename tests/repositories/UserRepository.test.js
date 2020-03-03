@@ -68,6 +68,32 @@ describe('User Repository', () => {
             }
         });
     })
-    
+
+    it('Should get all users successfully', (done) => {
+        let user = {
+            username: 'me',
+            password: '1234',
+            firstName: 'firstName',
+            lastName: 'lastName',
+            email: 'email',
+            phone: 'phone',
+            role: 'Citizen',
+            status: 'OK'
+        }
+        UserRepository.registerUser(user, (savedUser) => {
+                try {
+                    UserRepository.getAllUsers((users) => {
+                        try {
+                            expect(users.length).toBeGreaterThan(0);
+                            done()
+                        } catch (error) {
+                            done.fail(error)
+                        }
+                    })
+                } catch (error) {
+                    done.fail(error)
+                }
+        });
+    })
 })
 
