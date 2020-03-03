@@ -10,7 +10,9 @@
                         <div class="title">
                             <h6 class="chat-owner">{{(chat.author === loggedInUsername)?
                                 'Me':`${chat.author}`}}</h6>
-                            <small class="citizen-status">Status: Not available</small>
+                            <small class="citizen-status" :style="{color: getStatusColor(chat.status)}">
+                                Status: {{(chat.status.toUpperCase() === 'UNDEFINED') ? 'Not available':`${chat.status.toUpperCase()}`}}
+                            </small>
                         </div>
                         <small>{{new Date()}}</small>
                     </div>
@@ -34,6 +36,7 @@
 <script>
     import * as api from "../helpers/api";
     import {eventBus} from '../main'
+    import {STATUSES} from '../helpers/statuses'
 
     export default {
         name: "ChatRoom",
@@ -68,6 +71,9 @@
             }
         },
         methods: {
+            getStatusColor(status) {
+                return STATUSES[status.toUpperCase()].colorCode
+            },
             postChat() {
                 let vm = this;
                 let newChat = {
