@@ -18,7 +18,7 @@ exports.registerUser = function (req, res) {
         role: Roles.CITIZEN
     }
 
-    if (userRepository.saveUser(user)) {
+    if (userRepository.registerUser(user)) {
         res.status(500).json(err);
     } else {
         res.status(200).json({ "message": "success", data: [] })
@@ -32,8 +32,6 @@ exports.login = async (req, res) => {
             next("Error occurred");
         } else {
             if (bcrypt.compareSync(req.body.password, user.password)) {
-                // console.log(process.env.JWT_KEY)
-
                 const token = jwt.sign({ id: user._id }, process.env.JWT_KEY, { expiresIn: '1h' });
                 res.json({ status: "success", message: "user found!!!", data: { user: user, token: token } });
             } else {
@@ -46,16 +44,20 @@ exports.login = async (req, res) => {
 
 // Get all users
 exports.getAllUsers = function (req, res) {
-    userRepository.getUsers(docs => {
-        if (docs === null) {
-            res.status(500).json({ data: Null });
+
+    let callback=(docs)  => {
+
+        if (docs===null) {
+
+            res.status(500).json({data: Null});
         } else {
             let responseObject = {
                 data: docs,
             }
             res.status(200).json(responseObject);
         }
-    });
+    }
+    userRepository.getAllUsers(callback)
 }
 
 exports.deleteUser = async (req, res) => {
@@ -81,15 +83,13 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.updateUserStatus = async (req, res) => {
-    try {
-        const updatedUser = await User.updateOne(
-            { username: req.params.username },
-            { $set: { status: req.body.status } }
-        );
-        res.status(200).json({ message: "User updated" });
-    } catch (err) {
-        res.status(500).json({ message: err });
-    }
+    userRepository.updateUserStatus(req.params.username,req.body.status,function(user){
+        if(user){
+            res.status(200).json({ "message": "success", data: user })
+        }
+
+        res.status(500).json(err);
+    })
 };
 
 
