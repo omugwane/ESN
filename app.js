@@ -57,7 +57,7 @@ app.use(cors({origin: '*'}));
 
 
 app.use('/users', usersRouter);
-app.use('/chats', validateUser, chatsRouter);
+app.use('/chats', chatsRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
