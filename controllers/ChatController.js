@@ -43,6 +43,25 @@ exports.getChatsByUsername = function (req, res) {
     chatRepository.getChatsByUsername(filter,callback)
 }
 
+exports.getPrivateChats = function (req, res) {
+
+        let username1= req.params.username1;
+        let username2= req.params.username2;
+
+
+    let callback=(docs)=>{
+        if(docs===null){
+            res.status(500).json({data: Null});
+        }else{
+            let responseObject = {
+                data: docs,
+            }
+            res.status(200).json(responseObject);
+        }
+    }
+    chatRepository.getPrivateChats(username1,username2,callback)
+}
+
 //method to save chats to the database. it takes as arguments request and response 
 //objects and returns a jason object. it calls chatRepository.saveChat method.
 exports.saveChat = (req, res) => {
@@ -54,19 +73,15 @@ exports.saveChat = (req, res) => {
         receiver: req.body.receiver
     }
     if(docs===null){
-        res.status(500).json({data: Null});
+        res.status(500).json({data: null});
     }else{
         let responseObject = {
             data: docs,
         }
-        res.status(200).json(responseObject);
-    }
-    /*if (chatRepository.saveChat(chat)) {
-        res.status(500).json(err);
-    } else {
         chatBroadcaster.broadcast(chat)
-        res.status(200).json({"message": "success", data: []})
-    }*/
+        res.status(200).json(responseObject);
+
+    }
 }
 
 //get chat by id
