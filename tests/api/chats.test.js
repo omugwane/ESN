@@ -51,6 +51,7 @@ describe('Chats routes', () => {
             }catch (e) {
                 done.fail(e);
             }
+            
         });
     });
     
