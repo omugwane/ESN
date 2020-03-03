@@ -20,9 +20,8 @@ let app = express();
 const env = process.env.NODE_ENV || 'development';
 const dbConfig = configDB[env];
 
-// console.log("Config ", configDB[process.env.NODE_ENV])
-// mongoose.connect(dbConfig.url);
-mongoose.connect(configDB.production.url);
+mongoose.connect(dbConfig.url);
+// mongoose.connect(configDB.production.url);
 let db = mongoose.connection;
 
 // Check connection
@@ -34,8 +33,6 @@ db.once('open', function () {
 db.on('error', function (err) {
     console.log(err);
 });
-
-const port = process.env.PORT || 3000;
 
 // view engine setup
 app.set('views', __dirname + '/views');
