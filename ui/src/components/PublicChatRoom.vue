@@ -36,7 +36,6 @@
                 let vm = this;
                 let newChat = {
                     author: vm.loggedInUsername,
-                    target: '',
                     content: vm.newChat
                 }
                 if (vm.newChat.trim().length !== 0) {

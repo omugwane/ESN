@@ -10,7 +10,6 @@ exports.getAllChats = function (req, res) {
     let callback=(docs)  => {
 
         if (docs===null) {
-
             res.status(500).json({data: Null});
         } else {
             let responseObject = {
@@ -67,7 +66,6 @@ exports.getPrivateChats = function (req, res) {
 exports.saveChat = (req, res) => {
     let chat = {
         sender: req.body.sender,
-        target: req.body.target,
         content: req.body.content,
         status: req.body.status,
         receiver: req.body.receiver

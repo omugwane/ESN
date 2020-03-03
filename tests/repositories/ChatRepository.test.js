@@ -26,7 +26,6 @@ describe('Chat Repository', () => {
     it('Should save a chat successfully', done => {
         let chat = {
             sender: 'kaka',
-            target: '',
             content: 'Hello Ka',
             status: 'sdjjh',
             receiver: null
@@ -45,7 +44,6 @@ describe('Chat Repository', () => {
     it('Should get Chats by Username successfully', done => {
         let chat = new Chat();
         chat.sender = 'Trump'; //This is the username of the user who authored the chat
-        chat.target = ''
         chat.content = 'Hi there';
         chat.status = 'Not available';
         chat.receiver = null;
@@ -65,4 +63,28 @@ describe('Chat Repository', () => {
             }
         });
     })
+
+    it('Should get all successfully', done => {
+        let chat = new Chat();
+        chat.sender = 'Trump'; //This is the username of the user who authored the chat
+        chat.content = 'Hi there';
+        chat.status = 'Not available';
+        chat.receiver = null;
+
+        ChatRepository.saveChat(chat, (savedChat) => {
+            try {
+                ChatRepository.getAllChats((chats) => {
+                    try {
+                        expect(chats.length).toBeGreaterThan(0);
+                        done()
+                    } catch (error) {
+                        done.fail(error)
+                    }
+                })
+            } catch (error) {
+                done.fail(error)
+            }
+        });
+    })
+
 })
