@@ -8,7 +8,6 @@ exports.saveChat = (userData,callback) => {
 
     let user = new User();
     user.sender = userData.sender;
-    user.target = userData.target
     user.content = userData.content;
     user.status = userData.status;
     user.receiver = userData.receiver;
