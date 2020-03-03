@@ -80,5 +80,17 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+exports.updateUserStatus = async (req, res) => {
+    try {
+        const updatedUser = await User.updateOne(
+            { username: req.params.username },
+            { $set: { status: req.body.status } }
+        );
+        res.status(200).json({ message: "User updated" });
+    } catch (err) {
+        res.status(500).json({ message: err });
+    }
+};
+
 
 

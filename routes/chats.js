@@ -10,5 +10,7 @@ router.get('/:chatId', chatController.getChatByID);
 router.get('/:username', chatController.getChatsByUsername);
 router.delete('/:chatId', chatController.deleteChat);
 router.patch('/:chatId', chatController.updateChat);
+router.get('/:username1/:username2', chatController.getPrivateChats());
+
 
 module.exports = router;

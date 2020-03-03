@@ -56,3 +56,18 @@ exports.getChatsByUsername = (username,callback)=> {
     Chat.find({sender: username},callback1);
 
 }
+//a method to retrieve private chats from the database given username of the users .
+exports.getPrivateChats = (username1,username2,callback)=> {
+    let callback1 = (err, docs) => {
+
+        if (err) {
+            callback(null)
+        } else {
+            callback(docs)
+        }
+    }
+
+    Chat.find({$or: [ {sender: username1, receiver: username2}, {sender: username2, receiver: username1}]},callback1);
+
+
+}
