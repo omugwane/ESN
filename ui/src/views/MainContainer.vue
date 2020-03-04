@@ -69,7 +69,8 @@
                 // console.log("Disconnected")
             },
             newPublicChat(chat) {
-                eventBus.$emit('new-chat-message',chat)
+                this.notifyUser(chat)
+                eventBus.$emit('new-chat-message', chat)
             }
         },
         methods: {
@@ -78,6 +79,14 @@
                     window.$cookies.remove('user');
                     this.$router.push({name: 'login'});
                 }
+            },
+            notifyUser(chat) {
+                /*this.$notify({
+                    group: 'new',
+                    title: 'New chat',
+                    text: 'Received a new chat message from  ' + chat.sender
+                });*/
+                alert('Received a new chat message from  ' + chat.sender)
             }
         }
     }
@@ -147,6 +156,7 @@
                     font-size: 14px;
                     padding: 4px;
                 }
+
                 a {
                     color: $primary;
                 }
@@ -157,15 +167,17 @@
             margin-bottom: 8px;
             padding: 8px 16px;
             text-align: center;
-            button{
+
+            button {
                 border-radius: 8px;
                 padding: 4px 8px;
                 border: 1px solid $dark-5;
                 @media(max-width: 600px) {
                     font-size: 14px;
                 }
-                .btn-label{
-                    @media(max-width: 600px){
+
+                .btn-label {
+                    @media(max-width: 600px) {
                         display: none;
                     }
                 }

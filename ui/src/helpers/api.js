@@ -12,3 +12,4 @@ export const GET_ALL_USERS = baseUrl + 'users/';
 export const DELETE_USER = baseUrl + 'users/';
 export const UPDATE_USER = baseUrl + 'users/';
 export const REGISTER_USER = baseUrl + 'users/';
+export const UPDATE_USER_STATUS = baseUrl + 'users/status/';

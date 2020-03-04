@@ -1,17 +1,17 @@
 <template>
     <div id="chat-room">
         <div id="chats">
-            <div v-for="(chat,index) in chats"
-                 :key="index"
-                 :class="(chat.author === loggedInUsername)? 'sent-msg-box': 'received-msg-box'">
+            <div v-for="chat in chats"
+                 :key="chat._id"
+                 :class="(chat.sender === loggedInUsername)? 'sent-msg-box': 'received-msg-box'">
                 <div class="message"
-                     :class="(chat.author === loggedInUsername)? 'sent': 'received'">
+                     :class="(chat.sender === loggedInUsername)? 'sent': 'received'">
                     <div class="heading">
                         <div class="title">
-                            <h6 class="chat-owner">{{(chat.author === loggedInUsername)?
-                                'Me':`${chat.author}`}}</h6>
+                            <h6 class="chat-owner">{{(chat.sender === loggedInUsername)?
+                                'Me':`${chat.sender}`}}</h6>
                             <small class="citizen-status" :style="{color: getStatusColor(chat.status)}">
-                                Status: {{(chat.status.toUpperCase() === 'UNDEFINED') ? 'Not available':`${chat.status.toUpperCase()}`}}
+                                status: {{(chat.status.toUpperCase() === 'UNDEFINED') ? 'Not available':`${chat.status.toUpperCase()}`}}
                             </small>
                         </div>
                         <small>{{new Date()}}</small>
@@ -49,16 +49,20 @@
         created() {
             let user = this.$cookies.get('user')
             this.loggedInUsername = user.username;
-            this.getAllChats();
+
+            if (this.chatWithCitizen)
+                this.getPrivateChats()
+            else
+                this.getPublicChats();
         },
         mounted() {
             eventBus.$on('new-chat-message', (chat) => {
                 //Checking if the chat is from the citizen currently being chatted with
                 //and that the receiver is the loggedInUsername
-                if (chat && this.chatWithCitizen && this.chatWithCitizen.username === chat.sender && chat.receiver === this.loggedInUsername) {
-                    this.chats = this.chats.concat(data);
+                if (chat && this.chatWithCitizen && (chat.sender === this.chatWithCitizen.username || chat.sender === this.loggedInUsername)) {
+                    this.chats = this.chats.concat(chat);
                 } else if (chat && !chat.receiver) { //Checking if the chat is a public chat(Public chat has no receiver)
-                    this.chats = this.chats.concat(data);
+                    this.chats = this.chats.concat(chat);
                 }
             })
         },
@@ -77,13 +81,14 @@
             postChat() {
                 let vm = this;
                 let newChat = {
-                    author: vm.loggedInUsername,
-                    content: vm.newChat
+                    sender: vm.loggedInUsername,
+                    content: vm.newChat,
+                    receiver: null
                 }
                 if (vm.newChat.trim().length !== 0) {
                     vm.$http.post(api.SAVE_CHAT, newChat).then(() => {
                         // console.log(data)
-                        vm.chats = vm.chats.concat(newChat);
+                        // vm.chats = vm.chats.concat(newChat);
                         vm.newChat = ''
                     }).catch((err) => {
                         alert(err)
@@ -91,9 +96,17 @@
                 } else
                     alert("Can not post empty chat!")
             },
-            getAllChats() {
+            getPublicChats() {
                 let vm = this;
                 vm.$http.get(api.GET_ALL_CHATS).then(({data}) => {
+                    vm.chats = data.data
+                }).catch((err) => {
+                    alert(err)
+                })
+            },
+            getPrivateChats() {
+                let vm = this;
+                vm.$http.get(api.GET_ALL_CHATS + this.loggedInUsername + '/' + this.chatWithCitizen.username).then(({data}) => {
                     vm.chats = data.data
                 }).catch((err) => {
                     alert(err)

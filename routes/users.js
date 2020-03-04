@@ -9,6 +9,6 @@ router.get('/', userController.getAllUsers);
 // router.put('/:userId', userController.updateUser);
 router.post('/', userController.registerUser);
 router.post('/login', userController.login);
-router.put('/:username', userController.updateUserStatus);
+router.put('/status/:username', userController.updateUserStatus);
 
 module.exports = router;

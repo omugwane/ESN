@@ -12,9 +12,7 @@ module.exports.connect = async () => {
 
     const mongooseOpts = {
         useNewUrlParser: true,
-        autoReconnect: true,
-        reconnectTries: Number.MAX_VALUE,
-        reconnectInterval: 1000
+        useUnifiedTopology: true,
     };
 
     await mongoose.connect(uri, mongooseOpts);
@@ -69,6 +67,11 @@ const getDBUri = async (env) => {
 //Post conditions: development,test,production
 const getEnv = () => {
     let env = process.env.NODE_ENV || 'development';
+
+    if (env === 'test')
+        return env
+    else
+        return 'production'
     // console.log('process.env.NODE_ENV', env)
-    return env
+    // return env
 }

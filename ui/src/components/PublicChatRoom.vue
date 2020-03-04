@@ -5,7 +5,7 @@
 <script>
     import * as api from "../helpers/api";
     import ChatRoom from "./ChatRoom";
-    import {eventBus} from "../main";
+    // import {eventBus} from "../main";
 
     export default {
         name: "PublicChatRoom",

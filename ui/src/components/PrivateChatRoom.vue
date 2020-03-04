@@ -12,7 +12,7 @@
                 <ul>
                     <li v-for="citizen in citizens"
                         :key="citizen._id"
-                        @click="chatWithCitizen=citizen"
+                        @click="selectCitizenToChatWith(citizen)"
                         :class="(chatWithCitizen!==null && chatWithCitizen.username===citizen.username)? 'active':''">
                         <div class="heading">
                             <span>{{citizen.username}}</span> <span class="mdi mdi-chevron-right"/>
@@ -35,7 +35,7 @@
 <script>
     import * as api from "../helpers/api";
     import ChatRoom from "./ChatRoom";
-    import {eventBus} from "../main";
+    // import {eventBus} from "../main";
 
     export default {
         name: "PrivateChatRoom",
@@ -85,6 +85,11 @@
                 }).catch((err) => {
                     alert(err)
                 })
+            },
+            selectCitizenToChatWith(citizen) {
+                if (this.loggedInUsername === citizen.username)
+                    alert("Can't cha with oneself")
+                this.chatWithCitizen = citizen
             }
         }
     }
@@ -161,8 +166,10 @@
                 margin-top: 8px;
                 margin-left: 16px;
                 list-style: none;
+                height: calc(100vh - #{$header-height} - 81px);
                 max-height: calc(100vh - #{$header-height} - 81px);
                 overflow-y: auto;
+
 
                 @include scroll-bar;
 

@@ -58,6 +58,7 @@ exports.registerUser = (userData, callback) => {
     User.find({username: userData.username}, (err, users) => {
         if (users && users.length === 0) {
             user.save((err) => {
+                // console.log("registerUser", err)
                 if (err)
                     callback(null)
                 else
@@ -86,19 +87,33 @@ exports.getUserByUsername = (username, callback) => {
 //a method to update the status of a user. It takes a username, status
 //and a callback as parameters and returns 
 exports.updateUserStatus = async (username, status, callback) => {
-    // const filter = {username: username};
-    // const update = {status: status};
+    const filter = {username: username};
+    const update = {status: status};
 
-    User.findOne({username: username}, function (err, user) {
-        if (user) {
-            user.status = status;
-            user.save(function (err) {
-                // console.log("updateUserStatus err", err)
-                if (err)
-                    callback(null)
-                else
-                    callback(user)
-            })
-        }
-    })
+    await User.updateOne(filter, update);
+
+    const user = await User.findOneAndUpdate(
+        filter,
+        update,
+        // If `new` isn't true, `findOneAndUpdate()` will return the
+        // document as it was _before_ it was updated.
+        {new: true}
+    );
+    if (user)
+        callback(user)
+    else
+        callback(null)
+
+    /* User.findOne({username: username}, function (err, user) {
+         if (user) {
+             user.status = status;
+             user.save(function (err) {
+                 // console.log("updateUserStatus err", err)
+                 if (err)
+                     callback(null)
+                 else
+                     callback(user)
+             })
+         }
+     })*/
 }

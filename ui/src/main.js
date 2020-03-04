@@ -10,6 +10,7 @@ import './assets/bootstrap.scss'
 import '@mdi/font/css/materialdesignicons.css'
 import VueSocketIO from 'vue-socket.io';
 import vMediaQuery from 'v-media-query'
+import Notifications from 'vue-notification'
 
 const interceptors = require('./helpers/axiosInterceptors')
 
@@ -18,6 +19,7 @@ Vue.use(new VueSocketIO({
     connection: 'http://localhost:3000',
 }))
 Vue.use(vMediaQuery)
+Vue.use(Notifications)
 
 // Install BootstrapVue
 Vue.use(BootstrapVue)

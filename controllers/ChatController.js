@@ -1,7 +1,8 @@
 const Chat = require('../models/Chat');
-// const chatBroadcaster = require('../bin/www')
-const add = require('../app');
+// // const chatBroadcaster = require('../bin/www')
+// const App = require('../app');
 const chatRepository = require('../repositories/ChatRepository')
+const userRepository = require('../repositories/UserRepository')
 
 //a method to retrive all chats from the database. it does not take
 //any arguments. it call the chatRepository.getAllChats(callback) method
@@ -10,7 +11,7 @@ exports.getAllChats = function (req, res) {
     let callback = (docs) => {
 
         if (docs === null) {
-            res.status(500).json({ data: null });
+            res.status(500).json({data: null});
         } else {
             let responseObject = {
                 data: docs,
@@ -28,7 +29,7 @@ exports.getAllChats = function (req, res) {
 exports.getChatsByUsername = function (req, res) {
     let callback = (docs) => {
         if (docs === null) {
-            res.status(500).json({ data: null });
+            res.status(500).json({data: null});
         } else {
             let responseObject = {
                 data: docs,
@@ -47,7 +48,7 @@ exports.getPrivateChats = function (req, res) {
 
     let callback = (docs) => {
         if (docs === null) {
-            res.status(500).json({ data: null });
+            res.status(500).json({data: null});
         } else {
             let responseObject = {
                 data: docs,
@@ -61,28 +62,36 @@ exports.getPrivateChats = function (req, res) {
 //method to save chats to the database. it takes as arguments request and response 
 //objects and returns a jason object. it calls chatRepository.saveChat method.
 exports.saveChat = (req, res) => {
-    let chat = {
-        sender: req.body.sender,
-        content: req.body.content,
-        status: req.body.status,
-        receiver: req.body.receiver
-    }
+    userRepository.getUserByUsername(req.body.sender, (user) => {
+        if (user) {
+            let chat = {
+                sender: user.username,
+                content: req.body.content,
+                status: user.status,
+                receiver: req.body.receiver
+            }
 
-    if (chatRepository.saveChat(chat)) {
-        res.status(500).json(err);
-    } else {
-        res.status(200).json({ "message": "success", data: [] })
-    }
+            chatRepository.saveChat(chat, (newChat) => {
+                if (newChat) {
+                    chatBroadcaster.broadcast(newChat)
+                    res.status(200).json({message: "success", data: newChat})
+                } else
+                    res.status(500).json({message: "Saving the chat message failed", data: null});
+            })
+        } else {
+            res.status(500).json({message: "Saving the chat message failed", data: null});
+        }
+    })
 }
 
 
 //delete a chat
 exports.deleteChat = async (req, res) => {
     try {
-        const deletedMessage = Chat.remove({ _id: req.params.chatId });
-        res.status(200).json({ message: "Chat deleted successfully" });
+        const deletedMessage = Chat.remove({_id: req.params.chatId});
+        res.status(200).json({message: "Chat deleted successfully"});
     } catch (err) {
-        res.status(500).json({ message: err });
+        res.status(500).json({message: err});
     }
 };
 
@@ -90,12 +99,12 @@ exports.deleteChat = async (req, res) => {
 exports.updateChat = async (req, res) => {
     try {
         const updatedMessage = await Chat.updateOne(
-            { _id: req.params.chatId },
-            { $set: { content: req.body.content } }
+            {_id: req.params.chatId},
+            {$set: {content: req.body.content}}
         );
-        res.status(200).json({ message: "chat updated" });
+        res.status(200).json({message: "chat updated"});
     } catch (err) {
-        res.status(500).json({ message: err });
+        res.status(500).json({message: err});
     }
 };
 

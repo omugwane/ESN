@@ -7,6 +7,10 @@
                     v-for="citizen in citizens" :key="citizen.username">
                     <div class="citizen-names">
                         {{citizen.username}} <span v-if="citizen.firstName.trim()!==''">({{citizen.firstName+ ', '+citizen.lastName}})</span>
+
+                        <small class="citizen-status" :style="{color: getStatusColor(citizen.status)}">
+                            (status: {{(citizen.status.toUpperCase() === 'UNDEFINED') ? 'Not available':`${citizen.status.toUpperCase()}`}})
+                        </small>
                     </div>
                     <div class="citizen-details">
                         <small><span class="mdi mdi-email"/> {{citizen.email}}</small> <small><span
@@ -24,6 +28,7 @@
 
 <script>
     import * as api from '../helpers/api'
+    import {STATUSES} from "../helpers/statuses";
 
     export default {
         name: "AllCitizens",
@@ -36,6 +41,9 @@
             }
         },
         methods: {
+            getStatusColor(status) {
+                return STATUSES[status.toUpperCase()].colorCode
+            },
             getAllCitizens() {
                 let vm = this;
                 vm.$http.get(api.GET_ALL_USERS).then(({data}) => {
@@ -119,6 +127,10 @@
             @media (min-width: 600px) {
                 margin-left: 16px;
             }
+        }
+        .citizen-status {
+            margin-left: 8px;
+            font-size: 12px;
         }
     }
 </style>
