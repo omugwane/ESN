@@ -51,13 +51,13 @@ describe('User Repository', () => {
             email: 'email',
             phone: 'phone',
             role: 'Citizen',
-            status: 'OK',
+            status: 'OK'
         }
-        UserRepository.registerUser(user, (savedUser) => {
+        UserRepository.registerUser(user, (result) => {
             try {
                 UserRepository.getUserByUsername(user.username, (users) => {
                     try {
-                        // expect(users.length).toBeGreaterThan(0);
+                        expect(user.username).not.toBe(null);
                         done()
                     } catch (error) {
                         done.fail(error)
