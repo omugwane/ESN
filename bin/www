@@ -4,8 +4,7 @@
  * Module dependencies.
  */
 
-const App = require('../app');
-const app = App.app;
+const app = require('../app');
 const debug = require('debug')('s20-esn-rw1:server');
 const http = require('http');
 
@@ -29,7 +28,7 @@ const io = require('socket.io')(server);
 /**
  * Test if the socket io server is listening to incoming connections
  */
-App.chatBroadcaster.setChannel(io)
+chatBroadcaster.setChannel(io)
 // io.on('connection', (socket) => {
 //     // console.log('a user is connected', socket)
 //     App.chatBroadcaster.subscribe(socket);
