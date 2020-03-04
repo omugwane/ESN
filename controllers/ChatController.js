@@ -10,7 +10,7 @@ exports.getAllChats = function (req, res) {
     let callback=(docs)  => {
 
         if (docs===null) {
-            res.status(500).json({data: Null});
+            res.status(500).json({data: null});
         } else {
             let responseObject = {
                 data: docs,
@@ -80,21 +80,6 @@ exports.saveChat = (req, res) => {
         res.status(200).json(responseObject);
 
     }
-}
-
-//get chat by id
-exports.getChatByID = function (req, res) {
-    Chat.findById(req.params.chatId, (err, doc) => {
-        console.log(doc);
-        if (err) {
-            res.status(404).json({data: Null});
-        } else {
-            let responseObject = {
-                data: doc,
-            }
-            res.status(200).json(responseObject);
-        }
-    });
 }
 
 
