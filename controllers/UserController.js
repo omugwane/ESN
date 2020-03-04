@@ -88,15 +88,15 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.updateUserStatus = async (req, res) => {
-    userRepository.updateUserStatus(req.params.username, req.body.status, function (user) {
+    await userRepository.updateUserStatus(req.params.username, req.body.status, function (user) {
         if (user) {
             res.status(200).json({message: "success", data: user})
+        } else {
+            res.status(500).json({
+                message: "Updating user status failed. It might be that the username is incorrect",
+                data: null
+            });
         }
-
-        res.status(500).json({
-            message: "Updating user status failed. It might be that the username is incorrect",
-            data: null
-        });
     })
 };
 

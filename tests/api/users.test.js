@@ -52,7 +52,6 @@ describe('user routes', () => {
                 request(app).post('/users/login').send({username: userForTest.username, password: userForTest.password})
                     .then((response) => {
                         try {
-                            console.log("Login ", response.body)
                             expect(response.statusCode).toBe(200);
                             done();
                         } catch (e) {
@@ -66,12 +65,16 @@ describe('user routes', () => {
     });
 
     it("Should update a user's status", (done) => {
-        request(app).put('/users/me')
-            .send({status: 'Help'}).then((response) => {
+        request(app).post('/users').send(userForTest).then((response) => {
             try {
-                console.log("Update user status:  ", response.body)
-                expect(response.statusCode).toBe(200);
-                done();
+                request(app).put('/users/' + userForTest.username).send({status: 'Help'}).then((response) => {
+                    try {
+                        expect(response.statusCode).toBe(200);
+                        done();
+                    } catch (e) {
+                        done.fail(e);
+                    }
+                });
             } catch (e) {
                 done.fail(e);
             }

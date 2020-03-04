@@ -18,6 +18,7 @@ module.exports.connect = async () => {
     };
 
     await mongoose.connect(uri, mongooseOpts);
+    // mongoose.set('debug', true)
 
     mongoose.connection.once('open', function () {
         console.log("Connected to MongoDB");
@@ -57,7 +58,7 @@ const getDBUri = async (env) => {
         mongod = new MongoMemoryServer()
         // let uri = await mongod.getConnectionString();
         const uri = await mongod.getUri();
-        console.log("mongod.getUri()", uri)
+        // console.log("mongod.getUri()", uri)
         return uri;
     } else {
         return configDB[env].url;
@@ -68,6 +69,6 @@ const getDBUri = async (env) => {
 //Post conditions: development,test,production
 const getEnv = () => {
     let env = process.env.NODE_ENV || 'development';
-    console.log('process.env.NODE_ENV', env)
+    // console.log('process.env.NODE_ENV', env)
     return env
 }

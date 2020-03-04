@@ -85,11 +85,15 @@ exports.getUserByUsername = (username, callback) => {
 
 //a method to update the status of a user. It takes a username, status
 //and a callback as parameters and returns 
-exports.updateUserStatus = (username, status, callback) => {
+exports.updateUserStatus = async (username, status, callback) => {
+    // const filter = {username: username};
+    // const update = {status: status};
+
     User.findOne({username: username}, function (err, user) {
         if (user) {
             user.status = status;
             user.save(function (err) {
+                // console.log("updateUserStatus err", err)
                 if (err)
                     callback(null)
                 else
