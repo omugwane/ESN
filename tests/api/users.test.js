@@ -1,5 +1,17 @@
 const request = require('supertest');
 const app = require('../../app').app;
+const dbHandler = require('../../config/db-handler');
+
+/**
+ * Clear all test data after every test.
+ */
+afterEach(async () => await dbHandler.clearDatabase());
+
+/**
+ * Remove and close the db and server.
+ */
+afterAll(async () => await dbHandler.closeDatabase());
+
 
 describe('user routes', () => {
     it('Should get all users', (done) => {
@@ -50,7 +62,7 @@ describe('user routes', () => {
         });
     });
 
-    it('Should update a user\'s status', (done) => {
+    it("Should update a user's status", (done) => {
         request(app).put('/users/me')
             .send({status: 'Help'}).then((response) => {
             try {

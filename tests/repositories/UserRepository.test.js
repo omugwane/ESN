@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 let UserRepository = require('../../repositories/UserRepository')
 let User = require('../../models/User');
-const dbHandler = require('./../db-handler');
+const dbHandler = require('../../config/db-handler');
 
 
 /**

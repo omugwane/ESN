@@ -15,7 +15,8 @@ exports.registerUser = function (req, res) {
         lastName: req.body.lastName,
         email: req.body.email,
         phone: req.body.phone,
-        role: Roles.CITIZEN
+        role: Roles.CITIZEN,
+        status: req.body.status
     }
 
     userRepository.registerUser(user, (savedUser) => {

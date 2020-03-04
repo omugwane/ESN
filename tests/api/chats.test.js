@@ -1,8 +1,17 @@
 const request = require('supertest');
 const app = require('../../app').app;
+const dbHandler = require('../../config/db-handler');
 
-// app.use('/users', usersRouter);
-// app.use('/chats', chatsRouter);
+/**
+ * Clear all test data after every test.
+ */
+afterEach(async () => await dbHandler.clearDatabase());
+
+/**
+ * Remove and close the db and server.
+ */
+afterAll(async () => await dbHandler.closeDatabase());
+
 
 describe('Chats routes', () => {
     test('Should get all saved public chats', (done) => {

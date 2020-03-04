@@ -1,5 +1,5 @@
 let Chat = require('../../models/Chat')
-const dbHandler = require('./../db-handler');
+const dbHandler = require('../../config/db-handler');
 
 
 /**
