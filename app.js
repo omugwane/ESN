@@ -95,4 +95,4 @@ console.log("App.js is running")
 let ChatBroadcaster = require('./lib/ChatBroadcaster')
 chatBroadcaster = new ChatBroadcaster();
 
-module.exports = {app: app, chatBroadcaster: chatBroadcaster};
+module.exports = app;
