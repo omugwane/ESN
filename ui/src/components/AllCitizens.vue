@@ -7,6 +7,10 @@
                     v-for="citizen in citizens" :key="citizen.username">
                     <div class="citizen-names">
                         {{citizen.username}} <span v-if="citizen.firstName.trim()!==''">({{citizen.firstName+ ', '+citizen.lastName}})</span>
+
+                        <small class="citizen-status" :style="{color: getStatusColor(citizen.status)}">
+                            (status: {{(citizen.status.toUpperCase() === 'UNDEFINED') ? 'Not available':`${citizen.status.toUpperCase()}`}})
+                        </small>
                     </div>
                     <div class="citizen-details">
                         <small><span class="mdi mdi-email"/> {{citizen.email}}</small> <small><span
@@ -24,6 +28,7 @@
 
 <script>
     import * as api from '../helpers/api'
+    import {STATUSES} from "../helpers/statuses";
 
     export default {
         name: "AllCitizens",
@@ -36,6 +41,9 @@
             }
         },
         methods: {
+            getStatusColor(status) {
+                return STATUSES[status.toUpperCase()].colorCode
+            },
             getAllCitizens() {
                 let vm = this;
                 vm.$http.get(api.GET_ALL_USERS).then(({data}) => {
@@ -51,18 +59,23 @@
 <style lang="scss" scoped>
     @import "../assets/sizes";
 
-    .wrapper {
-        /*min-height: calc(100vh - #{$header-height});*/
-    }
-
     .citizens-list-wrapper {
         margin: 16px;
-        overflow-y: auto;
+
         @media (min-width: 601px) {
             margin: 16px 20%;
         }
         @media (max-width: 600px) {
             margin: 8px 16px;
+        }
+
+        .wrapper {
+            overflow-y: auto;
+            max-height: calc(100vh - #{$header-height} - 112px);
+
+            .list-group-item {
+                padding: 4px 8px !important;
+            }
         }
 
         .list-group-item {
@@ -88,24 +101,36 @@
         .citizen-names {
             font-size: 1.3em;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            text-transform: capitalize;
 
             span {
                 font-size: 0.8em;
                 font-style: italic;
             }
+
+            @media (max-width: 600px) {
+                font-size: 12px;
+                span {
+                    /*display: none;*/
+                }
+            }
         }
 
         .citizen-details {
             @media (max-width: 600px) {
+                display: none;
                 margin-left: 0px;
                 small {
-                    display: block!important;
+                    display: block !important;
                 }
             }
             @media (min-width: 600px) {
                 margin-left: 16px;
             }
         }
-
+        .citizen-status {
+            margin-left: 8px;
+            font-size: 12px;
+        }
     }
 </style>

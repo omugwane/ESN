@@ -1,21 +1,29 @@
 <template>
     <div id="private-chat-room">
-        <div id="citizens-list">
-            <h6 class="title">All Citizens</h6>
-            <ul>
-                <li v-for="citizen in citizens"
-                    :key="citizen._id"
-                    @click="chatWithCitizen=citizen"
-                    :class="(chatWithCitizen!==null && chatWithCitizen.username===citizen.username)? 'active':''">
-                    <div class="heading">
-                        <span>{{citizen.username}}</span> <span class="mdi mdi-chevron-right"/>
-                    </div>
-                    <!--                    <div class="latest-message">-->
-                    <!--                        sma-->
-                    <!--                    </div>-->
-                    <small>Status: </small>
-                </li>
-            </ul>
+        <div class="side-list">
+            <button @click="toggleCitizensList"
+                    id="btn-toggle-citizens-list"
+                    type="button"
+                    v-show="$mq.below(600)">
+                <span class="mdi mdi-account-details-outline"></span>
+            </button>
+            <div :class="(!showCitizensList)? 'hidden':''" id="citizens-list">
+                <h6 class="title">All Citizens</h6>
+                <ul>
+                    <li v-for="citizen in citizens"
+                        :key="citizen._id"
+                        @click="selectCitizenToChatWith(citizen)"
+                        :class="(chatWithCitizen!==null && chatWithCitizen.username===citizen.username)? 'active':''">
+                        <div class="heading">
+                            <span>{{citizen.username}}</span> <span class="mdi mdi-chevron-right"/>
+                        </div>
+                        <!--                    <div class="latest-message">-->
+                        <!--                        sma-->
+                        <!--                    </div>-->
+                        <small>Status: </small>
+                    </li>
+                </ul>
+            </div>
         </div>
         <ChatRoom v-if="chatWithCitizen" :chat-with-citizen="chatWithCitizen" class="chat-room"/>
         <div v-else class="chat-room no-citizen-selected">
@@ -27,6 +35,7 @@
 <script>
     import * as api from "../helpers/api";
     import ChatRoom from "./ChatRoom";
+    // import {eventBus} from "../main";
 
     export default {
         name: "PrivateChatRoom",
@@ -34,13 +43,41 @@
         created() {
             this.getAllCitizens()
         },
+        mounted() {
+            /*eventBus.$on('new-chat-message', (chat) => {
+                //Checking if the chat is from the citizen currently being chatted with
+                //and that the receiver is the loggedInUsername
+                if (chat && this.chatWithCitizen && this.chatWithCitizen.username === chat.sender && chat.receiver === this.loggedInUsername) {
+                    // this.chats = this.chats.concat(data);
+                }
+            })*/
+        },
         data() {
             return {
                 citizens: [],
-                chatWithCitizen: null
+                loggedInUsername: '',
+                chatWithCitizen: null, // The user whom to chat with
+                showCitizensList: true, //This variable shows or hides the list of citizens to chat with for UI responsiveness
             }
         },
+        watch: {
+            '$mq.resize': 'screenResize'
+        },
         methods: {
+            toggleCitizensList() {
+                if (this.$mq.below(600)) {
+                    this.showCitizensList = !this.showCitizensList
+                } else
+                    this.screenResize();
+
+            },
+            screenResize() {
+                if (this.$mq.below(600)) {
+                    this.showCitizensList = false;
+                } else {
+                    this.showCitizensList = true;
+                }
+            },
             getAllCitizens() {
                 let vm = this;
                 vm.$http.get(api.GET_ALL_USERS).then(({data}) => {
@@ -48,6 +85,11 @@
                 }).catch((err) => {
                     alert(err)
                 })
+            },
+            selectCitizenToChatWith(citizen) {
+                if (this.loggedInUsername === citizen.username)
+                    alert("Can't cha with oneself")
+                this.chatWithCitizen = citizen
             }
         }
     }
@@ -61,12 +103,45 @@
 
     #private-chat-room {
         display: flex;
+        position: relative;
+
+        #btn-toggle-citizens-list {
+            display: block;
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            border-bottom-right-radius: 16px;
+            border-top: none;
+            border-left: none;
+            border-bottom: 1px solid transparent;
+            border-right: 1px solid transparent;
+            box-shadow: 3px 2px 4px -2px $dark-5;
+            outline: none;
+        }
+
+        .side-list {
+            width: 20%;
+
+            @media (max-width: 600px) {
+                width: auto;
+                z-index: 1;
+                background-color: $primary;
+            }
+        }
 
         #citizens-list {
-            width: 20%;
             padding: 8px;
             box-shadow: 3px 2px 4px -2px $dark-5;
             margin-right: 5px;
+            @media (max-width: 600px) {
+                width: 232px;
+                box-shadow: none;
+            }
+
+            &.hidden {
+                display: none;
+            }
+
 
             & > .title {
                 font-family: $titleFontFamily;
@@ -91,8 +166,10 @@
                 margin-top: 8px;
                 margin-left: 16px;
                 list-style: none;
+                height: calc(100vh - #{$header-height} - 81px);
                 max-height: calc(100vh - #{$header-height} - 81px);
                 overflow-y: auto;
+
 
                 @include scroll-bar;
 
@@ -121,6 +198,10 @@
 
         .chat-room {
             width: 80%;
+            @media (max-width: 600px) {
+                width: 100%;
+                margin: 0 -24px;
+            }
 
             &.no-citizen-selected {
                 display: flex;
@@ -129,6 +210,11 @@
                 font-family: $titleFontFamily;
                 font-size: 2rem;
                 font-weight: 200;
+                @media(max-width: 600px) {
+                    margin-top: 80px;
+                    font-size: 1rem;
+                    text-align: center;
+                }
             }
         }
     }

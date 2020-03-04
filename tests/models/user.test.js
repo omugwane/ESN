@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 let User = require('../../models/User');
 // let DB = require('../../config/DB')
 // let Chat = require('../../models/Chat')
-const dbHandler = require('./../db-handler');
+const dbHandler = require('../../config/db-handler');
 /**
  * Connect to a new in-memory database before running any tests.
  */

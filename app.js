@@ -7,7 +7,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const configDB = require('./config/DB');
+// const configDB = require('./config/DB');
+const dbHandler = require('./config/db-handler');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -17,25 +18,25 @@ const jwt = require('jsonwebtoken');
 let app = express();
 
 // Set up the database
-const env = process.env.NODE_ENV || 'development';
-const dbConfig = configDB[env];
-
-// console.log("Config ", configDB[process.env.NODE_ENV])
+dbHandler.connect();
+// const env = process.env.NODE_ENV || 'development';
+// const dbConfig = configDB[env];
 // mongoose.connect(dbConfig.url);
-mongoose.connect(configDB.production.url);
-let db = mongoose.connection;
 
-// Check connection
-db.once('open', function () {
-    console.log("Connected to MongoDB");
-});
+// console.log("Env ", env)
+// console.log("dbConfig.url ", dbConfig.url)
 
-// Check DB errors
-db.on('error', function (err) {
-    console.log(err);
-});
-
-const port = process.env.PORT || 3000;
+// let db = mongoose.connection;
+//
+// // Check connection
+// db.once('open', function () {
+//     console.log("Connected to MongoDB");
+// });
+//
+// // Check DB errors
+// db.on('error', function (err) {
+//     console.log(err);
+// });
 
 // view engine setup
 app.set('views', __dirname + '/views');
@@ -57,7 +58,7 @@ app.use(cors({origin: '*'}));
 
 
 app.use('/users', usersRouter);
-app.use('/chats', validateUser, chatsRouter);
+app.use('/chats', chatsRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler

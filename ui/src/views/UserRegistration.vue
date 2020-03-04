@@ -85,6 +85,7 @@
                     lastName: this.lastName,
                     email: this.email,
                     phone: this.phone,
+                    status: 'Undefined'
                 }
 
                 if (vm.username.trim().length > 0 && vm.password.trim().length > 0) {

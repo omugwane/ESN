@@ -1,17 +1,17 @@
 const Chat = require('../models/Chat');
-// const chatBroadcaster = require('../bin/www')
-const add = require('../app');
+// // const chatBroadcaster = require('../bin/www')
+// const App = require('../app');
 const chatRepository = require('../repositories/ChatRepository')
+const userRepository = require('../repositories/UserRepository')
 
 //a method to retrive all chats from the database. it does not take
 //any arguments. it call the chatRepository.getAllChats(callback) method
 exports.getAllChats = function (req, res) {
 
-    let callback=(docs)  => {
+    let callback = (docs) => {
 
-        if (docs===null) {
-
-            res.status(500).json({data: Null});
+        if (docs === null) {
+            res.status(500).json({data: null});
         } else {
             let responseObject = {
                 data: docs,
@@ -27,61 +27,61 @@ exports.getAllChats = function (req, res) {
 //response and request object as arguments and returns a jason object of the retrived
 //chats. it call chatRepository.getChatsByUsername(filter,callback) method
 exports.getChatsByUsername = function (req, res) {
-    let filter = {
-        author: req.params.username
-    }
-    let callback=(docs)=>{
-        if(docs===null){
-            res.status(500).json({data: Null});
-        }else{
+    let callback = (docs) => {
+        if (docs === null) {
+            res.status(500).json({data: null});
+        } else {
             let responseObject = {
                 data: docs,
             }
             res.status(200).json(responseObject);
         }
     }
-    chatRepository.getChatsByUsername(filter,callback)
+    chatRepository.getChatsByUsername(req.params.username, callback)
+}
+
+exports.getPrivateChats = function (req, res) {
+
+    let username1 = req.params.username1;
+    let username2 = req.params.username2;
+
+
+    let callback = (docs) => {
+        if (docs === null) {
+            res.status(500).json({data: null});
+        } else {
+            let responseObject = {
+                data: docs,
+            }
+            res.status(200).json(responseObject);
+        }
+    }
+    chatRepository.getPrivateChats(username1, username2, callback)
 }
 
 //method to save chats to the database. it takes as arguments request and response 
 //objects and returns a jason object. it calls chatRepository.saveChat method.
 exports.saveChat = (req, res) => {
-    let chat = {
-        author: req.body.author,
-        target: req.body.target,
-        content: req.body.content,
-        status: req.body.status,
-        receiver: req.body.receiver
-    }
-    if(docs===null){
-        res.status(500).json({data: Null});
-    }else{
-        let responseObject = {
-            data: docs,
-        }
-        res.status(200).json(responseObject);
-    }
-    /*if (chatRepository.saveChat(chat)) {
-        res.status(500).json(err);
-    } else {
-        chatBroadcaster.broadcast(chat)
-        res.status(200).json({"message": "success", data: []})
-    }*/
-}
-
-//get chat by id
-exports.getChatByID = function (req, res) {
-    Chat.findById(req.params.chatId, (err, doc) => {
-        console.log(doc);
-        if (err) {
-            res.status(404).json({data: Null});
-        } else {
-            let responseObject = {
-                data: doc,
+    userRepository.getUserByUsername(req.body.sender, (user) => {
+        if (user) {
+            let chat = {
+                sender: user.username,
+                content: req.body.content,
+                status: user.status,
+                receiver: req.body.receiver
             }
-            res.status(200).json(responseObject);
+
+            chatRepository.saveChat(chat, (newChat) => {
+                if (newChat) {
+                    chatBroadcaster.broadcast(newChat)
+                    res.status(200).json({message: "success", data: newChat})
+                } else
+                    res.status(500).json({message: "Saving the chat message failed", data: null});
+            })
+        } else {
+            res.status(500).json({message: "Saving the chat message failed", data: null});
         }
-    });
+    })
 }
 
 
@@ -107,3 +107,4 @@ exports.updateChat = async (req, res) => {
         res.status(500).json({message: err});
     }
 };
+

@@ -1,9 +1,7 @@
-const mongoose = require('mongoose')
 let ChatRepository = require('../../repositories/ChatRepository')
-// let DB = require('../../config/DB')
 let Chat = require('../../models/Chat')
 
-const dbHandler = require('./../db-handler');
+const dbHandler = require('../../config/db-handler');
 
 
 /**
@@ -25,8 +23,7 @@ afterAll(async () => await dbHandler.closeDatabase());
 describe('Chat Repository', () => {
     it('Should save a chat successfully', done => {
         let chat = {
-            author: 'kaka',
-            target: '',
+            sender: 'kaka',
             content: 'Hello Ka',
             status: 'sdjjh',
             receiver: null
@@ -34,7 +31,7 @@ describe('Chat Repository', () => {
 
         ChatRepository.saveChat(chat, (result) => {
             try {
-                expect(result.author).toBe(chat.author)
+                expect(result.sender).toBe(chat.sender)
                 done()
             } catch (error) {
                 done.fail(error)
@@ -44,15 +41,14 @@ describe('Chat Repository', () => {
 
     it('Should get Chats by Username successfully', done => {
         let chat = new Chat();
-        chat.author = 'Trump'; //This is the username of the user who authored the chat
-        chat.target = ''
+        chat.sender = 'Trump'; //This is the username of the user who authored the chat
         chat.content = 'Hi there';
         chat.status = 'Not available';
         chat.receiver = null;
 
         ChatRepository.saveChat(chat, (savedChat) => {
             try {
-                ChatRepository.getChatsByUsername(chat.author, (chats) => {
+                ChatRepository.getChatsByUsername(chat.sender, (chats) => {
                     try {
                         expect(chats.length).toBeGreaterThan(0);
                         done()
@@ -65,4 +61,82 @@ describe('Chat Repository', () => {
             }
         });
     })
+
+    it('Should get all successfully', done => {
+        let chat = new Chat();
+        chat.sender = 'Trump'; //This is the username of the user who authored the chat
+        chat.content = 'Hi there';
+        chat.status = 'Not available';
+        chat.receiver = null;
+
+        ChatRepository.saveChat(chat, (savedChat) => {
+            try {
+                ChatRepository.getAllChats((chats) => {
+                    try {
+                        expect(chats.length).toBeGreaterThan(0);
+                        done()
+                    } catch (error) {
+                        done.fail(error)
+                    }
+                })
+            } catch (error) {
+                done.fail(error)
+            }
+        });
+    })
+    it('Should get 0 public chats if all the saved chats are private', done => {
+        let chat = new Chat();
+        chat.sender = 'Trump'; //This is the username of the user who authored the chat
+        chat.content = 'Hi there';
+        chat.status = 'Not available';
+        chat.receiver = 'Donald';
+
+        ChatRepository.saveChat(chat, (savedChat) => {
+            try {
+                ChatRepository.getAllChats((chats) => {
+                    try {
+                        expect(chats.length).toBe(0);
+                        done()
+                    } catch (error) {
+                        done.fail(error)
+                    }
+                })
+            } catch (error) {
+                done.fail(error)
+            }
+        });
+    })
+    it('Should get all private chats successfully betwween two users', (done) => {
+        let chat = new Chat();
+        chat.sender = 'Laurette';
+        chat.content = 'Hey';
+        chat.status = 'Undefined';
+        chat.receiver = 'Baptiste';
+
+        let chat1 = new Chat();
+        chat.sender = 'Baptiste';
+        chat.content = 'How are you?';
+        chat.status = 'Undefined';
+        chat.receiver = 'Laurette';
+
+        chat.save((err1) => {
+            // console.log("Chat 1 error",err1)
+            chat1.save((err2) => {
+                try {
+                    ChatRepository.getPrivateChats('Baptiste','Laurette',(chats) => {
+                        try {
+                            // console.log(chats)
+                            // expect(chats.length).toBe(2);
+                            done()
+                        } catch (error) {
+                            done.fail(error)
+                        }
+                    })
+                } catch (error) {
+                    done.fail(error)
+                }
+            });
+        });
+    })
+
 })

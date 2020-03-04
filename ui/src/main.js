@@ -8,8 +8,9 @@ import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 // import * as VeeValidate from 'vee-validate'
 import './assets/bootstrap.scss'
 import '@mdi/font/css/materialdesignicons.css'
-
 import VueSocketIO from 'vue-socket.io';
+import vMediaQuery from 'v-media-query'
+import Notifications from 'vue-notification'
 
 const interceptors = require('./helpers/axiosInterceptors')
 
@@ -17,6 +18,8 @@ Vue.use(new VueSocketIO({
     debug: true,
     connection: 'http://localhost:3000',
 }))
+Vue.use(vMediaQuery)
+Vue.use(Notifications)
 
 // Install BootstrapVue
 Vue.use(BootstrapVue)
@@ -40,6 +43,10 @@ router.beforeEach((to, from, next) => {
     }
     next();
 })
+
+//This eventBus is a message passing channel where components can subscribe to receive
+//particular event or publish event for other to listen for
+export const eventBus = new Vue();
 
 Vue.config.productionTip = false
 

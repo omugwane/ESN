@@ -5,6 +5,7 @@
 <script>
     import * as api from "../helpers/api";
     import ChatRoom from "./ChatRoom";
+    // import {eventBus} from "../main";
 
     export default {
         name: "PublicChatRoom",
@@ -14,6 +15,14 @@
             this.loggedInUsername = user.username;
             // this.getAllChats();
         },
+        mounted() {
+            /*eventBus.$on('new-chat-message', (chat) => {
+                if (chat && chat.sender !== this.loggedInUsername) {
+                    // console.log("SocketIO data", data)
+                    this.chats = this.chats.concat(data);
+                }
+            })*/
+        },
         data() {
             return {
                 loading: false,
@@ -22,27 +31,11 @@
                 chats: []
             }
         },
-        sockets: {
-            connect() {
-                // console.log("Connected")
-            },
-
-            disconnect() {
-                // console.log("Disconnected")
-            },
-            newPublicChat(data) {
-                if (data.author !== this.loggedInUsername) {
-                    // console.log("SocketIO data", data)
-                    this.chats = this.chats.concat(data);
-                }
-            }
-        },
         methods: {
             postChat() {
                 let vm = this;
                 let newChat = {
                     author: vm.loggedInUsername,
-                    target: '',
                     content: vm.newChat
                 }
                 if (vm.newChat.trim().length !== 0) {
