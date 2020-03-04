@@ -12,6 +12,16 @@ afterEach(async () => await dbHandler.clearDatabase());
  */
 afterAll(async () => await dbHandler.closeDatabase());
 
+const userForTest = {
+    username: 'me',
+    password: '1234',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    email: 'email',
+    phone: 'phone',
+    role: 'Citizen',
+    status: 'OK'
+}
 
 describe('user routes', () => {
     it('Should get all users', (done) => {
@@ -26,19 +36,8 @@ describe('user routes', () => {
     });
 
     it('Should save a user', (done) => {
-        request(app).post('/users')
-            .send({
-                username: 'me',
-                password: '1234',
-                firstName: 'firstName',
-                lastName: 'lastName',
-                email: 'email',
-                phone: 'phone',
-                role: 'Citizen',
-                status: 'OK'
-            }).then((response) => {
+        request(app).post('/users').send(userForTest).then((response) => {
             try {
-                console.log("Saving user", response.body)
                 expect(response.statusCode).toBe(200);
                 done();
             } catch (e) {
@@ -48,14 +47,18 @@ describe('user routes', () => {
     });
 
     it('Should log a user into the application', (done) => {
-        request(app).post('/users/login').send({
-            username: 'me',
-            password: '1234'
-        }).then((response) => {
+        request(app).post('/users').send(userForTest).then((response) => {
             try {
-                console.log("Login ", response.body)
-                expect(response.statusCode).toBe(200);
-                done();
+                request(app).post('/users/login').send({username: userForTest.username, password: userForTest.password})
+                    .then((response) => {
+                        try {
+                            console.log("Login ", response.body)
+                            expect(response.statusCode).toBe(200);
+                            done();
+                        } catch (e) {
+                            done.fail(e);
+                        }
+                    });
             } catch (e) {
                 done.fail(e);
             }
