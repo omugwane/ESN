@@ -7,7 +7,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const configDB = require('./config/DB');
+// const configDB = require('./config/DB');
+const dbHandler = require('./config/db-handler');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -17,24 +18,25 @@ const jwt = require('jsonwebtoken');
 let app = express();
 
 // Set up the database
-const env = process.env.NODE_ENV || 'development';
-const dbConfig = configDB[env];
-mongoose.connect(dbConfig.url);
+dbHandler.connect();
+// const env = process.env.NODE_ENV || 'development';
+// const dbConfig = configDB[env];
+// mongoose.connect(dbConfig.url);
 
-console.log("Env ", env)
-console.log("dbConfig.url ", dbConfig.url)
+// console.log("Env ", env)
+// console.log("dbConfig.url ", dbConfig.url)
 
-let db = mongoose.connection;
-
-// Check connection
-db.once('open', function () {
-    console.log("Connected to MongoDB");
-});
-
-// Check DB errors
-db.on('error', function (err) {
-    console.log(err);
-});
+// let db = mongoose.connection;
+//
+// // Check connection
+// db.once('open', function () {
+//     console.log("Connected to MongoDB");
+// });
+//
+// // Check DB errors
+// db.on('error', function (err) {
+//     console.log(err);
+// });
 
 // view engine setup
 app.set('views', __dirname + '/views');
