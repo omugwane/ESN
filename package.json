@@ -6,8 +6,11 @@
   "scripts": {
     "start": "node ./bin/www",
     "devStart": "node ./bin/www",
-    "start-watch": "nodemon ./app.js",
     "test": "jest"
+  },
+  "engines" : {
+    "node" : "12.14.0",
+    "npm": "6.x"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
