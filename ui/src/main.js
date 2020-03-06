@@ -11,12 +11,13 @@ import '@mdi/font/css/materialdesignicons.css'
 import VueSocketIO from 'vue-socket.io';
 import vMediaQuery from 'v-media-query'
 import Notifications from 'vue-notification'
+import {baseUrl} from './helpers/api'
 
 const interceptors = require('./helpers/axiosInterceptors')
 
 Vue.use(new VueSocketIO({
     debug: true,
-    connection: 'http://localhost:3000',
+    connection: baseUrl,
 }))
 Vue.use(vMediaQuery)
 Vue.use(Notifications)
