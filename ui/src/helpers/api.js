@@ -1,4 +1,4 @@
-let baseUrl = 'http://localhost:3000/'
+let baseUrl = '/'
 export const LOGIN = baseUrl + 'users/login';
 
 export const GET_ALL_CHATS = baseUrl + 'chats/';
