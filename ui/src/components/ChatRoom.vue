@@ -11,7 +11,8 @@
                             <h6 class="chat-owner">{{(chat.sender === loggedInUsername)?
                                 'Me':`${chat.sender}`}}</h6>
                             <small class="citizen-status" :style="{color: getStatusColor(chat.status)}">
-                                status: {{(chat.status.toUpperCase() === 'UNDEFINED') ? 'Not available':`${chat.status.toUpperCase()}`}}
+                                status: {{(chat.status.toUpperCase() === 'UNDEFINED') ? 'Not
+                                available':`${chat.status.toUpperCase()}`}}
                             </small>
                         </div>
                         <small>{{new Date()}}</small>
@@ -80,10 +81,16 @@
             },
             postChat() {
                 let vm = this;
+
+                let chatReceiver = null
+
+                if (vm.chatWithCitizen != null)
+                    chatReceiver = vm.chatWithCitizen.username
+
                 let newChat = {
                     sender: vm.loggedInUsername,
                     content: vm.newChat,
-                    receiver: null
+                    receiver: chatReceiver
                 }
                 if (vm.newChat.trim().length !== 0) {
                     vm.$http.post(api.SAVE_CHAT, newChat).then(() => {
