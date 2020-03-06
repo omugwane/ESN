@@ -1,4 +1,5 @@
-let baseUrl = 'http://localhost:3000/'
+// let baseUrl = 'http://localhost:3000/'
+let baseUrl = 'https://esn-chat-app.herokuapp.com/'
 export const LOGIN = baseUrl + 'users/login';
 
 export const GET_ALL_CHATS = baseUrl + 'chats/';

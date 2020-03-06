@@ -107,26 +107,26 @@ describe('Chat Repository', () => {
         });
     })
     it('Should get all private chats successfully betwween two users', (done) => {
-        let chat = new Chat();
+        let chat =  new Chat();
         chat.sender = 'Laurette';
         chat.content = 'Hey';
         chat.status = 'Undefined';
         chat.receiver = 'Baptiste';
 
-        let chat1 = new Chat();
-        chat.sender = 'Baptiste';
-        chat.content = 'How are you?';
-        chat.status = 'Undefined';
-        chat.receiver = 'Laurette';
+        // let chat1 =  new Chat();
+        // chat.sender = 'Baptiste';
+        // chat.content = 'How are you?';
+        // chat.status = 'Undefined';
+        // chat.receiver = 'Laurette';
 
-        chat.save((err1) => {
+
             // console.log("Chat 1 error",err1)
-            chat1.save((err2) => {
+            chat.save((err2) => {
                 try {
-                    ChatRepository.getPrivateChats('Baptiste','Laurette',(chats) => {
+                    ChatRepository.getPrivateChats('Laurette','Baptiste',(chats) => {
                         try {
                             // console.log(chats)
-                            // expect(chats.length).toBe(2);
+                             expect(chats.length).toBe(1);
                             done()
                         } catch (error) {
                             done.fail(error)
@@ -136,7 +136,7 @@ describe('Chat Repository', () => {
                     done.fail(error)
                 }
             });
-        });
+
     })
 
 })
