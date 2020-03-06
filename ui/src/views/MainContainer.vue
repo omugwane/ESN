@@ -86,7 +86,8 @@
                     title: 'New chat',
                     text: 'Received a new chat message from  ' + chat.sender
                 });*/
-                alert('Received a new chat message from  ' + chat.sender)
+                if (chat.sender !== this.loggedInUsername)
+                    alert('Received a new chat message from  ' + chat.sender)
             }
         }
     }
