@@ -84,7 +84,7 @@
 
                 let chatReceiver = null
 
-                if (vm.chatWithCitizen != null)
+                if (vm.chatWithCitizen !== null)
                     chatReceiver = vm.chatWithCitizen.username
 
                 let newChat = {
