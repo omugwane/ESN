@@ -9,27 +9,18 @@
                     <h4 class="display-5 text-center">ESN</h4>
                 </div>
                 <div class="side-menu">
-
                     <div class="menu-item">
-                        <router-link :to="{name: 'private-chat'}">
-                            <a>Private Chat</a>
-                        </router-link>
+                        <router-link :to="{name: 'private-chat'}">Private Chat</router-link>
                     </div>
 
                     <div class="menu-item">
-                        <router-link :to="{name: 'chat'}">
-                            <a>Public Chat</a>
-                        </router-link>
+                        <router-link :to="{name: 'chat'}">Public Chat</router-link>
                     </div>
                     <div class="menu-item">
-                        <router-link :to="{name: 'share-status'}">
-                            <a>Share Status</a>
-                        </router-link>
+                        <router-link :to="{name: 'share-status'}">Share Status</router-link>
                     </div>
                     <div class="menu-item">
-                        <router-link :to="{name: 'all-citizens'}">
-                            <a>All Citizens</a>
-                        </router-link>
+                        <router-link :to="{name: 'all-citizens'}">All Citizens</router-link>
                     </div>
                 </div>
                 <div class="side-footer">
@@ -169,6 +160,27 @@
 
                 a {
                     color: $primary;
+                    text-decoration: none;
+                    display: block;
+                    border-radius: 8px;
+                    margin-left: 56px;
+                    margin-right: 56px;
+                    padding: 4px 16px;
+                    @media screen and (max-width: 960px) and (min-width: 601px) {
+                        margin-left: 16px;
+                        margin-right: 16px;
+                    }
+
+                    @media(max-width: 600px) {
+                        margin-left: 2px;
+                        margin-right: 2px;
+                        padding: 2px 4px;
+                    }
+
+                    &.router-link-active,
+                    &:hover {
+                        background-color: rgba(255, 255, 255, 0.2);
+                    }
                 }
             }
         }
