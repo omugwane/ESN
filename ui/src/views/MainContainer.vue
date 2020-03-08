@@ -10,23 +10,32 @@
                 </div>
                 <div class="side-menu">
                     <div class="menu-item">
-                        <router-link :to="{name: 'private-chat'}">Private Chat</router-link>
+                        <router-link :to="{name: 'private-chat'}">
+                            <span class="mdi mdi-chat-outline"/>
+                            <span class="mdi mdi-lock-open-outline" style="font-size: 10px"/>
+                            <span class="menu-item-text">Private Chat</span>
+                        </router-link>
                     </div>
 
                     <div class="menu-item">
-                        <router-link :to="{name: 'chat'}">Public Chat</router-link>
+                        <router-link :to="{name: 'chat'}">
+                            <span class="mdi mdi-chat-outline"/> <span class="menu-item-text">Public Chat</span>
+                        </router-link>
                     </div>
                     <div class="menu-item">
-                        <router-link :to="{name: 'share-status'}">Share Status</router-link>
+                        <router-link :to="{name: 'share-status'}">
+                            <span class="mdi mdi-share-outline"/> <span class="menu-item-text">Share Status </span>
+                        </router-link>
                     </div>
                     <div class="menu-item">
-                        <router-link :to="{name: 'all-citizens'}">All Citizens</router-link>
+                        <router-link :to="{name: 'all-citizens'}">
+                            <span class="mdi mdi-folder-account-outline"/> <span class="menu-item-text">ESN Directory</span>
+                        </router-link>
                     </div>
                 </div>
                 <div class="side-footer">
                     <button type="button" @click="logout">
-                        <span class="btn-label">Sign out</span>
-                        <span class="mdi mdi-logout"></span>
+                        <span class="btn-label">Sign out</span> <span class="mdi mdi-logout"/>
                     </button>
                 </div>
             </div>
@@ -156,6 +165,9 @@
                 @media(max-width: 600px) {
                     font-size: 14px;
                     padding: 4px;
+                    .menu-item-text {
+                        display: block;
+                    }
                 }
 
                 a {
