@@ -1,5 +1,5 @@
 <template>
-    <ChatRoom/>
+    <ChatRoom :logged-in-username="loggedInUsername"/>
 </template>
 
 <script>
