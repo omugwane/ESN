@@ -74,6 +74,12 @@
                 chats: []
             }
         },
+        watch: {
+            chatWithCitizen: function (newVal) { //Detecting in private chat, when a citizen to chat with changes
+                if (newVal)
+                    this.getPrivateChats()
+            }
+        },
         methods: {
             getStatusColor(status) {
                 return STATUSES[status.toUpperCase()].colorCode

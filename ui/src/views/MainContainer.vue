@@ -86,8 +86,17 @@
                     title: 'New chat',
                     text: 'Received a new chat message from  ' + chat.sender
                 });*/
-                if (chat.sender !== this.loggedInUsername)
-                    alert('Received a new chat message from  ' + chat.sender)
+                if (this.$route.name !== 'chat' && chat.sender !== this.loggedInUsername && chat.receiver === null) { //Public chat
+                    // if (chat.sender !== this.loggedInUsername && chat.receiver === null)
+                    alert('Received a new public chat message from  ' + chat.sender.toUpperCase())
+                }
+
+                //Filtering out notifications to messages the current logged in user is the receiver
+                else if (this.$route.name !== 'private-chat' && chat.sender !== this.loggedInUsername && chat.receiver === this.loggedInUsername) {
+                    alert('Received a new public chat message from  ' + chat.sender.toUpperCase())
+
+                }
+
             }
         }
     }
