@@ -3,7 +3,8 @@ let path = 'mongodb+srv://baptiste:bapt_cmu_2020@fse-cluster-rm6b4.mongodb.net/'
 
 module.exports = {
     development: {
-        url: path + 'esn-dev' + '?retryWrites=true&w=majority',
+        // url: path + 'esn-dev' + '?retryWrites=true&w=majority',
+        url: "mongodb://localhost:27017/esn",
         dialect: 'mongodb',
     },
     test: {

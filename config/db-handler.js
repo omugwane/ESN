@@ -68,10 +68,10 @@ const getDBUri = async (env) => {
 const getEnv = () => {
     let env = process.env.NODE_ENV || 'development';
 
-    if (env === 'test')
-        return env
-    else
-        return 'production'
-    // console.log('process.env.NODE_ENV', env)
-    // return env
+    // if (env === 'test')
+    //     return env
+    // else
+    //     return 'production'
+    // // console.log('process.env.NODE_ENV', env)
+    return env
 }

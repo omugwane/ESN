@@ -11,8 +11,7 @@
                             <h6 class="chat-owner">{{(chat.sender === loggedInUsername)?
                                 'Me':`${chat.sender}`}}</h6>
                             <small class="citizen-status" :style="{color: getStatusColor(chat.status)}">
-                                status: {{(chat.status.toUpperCase() === 'UNDEFINED') ? 'Not
-                                available':`${chat.status.toUpperCase()}`}}
+                                status: {{getStatusLabel(chat.status)}}
                             </small>
                         </div>
                         <small>{{new Date()}}</small>
@@ -78,6 +77,12 @@
         methods: {
             getStatusColor(status) {
                 return STATUSES[status.toUpperCase()].colorCode
+            },
+            getStatusLabel(status) {
+                if (status.toUpperCase() === 'UNDEFINED')
+                    return 'Not available'
+                else
+                    return status.toUpperCase()
             },
             postChat() {
                 let vm = this;

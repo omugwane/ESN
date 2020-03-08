@@ -7,7 +7,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-// const configDB = require('./config/DB');
 const dbHandler = require('./config/db-handler');
 
 const indexRouter = require('./routes/index');
@@ -19,37 +18,18 @@ let app = express();
 
 // Set up the database
 dbHandler.connect();
-// const env = process.env.NODE_ENV || 'development';
-// const dbConfig = configDB[env];
-// mongoose.connect(dbConfig.url);
-
-// console.log("Env ", env)
-// console.log("dbConfig.url ", dbConfig.url)
-
-// let db = mongoose.connection;
-//
-// // Check connection
-// db.once('open', function () {
-//     console.log("Connected to MongoDB");
-// });
-//
-// // Check DB errors
-// db.on('error', function (err) {
-//     console.log(err);
-// });
 
 // view engine setup
 app.set('views', __dirname + '/views');
 app.engine('html', require('ejs').renderFile);
 
-app.use(express.static(__dirname + '/public'));
-app.use('/static', express.static('public'))
+//Configuring the relative path static files: js, css
+app.use(express.static(path.join(__dirname, '/')));
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
