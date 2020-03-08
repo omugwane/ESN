@@ -11,7 +11,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import VueSocketIO from 'vue-socket.io';
 import vMediaQuery from 'v-media-query'
 import Notifications from 'vue-notification'
-import {baseUrl} from './helpers/api'
+import {getBaseUrl} from './helpers/api'
 
 /*import VueSweetalert2 from 'vue-sweetalert2';
 
@@ -24,7 +24,7 @@ const interceptors = require('./helpers/axiosInterceptors')
 
 Vue.use(new VueSocketIO({
     debug: true,
-    connection: baseUrl,
+    connection: getBaseUrl(),
 }))
 Vue.use(vMediaQuery)
 Vue.use(Notifications)

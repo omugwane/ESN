@@ -2,7 +2,7 @@
     <div class="page-wrapper">
         <div class="card mt-md-5 login-card">
             <div class="card-body">
-                <h1 class="display-5 text-center page-title">ESN Signup</h1>
+                <h1 class="display-5 text-center page-title">ESN Login</h1>
 
                 <form class="mt-sm-5">
                     <div class="form-group">
@@ -36,6 +36,9 @@
 
     export default {
         name: "Login",
+        created() {
+            console.log("API baseURL ", api.getBaseUrl())
+        },
         data() {
             return {
                 username: '',

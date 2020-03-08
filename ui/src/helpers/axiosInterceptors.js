@@ -1,15 +1,19 @@
 import Vue from 'vue'
 import router from "../router";
-
+import {getBaseUrl} from './api'
 
 export const configRequest = (config) => {
+
+    console.log("process.env.NODE_ENV ",process.env.NODE_ENV)
 
     let token = Vue.$cookies.get('token')
     config.headers = {
         Accept: "application/json, text/plain, */*",
         'x-access-token': token
     }
-    // console.log("token", token)
+
+    config.url = getBaseUrl() + config.url
+
     return config;
 }
 
@@ -23,6 +27,3 @@ export const checkTokenError = (error) => {
     }
     return Promise.reject(error);
 }
-
-// module.exports = configRequest
-// module.exports = checkTokenError
