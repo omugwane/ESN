@@ -6,114 +6,101 @@ const User = require('../models/User');
 //argument and a callback as arguments
 exports.saveChat = (userData, callback) => {
 
-    let user = new User();
-    user.sender = userData.sender;
-    user.content = userData.content;
-    user.status = userData.status;
-    user.receiver = userData.receiver;
+	let user = new User();
+	user.sender = userData.sender;
+	user.content = userData.content;
+	user.status = userData.status;
+	user.receiver = userData.receiver;
 
 
-    let callback1 = (err) => {
+	let callback1 = (err) => {
 
-        if (err) {
-            callback(null)
-        } else {
-            callback(chat)
-        }
-    }
-    chat.save(callback1)
+		if (err) {
+			callback(null);
+		} else {
+			callback(chat);
+		}
+	};
+	chat.save(callback1);
 };
 
 //method to retrive all chats from the database. it takes a callback
 //as an argument and returns an object of the retrived chats.
 exports.getAllUsers = (callback) => {
-    let user = new User();
-    let callback1 = (err, docs) => {
+	let user = new User();
+	let callback1 = (err, docs) => {
 
-        if (err) {
-            callback(null)
-        } else {
-            callback(docs)
-        }
+		if (err) {
+			callback(null);
+		} else {
+			callback(docs);
+		}
 
-    }
-    User.find({}, callback1);
-}
+	};
+	User.find({}, callback1);
+};
 
 
 //method to save the details of a user to the database.
 //it takes an object containing the details of a user as an 
 //argument and a callback as arguments
 exports.registerUser = (userData, callback) => {
-    let user = new User();
-    user.username = userData.username;
-    user.password = user.generateHash(userData.password);
-    user.firstName = userData.firstName;
-    user.lastName = userData.lastName;
-    user.email = userData.email;
-    user.phone = userData.phone;
-    user.role = userData.role;
-    user.status = userData.status;
+	let user = new User();
+	user.username = userData.username;
+	user.password = user.generateHash(userData.password);
+	user.firstName = userData.firstName;
+	user.lastName = userData.lastName;
+	user.email = userData.email;
+	user.phone = userData.phone;
+	user.role = userData.role;
+	user.status = userData.status;
 
-    User.find({username: userData.username}, (err, users) => {
-        if (users && users.length === 0) {
-            user.save((err) => {
-                // console.log("registerUser", err)
-                if (err)
-                    callback(null)
-                else
-                    callback(user)
-            })
-        }
-    })
+	User.find({username: userData.username}, (err, users) => {
+		if (users && users.length === 0) {
+			user.save((err) => {
+				// console.log("registerUser", err)
+				if (err)
+					callback(null);
+				else
+					callback(user);
+			});
+		}
+	});
 
 };
 
 //a method to get a single user by their username. it takes the username and a 
 //callback as an argument and returns the details of the user
 exports.getUserByUsername = (username, callback) => {
-    let callback1 = (err, user) => {
-        if (err) {
-            callback(null)
-        } else {
-            callback(user)
-        }
-    }
+	let callback1 = (err, user) => {
+		if (err) {
+			callback(null);
+		} else {
+			callback(user);
+		}
+	};
 
-    User.findOne({username: username}, callback1);
+	User.findOne({username: username}, callback1);
 
-}
+};
 
 //a method to update the status of a user. It takes a username, status
 //and a callback as parameters and returns 
 exports.updateUserStatus = async (username, status, callback) => {
-    const filter = {username: username};
-    const update = {status: status};
+	const filter = {username: username};
+	const update = {status: status};
 
-    await User.updateOne(filter, update);
+	await User.updateOne(filter, update);
 
-    const user = await User.findOneAndUpdate(
-        filter,
-        update,
-        // If `new` isn't true, `findOneAndUpdate()` will return the
-        // document as it was _before_ it was updated.
-        {new: true}
-    );
-    if (user)
-        callback(user)
-    else
-        callback(null)
-
-    /* User.findOne({username: username}, function (err, user) {
-         if (user) {
-             user.status = status;
-             user.save(function (err) {
-                 // console.log("updateUserStatus err", err)
-                 if (err)
-                     callback(null)
-                 else
-                     callback(user)
-             })
-         }
-     })*/
-}
+	const user = await User.findOneAndUpdate(
+		filter,
+		update,
+		// If `new` isn't true, `findOneAndUpdate()` will return the
+		// document as it was _before_ it was updated.
+		{new: true}
+	);
+	if (user)
+		callback(user);
+	else
+		callback(null);
+};
