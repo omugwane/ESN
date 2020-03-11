@@ -1,15 +1,25 @@
-let baseUrl = 'http://localhost:3000/'
-export const LOGIN = baseUrl + 'users/login';
+const devBaseUrl = 'http://localhost:3000/'
+const prodBaseUrl = 'https://esn-chat-app.herokuapp.com/'
 
-export const GET_ALL_CHATS = baseUrl + 'chats/';
-export const SAVE_CHAT = baseUrl + 'chats/';
-export const GET_CHAT_BY_ID = baseUrl + 'chats/';
-export const GET_CHATS_BY_USERNAME = baseUrl + 'chats/';
-export const DELETE_CHAT = baseUrl + 'chats/';
-export const UPDATE_CHAT = baseUrl + 'chats/';
+export const getBaseUrl = () => {
+    // console.log("process.env.NODE_ENV ",process.env.NODE_ENV)
+    if (process.env.NODE_ENV === 'development')
+        return devBaseUrl
 
-export const GET_ALL_USERS = baseUrl + 'users/';
-export const DELETE_USER = baseUrl + 'users/';
-export const UPDATE_USER = baseUrl + 'users/';
-export const REGISTER_USER = baseUrl + 'users/';
-export const UPDATE_USER_STATUS = baseUrl + 'users/status/';
+    return prodBaseUrl
+}
+
+export const LOGIN = 'users/login';
+
+export const GET_ALL_CHATS = 'chats/';
+export const SAVE_CHAT = 'chats/';
+export const GET_CHAT_BY_ID = 'chats/';
+export const GET_CHATS_BY_USERNAME = 'chats/';
+export const DELETE_CHAT = 'chats/';
+export const UPDATE_CHAT = 'chats/';
+
+export const GET_ALL_USERS = 'users/';
+export const DELETE_USER = 'users/';
+export const UPDATE_USER = 'users/';
+export const REGISTER_USER = 'users/';
+export const UPDATE_USER_STATUS = 'users/status/';

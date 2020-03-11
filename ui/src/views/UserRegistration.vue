@@ -89,11 +89,9 @@
                 }
 
                 if (vm.username.trim().length > 0 && vm.password.trim().length > 0) {
-                    vm.$http.post(api.REGISTER_USER, data).then(function (response) {
-                        console.log(response)
+                    vm.$http.post(api.REGISTER_USER, data).then(function () {
                         vm.$router.push({name: 'all-citizens'})
-                    }).catch(err => {
-                        console.log("Register", err)
+                    }).catch(() => {
                         alert("Sorry! An error occurred while trying to register")
                     })
                 } else {

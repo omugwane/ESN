@@ -36,6 +36,9 @@
 
     export default {
         name: "Login",
+        created() {
+            console.log("API baseURL ", api.getBaseUrl())
+        },
         data() {
             return {
                 username: '',

@@ -2,25 +2,20 @@
     <div class="content px-md-5">
         <h3 class="display-4">Share Status</h3>
         <div class="mb-2">
-            <!--            Your current status is {{currentStatus}}-->
         </div>
         <form action="">
             <div class="row title text-black-50 mb-1">
                 <div class="col-md-1 offset-md-1"></div>
                 <div class="col-md-2">Name</div>
                 <div class="col-md-6">Description</div>
-                <!--                <div class="col-md-3">Color code</div>-->
-                <!--                <div class="col-md-3">Icon</div>-->
             </div>
-            <div :style="{color: status.colorCode}" v-for="(status, index) in statuses"
+            <div :style="{color: getStatusColor(status.name)}" v-for="(status, index) in statuses"
                  class="row mb-1 font-weight-bold" v-bind:key="index">
                 <div class="col-md-1 offset-md-1">
                     <input v-model="selectedStatus" name="status" type="radio" v-bind:value="status.name">
                 </div>
                 <div class="col-md-2">{{status.name}}</div>
                 <div class="col-md-6">{{status.description}}</div>
-                <!--                <div class="col-md-3">{{status.colorCode}}</div>-->
-                <!--                <div class="col-md-3">{{status.icon}}</div>-->
             </div>
             <button id="btn-share-status" @click="shareStatus" class="mt-3" type="button">Share status</button>
         </form>
@@ -29,6 +24,7 @@
 
 <script>
     import * as api from "../helpers/api";
+    import {STATUSES} from "../helpers/statuses";
 
     export default {
         name: "ShareStatus",
@@ -70,6 +66,9 @@
             }
         },
         methods: {
+            getStatusColor(status) {
+                return STATUSES[status.toUpperCase()].colorCode
+            },
             shareStatus() {
                 let vm = this;
                 vm.$http.put(api.UPDATE_USER_STATUS + vm.loggedInUsername, {status: vm.selectedStatus}).then((response) => {
@@ -78,7 +77,8 @@
                 }).catch((err) => {
                     alert(err)
                 })
-            }
+            },
+
         }
     }
 </script>

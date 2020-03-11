@@ -10,7 +10,7 @@
             <div :class="(!showCitizensList)? 'hidden':''" id="citizens-list">
                 <h6 class="title">All Citizens</h6>
                 <ul>
-                    <li v-for="citizen in citizens"
+                    <li v-for="citizen in filteredCitizens"
                         :key="citizen._id"
                         @click="selectCitizenToChatWith(citizen)"
                         :class="(chatWithCitizen!==null && chatWithCitizen.username===citizen.username)? 'active':''">
@@ -20,12 +20,16 @@
                         <!--                    <div class="latest-message">-->
                         <!--                        sma-->
                         <!--                    </div>-->
-                        <small>Status: </small>
+                        <small :style="{color: getStatusColor(citizen.status)}">Status:
+                            {{getStatusLabel(citizen.status)}}</small>
                     </li>
                 </ul>
             </div>
         </div>
-        <ChatRoom v-if="chatWithCitizen" :chat-with-citizen="chatWithCitizen" class="chat-room"/>
+        <ChatRoom v-if="chatWithCitizen"
+                  :chat-with-citizen="chatWithCitizen"
+                  :logged-in-username="loggedInUsername"
+                  class="chat-room"/>
         <div v-else class="chat-room no-citizen-selected">
             <span>Select a citizen to chat with privately</span>
         </div>
@@ -35,22 +39,17 @@
 <script>
     import * as api from "../helpers/api";
     import ChatRoom from "./ChatRoom";
+    import {STATUSES} from "../helpers/statuses";
     // import {eventBus} from "../main";
 
     export default {
         name: "PrivateChatRoom",
         components: {ChatRoom},
         created() {
+            let user = this.$cookies.get('user')
+            this.loggedInUsername = user.username;
+
             this.getAllCitizens()
-        },
-        mounted() {
-            /*eventBus.$on('new-chat-message', (chat) => {
-                //Checking if the chat is from the citizen currently being chatted with
-                //and that the receiver is the loggedInUsername
-                if (chat && this.chatWithCitizen && this.chatWithCitizen.username === chat.sender && chat.receiver === this.loggedInUsername) {
-                    // this.chats = this.chats.concat(data);
-                }
-            })*/
         },
         data() {
             return {
@@ -58,6 +57,13 @@
                 loggedInUsername: '',
                 chatWithCitizen: null, // The user whom to chat with
                 showCitizensList: true, //This variable shows or hides the list of citizens to chat with for UI responsiveness
+            }
+        },
+        computed: {
+            filteredCitizens() {
+                return this.citizens.filter((citizen) => {
+                    return citizen.username !== this.loggedInUsername
+                })
             }
         },
         watch: {
@@ -90,7 +96,16 @@
                 if (this.loggedInUsername === citizen.username)
                     alert("Can't cha with oneself")
                 this.chatWithCitizen = citizen
-            }
+            },
+            getStatusLabel(status) {
+                if (status.toUpperCase() === 'UNDEFINED')
+                    return 'Not available'
+                else
+                    return status.toUpperCase()
+            },
+            getStatusColor(status) {
+                return STATUSES[status.toUpperCase()].colorCode
+            },
         }
     }
 </script>

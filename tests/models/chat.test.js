@@ -1,4 +1,4 @@
-let Chat = require('../../models/Chat')
+let Chat = require('../../models/Chat');
 const dbHandler = require('../../config/db-handler');
 
 
@@ -19,41 +19,41 @@ afterAll(async () => await dbHandler.closeDatabase());
 
 
 describe('Testing Chat Model', () => {
-    it('Should save successfully', () => {
-        let chat = new Chat();
-        chat.sender = 'kaka';
-        chat.content = 'Hello Ka';
-        chat.status = 'sdjjh';
-        chat.receiver = null;
+	it('Should save successfully', () => {
+		let chat = new Chat();
+		chat.sender = 'kaka';
+		chat.content = 'Hello Ka';
+		chat.status = 'sdjjh';
+		chat.receiver = null;
 
-        chat.save((err) => {
-            expect(err).toBeNull()
-        });
+		chat.save((err) => {
+			expect(err).toBeNull();
+		});
 
-    })
-    it('Should get all chats successfully', (done) => {
-        let chat = new Chat();
-        chat.sender = 'kaka';
-        chat.content = 'Hello Ka';
-        chat.status = 'sdjjh';
-        chat.receiver = null;
+	});
+	it('Should get all chats successfully', (done) => {
+		let chat = new Chat();
+		chat.sender = 'kaka';
+		chat.content = 'Hello Ka';
+		chat.status = 'sdjjh';
+		chat.receiver = null;
 
-        chat.save((err) => {
-            if (!err) {
-                try {
-                    Chat.find({}, (err, chats) => {
-                        try {
-                            expect(chats.length).toBeGreaterThan(0);
-                            done()
-                        } catch (error) {
-                            done.fail(error)
-                        }
-                    })
-                } catch (error) {
-                    done.fail(error)
-                }
-            }
-        });
+		chat.save((err) => {
+			if (!err) {
+				try {
+					Chat.find({}, (err, chats) => {
+						try {
+							expect(chats.length).toBeGreaterThan(0);
+							done();
+						} catch (error) {
+							done.fail(error);
+						}
+					});
+				} catch (error) {
+					done.fail(error);
+				}
+			}
+		});
 
-    })
-})
+	});
+});

@@ -9,33 +9,34 @@
                     <h4 class="display-5 text-center">ESN</h4>
                 </div>
                 <div class="side-menu">
-
                     <div class="menu-item">
                         <router-link :to="{name: 'private-chat'}">
-                            <a>Private Chat</a>
+                            <span class="mdi mdi-chat-outline"/>
+                            <span class="mdi mdi-lock-open-outline" style="font-size: 10px"/>
+                            <span class="menu-item-text">Private Chat</span>
                         </router-link>
                     </div>
 
                     <div class="menu-item">
                         <router-link :to="{name: 'chat'}">
-                            <a>Public Chat</a>
+                            <span class="mdi mdi-chat-outline"/> <span class="menu-item-text">Public Chat</span>
                         </router-link>
                     </div>
                     <div class="menu-item">
                         <router-link :to="{name: 'share-status'}">
-                            <a>Share Status</a>
+                            <span class="mdi mdi-share-outline"/> <span class="menu-item-text">Share Status </span>
                         </router-link>
                     </div>
                     <div class="menu-item">
                         <router-link :to="{name: 'all-citizens'}">
-                            <a>All Citizens</a>
+                            <span class="mdi mdi-folder-account-outline"/> <span
+                                class="menu-item-text">ESN Directory</span>
                         </router-link>
                     </div>
                 </div>
                 <div class="side-footer">
                     <button type="button" @click="logout">
-                        <span class="btn-label">Sign out</span>
-                        <span class="mdi mdi-logout"></span>
+                        <span class="btn-label">Sign out</span> <span class="mdi mdi-logout"/>
                     </button>
                 </div>
             </div>
@@ -86,13 +87,42 @@
                     title: 'New chat',
                     text: 'Received a new chat message from  ' + chat.sender
                 });*/
-                alert('Received a new chat message from  ' + chat.sender)
+                if (this.$route.name !== 'chat' && chat.sender !== this.loggedInUsername && chat.receiver === null) { //Public chat
+                    // if (chat.sender !== this.loggedInUsername && chat.receiver === null)
+                    // alert('Received a new public chat message from  ' + chat.sender.toUpperCase())
+
+                    let options = {
+                        // title: 'Alert',
+                        text: ' Received a new public chat message from  ' + chat.sender.toUpperCase(),
+                        icon: 'info',
+                        toast: true,
+                        position: 'top',
+                        showConfirmButton: false,
+                        timer: 10000,
+                        timerProgressBar: true,
+                        onOpen: (toast) => {
+                            toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                            toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                        }
+                    }
+                    this.$swal(options);
+                }
+
+                //Filtering out notifications to messages the current logged in user is the receiver
+                else if (this.$route.name !== 'private-chat' && chat.sender !== this.loggedInUsername && chat.receiver === this.loggedInUsername) {
+                    alert('Received a new private chat message from  ' + chat.sender.toUpperCase())
+
+                }
+
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
+    @import '~sweetalert2/src/variables';
+
+    $swal2-background: #990000;
 
     /*xs: < 600px*/
     /*sm: 600px > < 960px*/
@@ -155,10 +185,34 @@
                 @media(max-width: 600px) {
                     font-size: 14px;
                     padding: 4px;
+                    .menu-item-text {
+                        display: block;
+                    }
                 }
 
                 a {
                     color: $primary;
+                    text-decoration: none;
+                    display: block;
+                    border-radius: 8px;
+                    margin-left: 56px;
+                    margin-right: 56px;
+                    padding: 4px 16px;
+                    @media screen and (max-width: 960px) and (min-width: 601px) {
+                        margin-left: 16px;
+                        margin-right: 16px;
+                    }
+
+                    @media(max-width: 600px) {
+                        margin-left: 2px;
+                        margin-right: 2px;
+                        padding: 2px 4px;
+                    }
+
+                    &.router-link-active,
+                    &:hover {
+                        background-color: rgba(255, 255, 255, 0.2);
+                    }
                 }
             }
         }

@@ -6,10 +6,12 @@
   "scripts": {
     "start": "node ./bin/www",
     "devStart": "node ./bin/www",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint ./",
+    "lint-fix": "eslint --fix ./"
   },
-  "engines" : {
-    "node" : "12.14.0",
+  "engines": {
+    "node": "12.14.0",
     "npm": "6.x"
   },
   "dependencies": {
@@ -32,6 +34,7 @@
     "mongodb-memory-server": "^6.3.1"
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
     "jest": "^25.1.0",
     "nodemon": "^2.0.2",
     "supertest": "^4.0.2"
