@@ -3,7 +3,7 @@ module.exports.STATUSES = {
         colorCode: 'green',
     },
     HELP: {
-        colorCode: 'yellow',
+        colorCode: '#C2AF0A', //yellow
     },
     EMERGENCY: {
         colorCode: 'red',

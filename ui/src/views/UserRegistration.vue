@@ -2,7 +2,7 @@
     <div class="page-wrapper">
         <div class="card mt-md-5 login-card">
             <div class="card-body">
-                <h1 class="display-5 text-center page-title">ESN Registration</h1>
+                <h1 class="display-5 text-center page-title">ESN Registration(Login)</h1>
 
                 <form class="mt-sm-5">
                     <div class="form-group">
@@ -89,11 +89,9 @@
                 }
 
                 if (vm.username.trim().length > 0 && vm.password.trim().length > 0) {
-                    vm.$http.post(api.REGISTER_USER, data).then(function (response) {
-                        console.log(response)
+                    vm.$http.post(api.REGISTER_USER, data).then(function () {
                         vm.$router.push({name: 'all-citizens'})
-                    }).catch(err => {
-                        console.log("Register", err)
+                    }).catch(() => {
                         alert("Sorry! An error occurred while trying to register")
                     })
                 } else {

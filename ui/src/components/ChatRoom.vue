@@ -8,11 +8,11 @@
                      :class="(chat.sender === loggedInUsername)? 'sent': 'received'">
                     <div class="heading">
                         <div class="title">
-                            <h6 class="chat-owner">{{(chat.sender === loggedInUsername)?
-                                'Me':`${chat.sender}`}}</h6>
+                            <h6 class="chat-owner">
+                                {{(chat.sender === loggedInUsername)? 'Me':`${chat.sender}`}}
+                            </h6>
                             <small class="citizen-status" :style="{color: getStatusColor(chat.status)}">
-                                status: {{(chat.status.toUpperCase() === 'UNDEFINED') ? 'Not
-                                available':`${chat.status.toUpperCase()}`}}
+                                status: {{getStatusLabel(chat.status)}}
                             </small>
                         </div>
                         <small>{{new Date()}}</small>
@@ -45,12 +45,13 @@
             chatWithCitizen: {
                 type: Object,
                 default: null
+            },
+            loggedInUsername:{
+                type: String,
+                required: true
             }
         },
         created() {
-            let user = this.$cookies.get('user')
-            this.loggedInUsername = user.username;
-
             if (this.chatWithCitizen)
                 this.getPrivateChats()
             else
@@ -70,14 +71,25 @@
         data() {
             return {
                 loading: false,
-                loggedInUsername: '',
                 newChat: '',
                 chats: []
+            }
+        },
+        watch: {
+            chatWithCitizen: function (newVal) { //Detecting in private chat, when a citizen to chat with changes
+                if (newVal)
+                    this.getPrivateChats()
             }
         },
         methods: {
             getStatusColor(status) {
                 return STATUSES[status.toUpperCase()].colorCode
+            },
+            getStatusLabel(status) {
+                if (status.toUpperCase() === 'UNDEFINED')
+                    return 'Not available'
+                else
+                    return status.toUpperCase()
             },
             postChat() {
                 let vm = this;
