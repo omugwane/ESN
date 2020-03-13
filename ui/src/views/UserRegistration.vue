@@ -2,7 +2,7 @@
     <div class="page-wrapper">
         <div class="card mt-md-5 login-card">
             <div class="card-body">
-                <h1 class="display-5 text-center page-title">ESN Registration(Login)</h1>
+                <h1 class="display-5 text-center page-title">ESN Registration</h1>
 
                 <form class="mt-sm-5">
                     <div class="form-group">
