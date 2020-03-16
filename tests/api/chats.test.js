@@ -48,7 +48,7 @@ describe('Chats routes', () => {
         });
     });
 
-    test.only('Should save chats', (done) => {
+    test('Should save chats', (done) => {
         const User = require('../../models/User');
 
         let user = new User();
