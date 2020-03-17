@@ -23,3 +23,10 @@ export const DELETE_USER = 'users/';
 export const UPDATE_USER = 'users/';
 export const REGISTER_USER = 'users/';
 export const UPDATE_USER_STATUS = 'users/status/';
+
+export const GET_ALL_ANNOUNCEMENTS = 'announcements/';
+export const SAVE_ANNOUNCEMENT = 'announcements/';
+export const GET_ANNOUNCEMENT_BY_ID = 'announcements/';
+export const GET_ANNOUNCEMENTS_BY_USERNAME = 'announcements/';
+export const DELETE_ANNOUNCEMENT = 'announcements/';
+export const UPDATE_ANNOUNCEMENT = 'announcements/';
