@@ -1,5 +1,5 @@
 const Chat = require('../models/Chat');
-const BroadcastAPI = require('../lib/BroadcastAPI')
+const BroadcastAPI = require('../lib/BroadcastAPI');
 // const App = require('../app');
 const chatRepository = require('../repositories/ChatRepository');
 const userRepository = require('../repositories/UserRepository');
