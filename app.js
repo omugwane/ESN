@@ -71,7 +71,7 @@ function validateUser(req, res, next) {
 
 console.log('App.js is running');
 
-let ChatBroadcaster = require('./lib/ChatBroadcaster');
-chatBroadcaster = new ChatBroadcaster();
+// let ChatBroadcaster = require('./lib/ChatBroadcaster');
+// chatBroadcaster = new ChatBroadcaster();
 
 module.exports = app;
