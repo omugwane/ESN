@@ -87,31 +87,30 @@
                     title: 'New chat',
                     text: 'Received a new chat message from  ' + chat.sender
                 });*/
+                let options = {
+                    // title: 'Alert',
+                    text: ' Received a new public chat message from  ' + chat.sender.toUpperCase(),
+                    icon: 'info',
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    // timer: 50000,
+                    // timerProgressBar: true,
+                    onOpen: (toast) => {
+                        toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                        toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                    }
+                }
+
                 if (this.$route.name !== 'chat' && chat.sender !== this.loggedInUsername && chat.receiver === null) { //Public chat
                     // if (chat.sender !== this.loggedInUsername && chat.receiver === null)
-                    // alert('Received a new public chat message from  ' + chat.sender.toUpperCase())
-
-                    let options = {
-                        // title: 'Alert',
-                        text: ' Received a new public chat message from  ' + chat.sender.toUpperCase(),
-                        icon: 'info',
-                        toast: true,
-                        position: 'top',
-                        showConfirmButton: false,
-                        timer: 10000,
-                        timerProgressBar: true,
-                        onOpen: (toast) => {
-                            toast.addEventListener('mouseenter', this.$swal.stopTimer)
-                            toast.addEventListener('mouseleave', this.$swal.resumeTimer)
-                        }
-                    }
                     this.$swal(options);
                 }
 
                 //Filtering out notifications to messages the current logged in user is the receiver
                 else if (this.$route.name !== 'private-chat' && chat.sender !== this.loggedInUsername && chat.receiver === this.loggedInUsername) {
-                    alert('Received a new private chat message from  ' + chat.sender.toUpperCase())
-
+                    options.text = 'Received a new private chat message from  ' + chat.sender.toUpperCase()
+                    this.$swal(options);
                 }
 
             }

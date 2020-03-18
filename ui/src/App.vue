@@ -5,19 +5,23 @@
 </template>
 
 <style lang="scss">
+    @import "src/assets/colors";
 
     #app {
-        /*margin: 0 272px;*/
-        /*@media (min-height: 960px) {
-            margin: 0 272px;
-        }
-        @media (min-height: 600px) and (max-height: 960px) {
-            margin: 0 200px;
-        }
-        @media (max-height: 600px) {
-            margin: 0px;
-        }*/
+
     }
 
+    .swal2-popup {
+        &.swal2-toast {
+            background-color: $secondary-1 !important;
+            .swal2-icon {
 
+            }
+
+            .swal2-content {
+                //color: $secondary !important;
+                margin-left: 4px;
+            }
+        }
+    }
 </style>
