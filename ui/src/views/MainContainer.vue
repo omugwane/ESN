@@ -10,10 +10,16 @@
                 </div>
                 <div class="side-menu">
                     <div class="menu-item">
+                        <router-link :to="{name: 'search-information'}">
+                            <span class="mdi mdi-magnify mdi-18px"/>
+                            <span class="menu-item-text"> Search </span>
+                        </router-link>
+                    </div>
+                    <div class="menu-item">
                         <router-link :to="{name: 'private-chat'}">
                             <span class="mdi mdi-chat-outline"/>
                             <span class="mdi mdi-lock-open-outline" style="font-size: 10px"/>
-                            <span class="menu-item-text">Private Chat</span>
+                            <span class="menu-item-text"> Private Chat </span>
                         </router-link>
                     </div>
 
