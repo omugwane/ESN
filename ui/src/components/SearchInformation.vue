@@ -102,7 +102,22 @@
             }
         },
         methods: {
-
+            search() {
+                let searchText = this.filterOutStopWords(this.searchText);
+                console.log("Filtered text", searchText)
+            },
+            filterOutStopWords(searchText) {
+                let searchWords = this.breakTextIntoArrayOfWords(searchText);
+                return searchWords.filter((searchWord) => {
+                    /*The condition is true when find function returns undefined(not found), otherwise it is false
+                     *When the condition is false the searchWord is removed from the searchWords array
+                     */
+                    return !stopWordsArray.find(stopWord => searchWord === stopWord)
+                })
+            },
+            breakTextIntoArrayOfWords(text) {
+                return text.match(/\b(\w+)'?(\w+)?\b/g)
+            }
         }
     }
 </script>
