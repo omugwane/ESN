@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-const chatController = require('../controllers/PublicAnnouncementsController');
+const publicAnnouncementController = require('../controllers/PublicAnnouncementsController');
 
 /* GET chats listing. */
-router.get('/', chatController.getAllAnnouncements);
-router.post('/', chatController.saveAnnouncement);
-router.get('/:content', chatController.getAnnouncementsByContent);
+router.get('/', publicAnnouncementController.getAllAnnouncements);
+router.post('/', publicAnnouncementController.saveAnnouncement);
+router.get('/:content', publicAnnouncementController.getAnnouncementsByContent);
 
 
 module.exports = router;
