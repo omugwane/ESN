@@ -34,6 +34,11 @@
                         </router-link>
                     </div>
                     <div class="menu-item">
+                        <router-link :to="{name: 'post-announcement'}">
+                            <span class="mdi mdi-share-outline"/> <span class="menu-item-text">Announcements </span>
+                        </router-link>
+                    </div>
+                    <div class="menu-item">
                         <router-link :to="{name: 'all-citizens'}">
                             <span class="mdi mdi-folder-account-outline"/> <span
                                 class="menu-item-text">ESN Directory</span>
