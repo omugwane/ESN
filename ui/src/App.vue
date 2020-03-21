@@ -14,6 +14,7 @@
     .swal2-popup {
         &.swal2-toast {
             background-color: $secondary-1 !important;
+
             .swal2-icon {
 
             }
@@ -23,5 +24,9 @@
                 margin-left: 4px;
             }
         }
+    }
+
+    h1, h2, h3, h4, h5, button {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 </style>
