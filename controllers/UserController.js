@@ -1,7 +1,4 @@
 require('dotenv').config();
-const User = require('../models/User');
-const bcrypt = require('bcrypt-nodejs');
-const mongoose = require('mongoose');
 const Roles = require('../lib/Role');
 const jwt = require('jsonwebtoken');
 const userRepository = require('../repositories/UserRepository');
