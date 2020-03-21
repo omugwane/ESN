@@ -14,6 +14,7 @@ import Notifications from 'vue-notification'
 import {getBaseUrl} from './helpers/api'
 
 import VueSweetalert2 from 'vue-sweetalert2';
+import Multiselect from 'vue-multiselect'
 
 // If you don't need the styles, do not connect
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -28,6 +29,8 @@ Vue.use(new VueSocketIO({
 }))
 Vue.use(vMediaQuery)
 Vue.use(Notifications)
+Vue.component('multiselect', Multiselect)
+
 
 // Install BootstrapVue
 Vue.use(BootstrapVue)

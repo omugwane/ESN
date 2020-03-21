@@ -3,15 +3,41 @@ orbs:
   node: circleci/node@1.1.6
 jobs:
   build-and-test:
+    environment:
+      CC_TEST_REPORTER_ID: 25e0af4170a4da57812717abaed8b6511b4a37bb9fadc6a3448d8751eec1a9ab
     executor:
       name: node/default
     steps:
       - checkout
       - node/with-cache:
           steps:
-            - run: npm install
-            - run: npm test
+            - run:
+                name: Installing dependencies
+                command: npm install
+            - run:
+                name: Install Code Climate reporter
+                command: |
+                  # download test reporter as a static binary
+                  if [[ ! -x cc-test-reporter ]]
+                  then
+                    curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+                    chmod +x ./cc-test-reporter
+                    ./cc-test-reporter before-build
+                  fi
+            - save_cache:
+                name: Save Code Climate cache
+                key: v1-code-climate-0.1.4
+                paths:
+                  - ./cc-test-reporter
+            - run:
+                name: Run tests
+                command: npm test
+
+            - run:
+                name: Report code coverage to Code Climate
+                command: |
+                  ./cc-test-reporter after-build -t lcov --debug --exit-code $? || true
 workflows:
-    build-and-test:
-      jobs:
-        - build-and-test
+  build-and-test:
+    jobs:
+      - build-and-test

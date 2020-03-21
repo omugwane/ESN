@@ -1,5 +1,5 @@
 const Chat = require('../models/Chat');
-// // const chatBroadcaster = require('../bin/www')
+const BroadcastAPI = require('../lib/BroadcastAPI');
 // const App = require('../app');
 const chatRepository = require('../repositories/ChatRepository');
 const userRepository = require('../repositories/UserRepository');
@@ -73,7 +73,9 @@ exports.saveChat = (req, res) => {
 
 			chatRepository.saveChat(chat, (newChat) => {
 				if (newChat) {
-					chatBroadcaster.broadcast(newChat);
+					// chatBroadcaster.broadcast(newChat);
+					BroadcastAPI.broadcastEventToAll(newChat);
+
 					res.status(200).json({message: 'success', data: newChat});
 				} else
 					res.status(500).json({message: 'Saving the chat message failed', data: null});

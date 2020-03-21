@@ -7,6 +7,7 @@
 const app = require('../app');
 const debug = require('debug')('s20-esn-rw1:server');
 const http = require('http');
+const BroadcastAPI = require('../lib/BroadcastAPI');
 
 /**
  * Get port from environment and store in Express.
@@ -36,13 +37,11 @@ server.on('listening', onListening);
 
 
 /**
- * Test if the socket io server is listening to incoming connections
+ * Registering the API for sending dynamic data to clients with Socket.io
  */
-chatBroadcaster.setChannel(io)
-// io.on('connection', (socket) => {
-//     // console.log('a user is connected', socket)
-//     App.chatBroadcaster.subscribe(socket);
-// })
+// chatBroadcaster.setChannel(io)
+
+BroadcastAPI.setUpChannel(io);
 
 
 /**

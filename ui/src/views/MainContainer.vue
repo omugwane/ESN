@@ -10,10 +10,16 @@
                 </div>
                 <div class="side-menu">
                     <div class="menu-item">
+                        <router-link :to="{name: 'search-information'}">
+                            <span class="mdi mdi-magnify mdi-18px"/>
+                            <span class="menu-item-text"> Search </span>
+                        </router-link>
+                    </div>
+                    <div class="menu-item">
                         <router-link :to="{name: 'private-chat'}">
                             <span class="mdi mdi-chat-outline"/>
                             <span class="mdi mdi-lock-open-outline" style="font-size: 10px"/>
-                            <span class="menu-item-text">Private Chat</span>
+                            <span class="menu-item-text"> Private Chat </span>
                         </router-link>
                     </div>
 
@@ -25,6 +31,11 @@
                     <div class="menu-item">
                         <router-link :to="{name: 'share-status'}">
                             <span class="mdi mdi-share-outline"/> <span class="menu-item-text">Share Status </span>
+                        </router-link>
+                    </div>
+                    <div class="menu-item">
+                        <router-link :to="{name: 'post-announcement'}">
+                            <span class="mdi mdi-share-outline"/> <span class="menu-item-text">Announcements </span>
                         </router-link>
                     </div>
                     <div class="menu-item">
@@ -87,31 +98,30 @@
                     title: 'New chat',
                     text: 'Received a new chat message from  ' + chat.sender
                 });*/
+                let options = {
+                    // title: 'Alert',
+                    text: ' Received a new public chat message from  ' + chat.sender.toUpperCase(),
+                    icon: 'info',
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    // timer: 50000,
+                    // timerProgressBar: true,
+                    onOpen: (toast) => {
+                        toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                        toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                    }
+                }
+
                 if (this.$route.name !== 'chat' && chat.sender !== this.loggedInUsername && chat.receiver === null) { //Public chat
                     // if (chat.sender !== this.loggedInUsername && chat.receiver === null)
-                    // alert('Received a new public chat message from  ' + chat.sender.toUpperCase())
-
-                    let options = {
-                        // title: 'Alert',
-                        text: ' Received a new public chat message from  ' + chat.sender.toUpperCase(),
-                        icon: 'info',
-                        toast: true,
-                        position: 'top',
-                        showConfirmButton: false,
-                        timer: 10000,
-                        timerProgressBar: true,
-                        onOpen: (toast) => {
-                            toast.addEventListener('mouseenter', this.$swal.stopTimer)
-                            toast.addEventListener('mouseleave', this.$swal.resumeTimer)
-                        }
-                    }
                     this.$swal(options);
                 }
 
                 //Filtering out notifications to messages the current logged in user is the receiver
                 else if (this.$route.name !== 'private-chat' && chat.sender !== this.loggedInUsername && chat.receiver === this.loggedInUsername) {
-                    alert('Received a new private chat message from  ' + chat.sender.toUpperCase())
-
+                    options.text = 'Received a new private chat message from  ' + chat.sender.toUpperCase()
+                    this.$swal(options);
                 }
 
             }

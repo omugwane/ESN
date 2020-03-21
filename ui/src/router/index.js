@@ -7,6 +7,8 @@ import AllCitizens from "../components/AllCitizens";
 import UserRegistration from "../views/UserRegistration";
 import PrivateChatRoom from "../components/PrivateChatRoom";
 import ShareStatus from "../components/ShareStatus";
+// import PostAnnouncement from "../components/PostAnnouncement";
+import SearchInformation from "../components/SearchInformation";
 
 Vue.use(VueRouter)
 
@@ -58,6 +60,22 @@ const routes = [
                 path: 'private-chat',
                 name: 'private-chat',
                 component: PrivateChatRoom,
+                meta: {
+                    requiresAuth: true
+                }
+            },
+            /*{
+                path: 'post-announcement',
+                name: 'post-announcement',
+                component: PostAnnouncement,
+                meta: {
+                    requiresAuth: true
+                }
+            },*/
+            {
+                path: 'search',
+                name: 'search-information',
+                component: SearchInformation,
                 meta: {
                     requiresAuth: true
                 }

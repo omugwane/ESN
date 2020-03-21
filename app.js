@@ -11,6 +11,7 @@ const dbHandler = require('./config/db-handler');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const chatsRouter = require('./routes/chats');
+const searchRouter = require('./routes/searchs');
 const jwt = require('jsonwebtoken');
 
 let app = express();
@@ -38,6 +39,7 @@ app.use(cors({origin: '*'}));
 
 app.use('/users', usersRouter);
 app.use('/chats', chatsRouter);
+app.use('/searches', searchRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
@@ -71,7 +73,7 @@ function validateUser(req, res, next) {
 
 console.log('App.js is running');
 
-let ChatBroadcaster = require('./lib/ChatBroadcaster');
-chatBroadcaster = new ChatBroadcaster();
+// let ChatBroadcaster = require('./lib/ChatBroadcaster');
+// chatBroadcaster = new ChatBroadcaster();
 
 module.exports = app;

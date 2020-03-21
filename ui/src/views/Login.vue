@@ -46,9 +46,6 @@
             }
         },
         methods: {
-            // login() {
-            //     this.$router.push({name: 'chat'})
-            // }
             login() {
                 let vm = this;
                 /*vm.errorLoggingIn = false;
@@ -75,11 +72,24 @@
                     vm.$router.push({name: 'chat'});
 
                 }).catch(error => {
-                    alert("Either username or password is incorrect!")
-                    console.log(error)
+                    this.notify(error)
                 }).finally(() => {
                 });
             },
+            notify(error){
+                console.log(error);
+
+                this.$swal({
+                    title: 'Error',
+                    text: 'Either username or password is incorrect!',
+                    icon: 'error',
+                    toast: false,
+                    // position: 'top',
+                    showConfirmButton: true,
+                    // timer: 50000,
+                    // timerProgressBar: true,
+                });
+            }
         }
     }
 </script>
