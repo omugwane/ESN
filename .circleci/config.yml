@@ -24,7 +24,7 @@ jobs:
                     chmod +x ./cc-test-reporter
                     ./cc-test-reporter before-build
                   fi
-            - type: cache-save
+            - save_cache:
                 name: Save Code Climate cache
                 key: v1-code-climate-0.1.4
                 paths:
