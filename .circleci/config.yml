@@ -15,16 +15,28 @@ jobs:
                 name: Installing dependencies
                 command: npm install
             - run:
-                name: Setup Code Climate test-reporter
+                name: Install Code Climate reporter
                 command: |
                   # download test reporter as a static binary
+                  if [[ ! -x cc-test-reporter ]]
+                  then
                     curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
                     chmod +x ./cc-test-reporter
                     ./cc-test-reporter before-build
-                when: always
+                  fi
+            - type: cache-save
+                name: Save Code Climate cache
+                key: v1-code-climate-0.1.4
+                paths:
+                  - ./cc-test-reporter
             - run:
                 name: Run tests
                 command: npm test
+
+            - run:
+                name: Report code coverage to Code Climate
+                command: |
+                  ./cc-test-reporter after-build -t simplecov --exit-code $? || true
 workflows:
   build-and-test:
     jobs:
