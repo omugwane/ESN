@@ -8,6 +8,7 @@ const userRepository = require('../repositories/UserRepository');
 
 // Register User
 exports.registerUser = function (req, res) {
+	console.log(req.body.username);
 	let user = {
 		username: req.body.username,
 		password: req.body.password,
@@ -91,7 +92,8 @@ exports.updateUserStatus = async (req, res) => {
 	await userRepository.updateUserStatus(req.params.username, req.body.status, function (user) {
 		if (user) {
 			res.status(200).json({message: 'success', data: user});
-		} else {
+		}
+		else {
 			res.status(500).json({
 				message: 'Updating user status failed. It might be that the username is incorrect',
 				data: null

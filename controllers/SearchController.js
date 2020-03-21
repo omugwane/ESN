@@ -1,7 +1,7 @@
 require('dotenv').config();
 const searchRepository = require('../repositories/SearchRepository');
 
-exports.searchCitizenByUsername =  async (req, res) =>  {
+exports.searchCitizenByUsername = function (req, res) {
     console.log(req.body.context)
     console.log(req.body.searchText)
     let callback = (docs) => {
