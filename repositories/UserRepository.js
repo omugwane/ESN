@@ -87,20 +87,20 @@ exports.getUserByUsername = (username, callback) => {
 //a method to update the status of a user. It takes a username, status
 //and a callback as parameters and returns 
 exports.updateUserStatus = async (username, status, callback) => {
-	const filter = {username: username};
-	const update = {status: status};
+	// const filter = {username: username};
+	// const update = {status: status};
 
-	await User.updateOne(filter, update);
-
-	const user = await User.findOneAndUpdate(
-		filter,
-		update,
-		// If `new` isn't true, `findOneAndUpdate()` will return the
-		// document as it was _before_ it was updated.
-		{new: true}
-	);
-	if (user)
-		callback(user);
-	else
-		callback(null);
+	User.findOne({username: username}, (err, user) => {
+		if (err) {
+			callback(null);
+		} else {
+			user.status = status;
+			user.save((err) => {
+				if (err)
+					callback(null);
+				else
+					callback(user);
+			});
+		}
+	});
 };

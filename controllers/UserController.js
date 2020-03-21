@@ -8,7 +8,6 @@ const userRepository = require('../repositories/UserRepository');
 
 // Register User
 exports.registerUser = function (req, res) {
-	console.log(req.body.username);
 	let user = {
 		username: req.body.username,
 		password: req.body.password,
@@ -66,29 +65,8 @@ exports.getAllUsers = function (req, res) {
 	userRepository.getAllUsers(callback);
 };
 
-/*exports.deleteUser = async (req, res) => {
-    User.deleteOne({ _id: req.params.userId }, (err, result) => {
-        if (err) {
-            res.status(500).json({ message: err });
-        } else {
-            res.status(200).json({ message: "User deleted successfully" });
-        }
-    });
-};*/
-
-exports.updateUser = async (req, res) => {
-	try {
-		const updatedUser = await User.updateOne(
-			{_id: req.params.userId},
-			{$set: {username: req.body.username, status: req.body.status}}
-		);
-		res.status(200).json({message: 'User updated'});
-	} catch (err) {
-		res.status(500).json({message: err});
-	}
-};
-
 exports.updateUserStatus = async (req, res) => {
+
 	await userRepository.updateUserStatus(req.params.username, req.body.status, function (user) {
 		if (user) {
 			res.status(200).json({message: 'success', data: user});
