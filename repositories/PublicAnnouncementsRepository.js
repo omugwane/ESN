@@ -1,4 +1,4 @@
-const Announcements = require('../models/Announcement');
+const Announcements = require('../models/PublicAnnouncements');
 
 //method to save the details of an announcements to the database.
 //it takes an object containing the details of a chat as an 
