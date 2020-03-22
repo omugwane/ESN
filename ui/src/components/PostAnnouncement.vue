@@ -17,8 +17,9 @@
       <h3>List of announcements</h3>
       <div id="announcements">
         <div class="announcement" v-for="(announcement, index) in announcements" :key="index">
-          <h4>{{announcement.names}} ({{announcement.status}})</h4>
+          <h4>{{announcement.sender}}</h4>
           <div class="announcement-content">{{announcement.content}}</div>
+          <small>{{announcement.postedAt}}</small>
         </div>
         <p v-if="announcements.length < 1" class="text-center mt-3">
           <small>No announcements available yet!</small>
@@ -40,7 +41,7 @@ export default {
   created() {
     let user = this.$cookies.get("user");
     this.loggedInUsername = user.username;
-    // this.getAllChats();
+    this.getAllAnnouncements();
   },
   mounted() {
     /*eventBus.$on('new-chat-message', (chat) => {
@@ -54,35 +55,28 @@ export default {
     return {
       loggedInUsername: "",
       newAnnouncement: "",
-      announcements: [
-        {
-          names: "Kaka",
-          status: "Emergency",
-          content: "Evacuate the place",
-          timestamp: Date.now
-        },
-        {
-          names: "Bapt",
-          status: "OK",
-          content: "Do not panick",
-          timestamp: Date.now
-        }
-      ]
+      announcements: []
     };
   },
+  // computed:{
+  //   sortedAnnouncements(){
+
+  //   }
+  // },
   methods: {
     postAnnouncement() {
       let vm = this;
-      let newAnnouncement = {
+      let newAnn = {
         sender: vm.loggedInUsername,
-        content: vm.newAnnouncement
+        content: vm.newAnnouncement,
+        //postedAt: Date.now
       };
       if (vm.newAnnouncement.trim().length !== 0) {
         vm.$http
-          .post(api.SAVE_ANNOUNCEMENT, newAnnouncement)
+          .post(api.SAVE_ANNOUNCEMENT, newAnn)
           .then(() => {
             // console.log(data)
-            vm.announcements = vm.announcements.concat(newAnnouncement);
+            vm.announcements = vm.announcements.concat(newAnn);
             vm.newAnnouncement = "";
           })
           .catch(err => {
