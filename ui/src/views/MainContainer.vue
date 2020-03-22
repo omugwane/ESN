@@ -82,7 +82,10 @@
             },
             newPublicChat(chat) {
                 this.notifyUser(chat)
-                eventBus.$emit('new-chat-message', chat)
+                eventBus.$emit('new-chat-message', chat);
+            },
+            newAnnouncement(announcement) {
+                eventBus.$emit('newAnnouncement', announcement);
             }
         },
         methods: {

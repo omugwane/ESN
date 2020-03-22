@@ -53,7 +53,7 @@ exports.saveAnnouncement = (req, res) => {
 
 			PublicAnnouncementsRepository.postAnnouncement(announcement, (newAnnouncement) => {
 				if (newAnnouncement) {
-					BroadcastAPI.broadcastEventToAll(newAnnouncement);
+					BroadcastAPI.broadcastAnnouncementEventToAll(newAnnouncement);
 					res.status(200).json({message: 'success', data: newAnnouncement});
 				} else
 					res.status(500).json({message: 'Saving the announcement failed', data: null});
