@@ -1,4 +1,4 @@
-let Chat = require('../../models/PublicAnnouncements');
+let PublicAnnouncement = require('../../models/PublicAnnouncements');
 const dbHandler = require('../../config/db-handler');
 
 
