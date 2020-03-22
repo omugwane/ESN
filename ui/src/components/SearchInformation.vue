@@ -111,7 +111,7 @@
                 let searchText = this.filterOutStopWords(this.searchText);
 
                 if (this.selectedSearchOption) {
-                    this.selectedSearchOption.searchText = this.searchText;
+                    this.selectedSearchOption.searchText = searchText;
                     this.$http.post(api.SEARCH, this.selectedSearchOption)
                         .then((response) => {
                             console.log(response);
