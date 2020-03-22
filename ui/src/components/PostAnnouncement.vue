@@ -46,7 +46,7 @@
         mounted() {
             eventBus.$on('newAnnouncement', (announcement) => {
                 if (announcement.sender !== this.loggedInUsername) {
-                  vm.announcements = vm.announcements.concat(announcement);
+                  this.announcements = this.announcements.concat(announcement);
                 }
             })
         },
