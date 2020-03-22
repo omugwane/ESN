@@ -1,4 +1,4 @@
-const Chat = require('../models/Announcement');
+const Chat = require('../models/PublicAnnouncements');
 // // const chatBroadcaster = require('../bin/www')
 // const App = require('../app');
 const PublicAnnouncementsRepository = require('../repositories/PublicAnnouncementsRepository');
