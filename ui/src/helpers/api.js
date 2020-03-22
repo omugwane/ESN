@@ -30,3 +30,5 @@ export const GET_ANNOUNCEMENT_BY_ID = 'announcements/';
 export const GET_ANNOUNCEMENTS_BY_USERNAME = 'announcements/';
 export const DELETE_ANNOUNCEMENT = 'announcements/';
 export const UPDATE_ANNOUNCEMENT = 'announcements/';
+
+export const SEARCH = 'search'
