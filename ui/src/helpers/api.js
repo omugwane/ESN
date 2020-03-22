@@ -4,10 +4,10 @@ const prodBaseUrl = 'https://esn-chat-app.herokuapp.com/'
 export const getBaseUrl = () => {
     // console.log("process.env.NODE_ENV ",process.env.NODE_ENV)
     if (process.env.NODE_ENV === 'development')
-        return devBaseUrl
+        return devBaseUrl;
 
     return prodBaseUrl
-}
+};
 
 export const LOGIN = 'users/login';
 

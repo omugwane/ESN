@@ -34,18 +34,21 @@
             <div class="col-md-7">
                 <h5 class="section-title display-4">Search Results</h5>
                 <div class="search-results">
-                    <div class="search-result">
+                    <div class="search-result" v-for="(result,index) in searchResults" :key="index">
                         <div class="heading">
-                            Jean Baptiste (status: <span>Emergency</span>)
+                            {{(result.sender)? `${result.sender}`:`${result.username}`}} {{(result.status)? `(status: ${result.status} )`: ''}}
                         </div>
                         <div class="body">
-                            <small>{{new Date()}}</small>
+                            <small v-if="result.postedAt">{{result.postedAt}}</small>
                             <div class="content">
-                                How is everything hhjsjsj ss hdns sgs,skls sdgbndsdnm
+                                {{(result.content || '')}}
                             </div>
                         </div>
                     </div>
-                    <div class="search-result no-results">
+                    <div class="search-result no-results" v-if="searchResults.length === 0 && searchText.trim() === ''">
+                        Select options to begin searching.
+                    </div>
+                    <div class="search-result no-results" v-else-if="searchResults.length === 0">
                         <span class="mdi mdi-alert-outline mdi-24px"/> No results found! Try other search terms.
                     </div>
                 </div>
@@ -109,12 +112,14 @@
         methods: {
             search() {
                 let searchText = this.filterOutStopWords(this.searchText);
+                searchText = searchText.join(' ');
 
                 if (this.selectedSearchOption) {
-                    this.selectedSearchOption.searchText = this.searchText;
+                    this.selectedSearchOption.searchText = searchText;
                     this.$http.post(api.SEARCH, this.selectedSearchOption)
-                        .then((response) => {
-                            console.log(response);
+                        .then(({data}) => {
+                            this.searchResults = data.data;
+                            this.searchText = '';
                         })
                 }
             },

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const announcementsSchema = mongoose.Schema({
+const announcementSchema = mongoose.Schema({
 
     sender: {
         type: String,
@@ -15,5 +15,6 @@ const announcementsSchema = mongoose.Schema({
         type: Date, default: Date.now,
     },
 });
+announcementSchema.index({content: 'text'}); //To create an index to support text search
 
-module.exports = mongoose.model('Announcement', announcementsSchema);
+module.exports = mongoose.model('Announcement', announcementSchema);

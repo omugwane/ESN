@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const chatSchema = mongoose.Schema({
-
     sender: {
         type: String,
         required: true
@@ -24,5 +23,5 @@ const chatSchema = mongoose.Schema({
         // required: true
     },
 });
-
+chatSchema.index({content: 'text'});
 module.exports = mongoose.model('Chat', chatSchema);

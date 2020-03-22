@@ -1,5 +1,5 @@
-const searchCriteriaExecutor = require('../lib/CriteriaExecutor')
-const Criteria = require('../lib/Criteria')
+const searchCriteriaExecutor = require('../lib/CriteriaExecutor');
+const SearchCriteriaFactory = require('../lib/SearchCriteriaFactory');
 
 exports.search = function (req, res) {
 
@@ -7,12 +7,14 @@ exports.search = function (req, res) {
     let target = req.body.criteria;
     let value = req.body.searchText;
 
-    let criteria = new Criteria(context, target, value);
+    const factory = new SearchCriteriaFactory();
 
-    searchCriteriaExecutor.execute(criteria, (results) => {
-        if (results)
+    let criteria = factory.createCriteria(context, target, value);
+
+    searchCriteriaExecutor.execute(criteria, (err, results) => {
+        if (!err)
             res.status(200).json({data: results});
         else
-            res.status(500).json({data: results});
+            res.status(500).json({data: results, error: err});
     });
 };
