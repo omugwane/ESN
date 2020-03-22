@@ -17,7 +17,7 @@
       <h3>List of announcements</h3>
       <div id="announcements">
         <div class="announcement" v-for="(announcement, index) in announcements" :key="index">
-          <h4>{{announcement.names}} ({{announcement.status}})</h4>
+          <h4>{{announcement.sender}}</h4>
           <div class="announcement-content">{{announcement.content}}</div>
         </div>
         <p v-if="announcements.length < 1" class="text-center mt-3">
@@ -54,20 +54,7 @@ export default {
     return {
       loggedInUsername: "",
       newAnnouncement: "",
-      announcements: [
-        {
-          names: "Kaka",
-          status: "Emergency",
-          content: "Evacuate the place",
-          timestamp: Date.now
-        },
-        {
-          names: "Bapt",
-          status: "OK",
-          content: "Do not panick",
-          timestamp: Date.now
-        }
-      ]
+      announcements: []
     };
   },
   methods: {
