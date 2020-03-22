@@ -63,7 +63,7 @@ describe('Public Announcement Repository', () => {
 		announcement.sender = 'Trump'; 
 		announcement.content = 'Hi there';
 
-		PublicAnnouncementsRepository.postAnnouncement(chat, (savedAnnouncement) => {
+		PublicAnnouncementsRepository.postAnnouncement(announcement, (savedAnnouncement) => {
 			try {
 				PublicAnnouncementsRepository.getAllAnnouncements((announcements) => {
 					try {
