@@ -38,7 +38,7 @@ describe('Public Announcement Repository', () => {
 	});
 
 	it('Should get announcements by content successfully', done => {
-		let announcement = new PublicAnnouncements();
+		let announcement = new Announcement();
 		announcement.sender = 'Trump'; 
 		announcement.content = 'Hi there';
 
@@ -59,7 +59,7 @@ describe('Public Announcement Repository', () => {
 	});
 
 	it('Should get all successfully', done => {
-		let announcement = new PublicAnnouncements();
+		let announcement = new Announcement();
 		announcement.sender = 'Trump'; 
 		announcement.content = 'Hi there';
 
