@@ -12,6 +12,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const chatsRouter = require('./routes/chats');
 const searchRouter = require('./routes/searchs');
+const announcementsRouter = require('./routes/publicAnnouncement');
 const jwt = require('jsonwebtoken');
 
 let app = express();
@@ -40,6 +41,7 @@ app.use(cors({origin: '*'}));
 app.use('/users', usersRouter);
 app.use('/chats', chatsRouter);
 app.use('/search', searchRouter);
+app.use('/announcements', announcementsRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
