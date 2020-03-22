@@ -69,7 +69,7 @@ export default {
       let newAnn = {
         sender: vm.loggedInUsername,
         content: vm.newAnnouncement,
-        postedAt: Date.now
+        //postedAt: Date.now
       };
       if (vm.newAnnouncement.trim().length !== 0) {
         vm.$http
