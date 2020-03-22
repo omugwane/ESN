@@ -56,6 +56,7 @@
 
 <script>
     import stopWordsArray from "../helpers/stop_words_array";
+    import * as api from "../helpers/api";
 
     export default {
         name: "SearchInformation",
@@ -69,31 +70,35 @@
                         placeholder: 'Type username here...',
                         context: 'citizens',
                         criteria: 'username',
-                        text: ''
+                        searchText: ''
                     },
                     {
                         label: 'Citizens by status',
                         placeholder: 'Type status here...',
                         context: 'citizens',
-                        criteria: 'status'
+                        criteria: 'status',
+                        searchText: ''
                     },
                     {
                         label: 'Announcement',
                         placeholder: 'Type words to search for here...',
                         context: 'announcements',
-                        criteria: 'content'
+                        criteria: 'content',
+                        searchText: ''
                     },
                     {
                         label: 'Public chats',
                         placeholder: 'Type words to search for here...',
                         context: 'public_chats',
-                        criteria: 'content'
+                        criteria: 'content',
+                        searchText: ''
                     },
                     {
                         label: 'Private chats',
                         placeholder: 'Type words to search for here...',
                         context: 'private_chats',
-                        criteria: 'content'
+                        criteria: 'content',
+                        searchText: ''
                     }
                 ],
                 selectedSearchOption: null,
@@ -104,7 +109,14 @@
         methods: {
             search() {
                 let searchText = this.filterOutStopWords(this.searchText);
-                console.log("Filtered text", searchText)
+
+                if (this.selectedSearchOption) {
+                    this.selectedSearchOption.searchText = this.searchText;
+                    this.$http.post(api.SEARCH, this.selectedSearchOption)
+                        .then((response) => {
+                            console.log(response);
+                        })
+                }
             },
             filterOutStopWords(searchText) {
                 let searchWords = this.breakTextIntoArrayOfWords(searchText);

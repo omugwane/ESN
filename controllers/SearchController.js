@@ -1,31 +1,18 @@
-require('dotenv').config();
-const searchRepository = require('../repositories/SearchRepository');
+const searchCriteriaExecutor = require('../lib/CriteriaExecutor')
+const Criteria = require('../lib/Criteria')
 
-exports.searchCitizenByUsername =  async (req, res) =>  {
-    console.log(req.body.context)
-    console.log(req.body.searchText)
-    let callback = (docs) => {
+exports.search = function (req, res) {
 
-      try {
-          let responseObject = {
-              data: docs,
-          };
-          res.status(200).json(responseObject);
-      }
-      catch (e) {
-          console.log(e);
-      }
-    };
-    if(req.body.context=="citizens")
-    {
-        console.log("citizens detected")
+    let context = req.body.context;
+    let target = req.body.criteria;
+    let value = req.body.searchText;
 
-        searchRepository.searchCitizenByUsername(req.body.searchText,callback);
-    }
-    else
-    {
-        console.log("Problems detecting citizens")
-    }
+    let criteria = new Criteria(context, target, value);
 
-
+    searchCriteriaExecutor.execute(criteria, (results) => {
+        if (results)
+            res.status(200).json({data: results});
+        else
+            res.status(500).json({data: results});
+    });
 };

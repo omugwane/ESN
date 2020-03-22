@@ -39,7 +39,7 @@ app.use(cors({origin: '*'}));
 
 app.use('/users', usersRouter);
 app.use('/chats', chatsRouter);
-app.use('/searches', searchRouter);
+app.use('/search', searchRouter);
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
@@ -72,8 +72,5 @@ function validateUser(req, res, next) {
 }
 
 console.log('App.js is running');
-
-// let ChatBroadcaster = require('./lib/ChatBroadcaster');
-// chatBroadcaster = new ChatBroadcaster();
 
 module.exports = app;

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt');
 
 const userSchema = mongoose.Schema({
 	username: {
@@ -44,7 +44,7 @@ const userSchema = mongoose.Schema({
 
 // Generating a hash
 userSchema.methods.generateHash = function (password) {
-	return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+	return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
 };
 
 // Checking if password is valid

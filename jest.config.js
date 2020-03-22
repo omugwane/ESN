@@ -18,26 +18,28 @@ module.exports = {
 	clearMocks: true,
 
 	// Indicates whether the coverage information should be collected while executing the test
-	// collectCoverage: false,
+	collectCoverage: true,
 
 	// An array of glob patterns indicating a set of files for which coverage information should be collected
 	// collectCoverageFrom: undefined,
 
 	// The directory where Jest should output its coverage files
-	coverageDirectory: 'coverage',
+	coverageDirectory: './coverage',
 
 	// An array of regexp pattern strings used to skip coverage collection
 	coveragePathIgnorePatterns: [
 		'\\\\node_modules\\\\',
+		'\\\\ui\\\\',
 		'!<rootDir>/path/to/dir/'
 	],
 
 	// A list of reporter names that Jest uses when writing coverage reports
+	coverageReporters: ["lcov"],
 	// coverageReporters: [
-	//   "json",
-	//   "text",
-	//   "lcov",
-	//   "clover"
+	// 	"json",
+	// 	"text",
+	// 	"lcov",
+	// 	"clover"
 	// ],
 
 	// An object that configures minimum threshold enforcement for coverage results
@@ -53,10 +55,10 @@ module.exports = {
 	// forceCoverageMatch: [],
 
 	// A path to a module which exports an async function that is triggered once before all test suites
-	// globalSetup: undefined,
+	globalSetup: './setup.js',
 
 	// A path to a module which exports an async function that is triggered once after all test suites
-	// globalTeardown: undefined,
+	globalTeardown: './teardown.js',
 
 	// A set of global variables that need to be available in all test environments
 	// globals: {},
