@@ -3,6 +3,7 @@ const Chat = require('../models/PublicAnnouncements');
 // const App = require('../app');
 const PublicAnnouncementsRepository = require('../repositories/PublicAnnouncementsRepository');
 const userRepository = require('../repositories/UserRepository');
+const BroadcastAPI = require('../lib/BroadcastAPI');
 
 //a method to retrive all announcements from the database. it does not take
 //any arguments. it call the chatRepository.getAllChats(callback) method
@@ -52,7 +53,7 @@ exports.saveAnnouncement = (req, res) => {
 
 			PublicAnnouncementsRepository.postAnnouncement(announcement, (newAnnouncement) => {
 				if (newAnnouncement) {
-					chatBroadcaster.broadcast(newAnnouncement);
+					BroadcastAPI.broadcastEventToAll(newAnnouncement);
 					res.status(200).json({message: 'success', data: newAnnouncement});
 				} else
 					res.status(500).json({message: 'Saving the announcement failed', data: null});

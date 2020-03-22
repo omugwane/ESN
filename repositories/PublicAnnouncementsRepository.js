@@ -14,7 +14,7 @@ exports.postAnnouncement = (data, callback) => {
 		if (err) {
 			callback(null);
 		} else {
-			callback(chat);
+			callback(announcement);
 		}
 	};
 	announcement.save(callback1);
