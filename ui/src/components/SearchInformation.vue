@@ -34,18 +34,21 @@
             <div class="col-md-7">
                 <h5 class="section-title display-4">Search Results</h5>
                 <div class="search-results">
-                    <div class="search-result">
+                    <div class="search-result" v-for="(result,index) in searchResults" :key="index">
                         <div class="heading">
-                            Jean Baptiste (status: <span>Emergency</span>)
+                            {{(result.sender)? `${result.sender}`:`${result.username}`}} {{(result.status)? `(status: ${result.status} )`: ''}}
                         </div>
                         <div class="body">
-                            <small>{{new Date()}}</small>
+                            <small v-if="result.postedAt">{{result.postedAt}}</small>
                             <div class="content">
-                                How is everything hhjsjsj ss hdns sgs,skls sdgbndsdnm
+                                {{(result.content || '')}}
                             </div>
                         </div>
                     </div>
-                    <div class="search-result no-results">
+                    <div class="search-result no-results" v-if="searchResults.length === 0 && searchText.trim() === ''">
+                        Select options to begin searching.
+                    </div>
+                    <div class="search-result no-results" v-else-if="searchResults.length === 0">
                         <span class="mdi mdi-alert-outline mdi-24px"/> No results found! Try other search terms.
                     </div>
                 </div>
@@ -56,6 +59,7 @@
 
 <script>
     import stopWordsArray from "../helpers/stop_words_array";
+    import * as api from "../helpers/api";
 
     export default {
         name: "SearchInformation",
@@ -69,31 +73,35 @@
                         placeholder: 'Type username here...',
                         context: 'citizens',
                         criteria: 'username',
-                        text: ''
+                        searchText: ''
                     },
                     {
                         label: 'Citizens by status',
                         placeholder: 'Type status here...',
                         context: 'citizens',
-                        criteria: 'status'
+                        criteria: 'status',
+                        searchText: ''
                     },
                     {
                         label: 'Announcement',
                         placeholder: 'Type words to search for here...',
                         context: 'announcements',
-                        criteria: 'content'
+                        criteria: 'content',
+                        searchText: ''
                     },
                     {
                         label: 'Public chats',
                         placeholder: 'Type words to search for here...',
                         context: 'public_chats',
-                        criteria: 'content'
+                        criteria: 'content',
+                        searchText: ''
                     },
                     {
                         label: 'Private chats',
                         placeholder: 'Type words to search for here...',
                         context: 'private_chats',
-                        criteria: 'content'
+                        criteria: 'content',
+                        searchText: ''
                     }
                 ],
                 selectedSearchOption: null,
@@ -104,7 +112,16 @@
         methods: {
             search() {
                 let searchText = this.filterOutStopWords(this.searchText);
-                console.log("Filtered text", searchText)
+                searchText = searchText.join(' ');
+
+                if (this.selectedSearchOption) {
+                    this.selectedSearchOption.searchText = searchText;
+                    this.$http.post(api.SEARCH, this.selectedSearchOption)
+                        .then(({data}) => {
+                            this.searchResults = data.data;
+                            this.searchText = '';
+                        })
+                }
             },
             filterOutStopWords(searchText) {
                 let searchWords = this.breakTextIntoArrayOfWords(searchText);

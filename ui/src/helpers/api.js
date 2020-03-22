@@ -4,10 +4,10 @@ const prodBaseUrl = 'https://esn-chat-app.herokuapp.com/'
 export const getBaseUrl = () => {
     // console.log("process.env.NODE_ENV ",process.env.NODE_ENV)
     if (process.env.NODE_ENV === 'development')
-        return devBaseUrl
+        return devBaseUrl;
 
     return prodBaseUrl
-}
+};
 
 export const LOGIN = 'users/login';
 
@@ -30,3 +30,5 @@ export const GET_ANNOUNCEMENT_BY_ID = 'announcements/';
 export const GET_ANNOUNCEMENTS_BY_USERNAME = 'announcements/';
 export const DELETE_ANNOUNCEMENT = 'announcements/';
 export const UPDATE_ANNOUNCEMENT = 'announcements/';
+
+export const SEARCH = 'search'
