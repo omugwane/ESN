@@ -45,8 +45,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="search-result no-results" v-else-if="searchResults.length === 0">
-                        <span class="mdi mdi-alert-outline mdi-24px"/> No search results found!
+                    <div class="search-result no-results" v-if="searchResults.length === 0">
+                        <span class="mdi mdi-alert-outline mdi-24px"/> No search results!
                     </div>
                 </div>
             </div>
