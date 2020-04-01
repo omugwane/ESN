@@ -96,11 +96,7 @@
                 }
             },
             notifyUser(chat) {
-                /*this.$notify({
-                    group: 'new',
-                    title: 'New chat',
-                    text: 'Received a new chat message from  ' + chat.sender
-                });*/
+
                 let options = {
                     // title: 'Alert',
                     text: ' Received a new public chat message from  ' + chat.sender.toUpperCase(),

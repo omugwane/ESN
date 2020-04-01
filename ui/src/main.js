@@ -10,7 +10,6 @@ import './assets/bootstrap.scss'
 import '@mdi/font/css/materialdesignicons.css'
 import VueSocketIO from 'vue-socket.io';
 import vMediaQuery from 'v-media-query'
-import Notifications from 'vue-notification'
 import {getBaseUrl} from './helpers/api'
 
 import VueSweetalert2 from 'vue-sweetalert2';
@@ -28,7 +27,6 @@ Vue.use(new VueSocketIO({
     connection: getBaseUrl(),
 }))
 Vue.use(vMediaQuery)
-Vue.use(Notifications)
 Vue.component('multiselect', Multiselect)
 
 
