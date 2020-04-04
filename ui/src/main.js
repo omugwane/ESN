@@ -17,8 +17,10 @@ import Multiselect from 'vue-multiselect'
 
 // If you don't need the styles, do not connect
 import 'sweetalert2/dist/sweetalert2.min.css';
+import VModal from 'vue-js-modal'
 
 Vue.use(VueSweetalert2);
+Vue.use(VModal)
 
 const interceptors = require('./helpers/axiosInterceptors')
 
