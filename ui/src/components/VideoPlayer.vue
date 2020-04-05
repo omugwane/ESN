@@ -10,24 +10,16 @@
     export default {
         name: "VideoPlayer",
         props: {
-            videoFile: {
-                type: File,
-                default: null
-            },
-            visible: {
-                type: Boolean,
-                default: false
-            },
             options: {
                 type: Object,
                 default() {
-                    return {};
+                    return {}
                 }
-            }
+            },
         },
         mounted() {
             this.player = videojs(this.$refs.videoPlayer, this.options, function onPlayerReady() {
-                console.log('onPlayerReady', this);
+                // console.log('onPlayerReady', this);
             })
         },
         beforeDestroy() {
@@ -45,6 +37,5 @@
 </script>
 
 <style scoped lang="scss">
-    /*video.js/dist/video-js.css*/
     @import "~video.js/dist/video-js.min.css";
 </style>

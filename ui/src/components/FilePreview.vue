@@ -1,12 +1,12 @@
 <template>
     <div>
-        <!--        <sweet-modal ref="modal"-->
-        <!--                     enable-mobile-fullscreen-->
-        <!--                     overlay-theme="dark"-->
-        <!--                     blocking>-->
-        <!--            <template slot="title">-->
-        <!--                <h4 class="modal-title">Video Preview</h4>-->
-        <!--            </template>-->
+        <sweet-modal ref="modal"
+                     enable-mobile-fullscreen
+                     overlay-theme="dark"
+                     blocking>
+            <template slot="title">
+                <h4 class="modal-title">Video Preview</h4>
+            </template>
         <div class="row">
             <div class="col-md-8">
                 <video-player :options="videoOptions" v-if="file && videoOptions && visible"/>
@@ -30,19 +30,19 @@
                 </div>
             </div>
         </div>
-        <!--        </sweet-modal>-->
+                </sweet-modal>
     </div>
 </template>
 
 <script>
     import VideoPlayer from "./VideoPlayer";
-    // import {SweetModal} from 'sweet-modal-vue'
+    import {SweetModal} from 'sweet-modal-vue'
     import {UPLOAD_CHAT_FILE} from './../helpers/api'
 
     export default {
         name: "FilePreview",
         components: {
-            // SweetModal,
+            SweetModal,
             VideoPlayer
         },
         props: {

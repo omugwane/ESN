@@ -17,7 +17,13 @@
                         </div>
                         <small>{{new Date()}}</small>
                     </div>
-                    <div class="msg-body"> {{chat.content}}</div>
+                    <div v-if="chat.type === 'video'" class="video-thumbnail">
+                        <VideoPlayer :options="getVideoOptions(chat.fileUrl)"/>
+                    </div>
+                    <div class="msg-body" :class="{caption: chat.type === 'video'}">
+                        <small v-if="chat.type === 'video'" class="file-caption">Caption</small>
+                        {{chat.content}}
+                    </div>
                 </div>
             </div>
             <p v-if="chats.length < 1" class="text-center mt-3">
@@ -60,10 +66,11 @@
     import {eventBus} from '../main'
     import {STATUSES} from '../helpers/statuses'
     import FilePreview from "./FilePreview";
+    import VideoPlayer from "./VideoPlayer";
 
     export default {
         name: "ChatRoom",
-        components: {FilePreview},
+        components: {FilePreview, VideoPlayer},
         props: {
             chatWithCitizen: {
                 type: Object,
@@ -173,6 +180,20 @@
                     alert(err)
                 })
             },
+
+            getVideoOptions(relativeVideoUrl) {
+                return {
+                    autoplay: false,
+                    controls: true,
+                    fluid: true,
+                    sources: [
+                        {
+                            src: api.getBaseUrl() + relativeVideoUrl,
+                            type: "video/mp4"
+                        }
+                    ]
+                }
+            }
         }
     }
 </script>
@@ -227,10 +248,32 @@
             border-color: $sent-chat-bg-color transparent transparent transparent;
         }
 
+        .video-thumbnail {
+            width: calc(100% - 4px);
+            margin: 2px;
+            border: 2px outset $dark-5;
+            img {
+                width: 100%;
+            }
+        }
+
         .msg-body {
-            padding: 1em;
+            padding: 8px 16px;
             text-align: left;
             line-height: 1.5em;
+
+            .file-caption {
+                display: block;
+                margin-top: -8px;
+                color: $secondary;
+                font-weight: bold;
+                font-style: italic;
+                font-size: 10px;
+            }
+
+            &.caption{
+                border-left: 4px solid $secondary;
+            }
         }
     }
 
