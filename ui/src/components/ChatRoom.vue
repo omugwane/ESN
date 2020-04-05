@@ -1,8 +1,9 @@
 <template>
     <div id="chat-room">
-        <div id="chats">
+        <div id="chats" ref="chatsContainer">
             <div v-for="chat in chats"
                  :key="chat._id"
+                 class="chat"
                  :class="(chat.sender === loggedInUsername)? 'sent-msg-box': 'received-msg-box'">
                 <div class="message"
                      :class="(chat.sender === loggedInUsername)? 'sent': 'received'">
@@ -88,6 +89,7 @@
                 this.getPublicChats();
         },
         mounted() {
+            // this.scrollToLatestMessage();
             eventBus.$on('new-chat-message', (chat) => {
                 //Checking if the chat is from the citizen currently being chatted with
                 //and that the receiver is the loggedInUsername
@@ -96,6 +98,7 @@
                 } else if (chat && !chat.receiver) { //Checking if the chat is a public chat(Public chat has no receiver)
                     this.chats = this.chats.concat(chat);
                 }
+                this.scrollToLatestMessage();
             })
         },
         data() {
@@ -167,7 +170,8 @@
             getPublicChats() {
                 let vm = this;
                 vm.$http.get(api.GET_ALL_CHATS).then(({data}) => {
-                    vm.chats = data.data
+                    vm.chats = data.data;
+                    vm.scrollToLatestMessage();
                 }).catch((err) => {
                     alert(err)
                 })
@@ -175,7 +179,8 @@
             getPrivateChats() {
                 let vm = this;
                 vm.$http.get(api.GET_ALL_CHATS + this.loggedInUsername + '/' + this.chatWithCitizen.username).then(({data}) => {
-                    vm.chats = data.data
+                    vm.chats = data.data;
+                    vm.scrollToLatestMessage();
                 }).catch((err) => {
                     alert(err)
                 })
@@ -193,6 +198,16 @@
                         }
                     ]
                 }
+            },
+            scrollToLatestMessage() {
+                this.$nextTick(() => {
+                    // let chats = document.querySelectorAll('#chats .chat');
+
+                    // $('#chat-room-messages').scrollTop($('#chat-room-messages')[0].scrollHeight);
+                    // this.$refs.chatsContainer.scrollTop = chats[chats.length - 1].scrollHeight;
+
+                    this.$refs.chatsContainer.scrollTop = this.$refs.chatsContainer.scrollHeight;
+                })
             }
         }
     }
@@ -252,6 +267,7 @@
             width: calc(100% - 4px);
             margin: 2px;
             border: 2px outset $dark-5;
+
             img {
                 width: 100%;
             }
@@ -271,7 +287,7 @@
                 font-size: 10px;
             }
 
-            &.caption{
+            &.caption {
                 border-left: 4px solid $secondary;
             }
         }
