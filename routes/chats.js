@@ -10,6 +10,6 @@ router.get('/:username', chatController.getChatsByUsername);
 router.delete('/:chatId', chatController.deleteChat);
 router.patch('/:chatId', chatController.updateChat);
 router.get('/:username1/:username2', chatController.getPrivateChats);
-
+router.post("/upload",chatController.saveUpload);
 
 module.exports = router;

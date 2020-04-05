@@ -17,6 +17,7 @@ export const GET_CHAT_BY_ID = 'chats/';
 export const GET_CHATS_BY_USERNAME = 'chats/';
 export const DELETE_CHAT = 'chats/';
 export const UPDATE_CHAT = 'chats/';
+export const UPLOAD_CHAT_FILE = 'chats/upload/';
 
 export const GET_ALL_USERS = 'users/';
 export const DELETE_USER = 'users/';

@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+const chatTypes = {
+    video: 'video',
+    image: 'image',
+    text: 'text',
+}
+
 const chatSchema = mongoose.Schema({
     sender: {
         type: String,
@@ -20,8 +26,15 @@ const chatSchema = mongoose.Schema({
     receiver: {
         type: String,
         default: null
-        // required: true
     },
+    type: {
+        type: String,
+        default: chatTypes.text
+    },
+    fileUrl: {
+        type: String,
+        default: null
+    }
 });
 chatSchema.index({content: 'text'});
 module.exports = mongoose.model('Chat', chatSchema);
