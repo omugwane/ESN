@@ -21,6 +21,7 @@ import VModal from 'vue-js-modal'
 
 Vue.use(VueSweetalert2);
 Vue.use(VModal)
+Vue.use(require('vue-moment'));
 
 const interceptors = require('./helpers/axiosInterceptors')
 

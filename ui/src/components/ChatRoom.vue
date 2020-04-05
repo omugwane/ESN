@@ -16,7 +16,9 @@
                                 status: {{getStatusLabel(chat.status)}}
                             </small>
                         </div>
-                        <small>{{new Date()}}</small>
+                        <small>
+                            {{ chat.postedAt | moment("dddd, MMMM Do YYYY, h:mm a") }}
+                        </small>
                     </div>
                     <div v-if="chat.type === 'video'" class="video-thumbnail">
                         <VideoPlayer :options="getVideoOptions(chat.fileUrl)"/>
