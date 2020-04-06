@@ -15,7 +15,7 @@
                     <div class="file-details">
                         <h3 class="subtitle">Details</h3>
                         <p>Name: {{file.name}}</p>
-                        <p>Size: {{((file.size/1024) /1024).toFixed(2)}} MB</p>
+                        <p style="color: #A90C1C;font-weight: bold">Size (max is 100 MB): {{((file.size/1024) /1024).toFixed(2)}} MB</p>
                         <p>Type: {{file.type}}</p>
                     </div>
                 </div>
@@ -23,10 +23,14 @@
             <div class="row">
                 <div class="col mt-3">
                     <label for="file-caption">Caption</label>
-                    <textarea name="caption" id="file-caption" v-model="fileCaption"/>
+                    <textarea name="caption" id="file-caption" v-model="fileCaption" placeholder="Type message here..."/>
                     <div class="actions mb-4">
-                        <button class="btn btn-primary mr-3" @click="submitChat">Send</button>
-                        <button class="btn btn-secondary" @click="closeModal">Close</button>
+                        <button class="btn btn-secondary mr-3" @click="closeModal">
+                            Close <span class="mdi mdi-close"/>
+                        </button>
+                        <button class="btn btn-primary btn-send" @click="submitChat">
+                            Send <span class="mdi mdi-send"/>
+                        </button>
                         <loading :active.sync="loader.loading"
                                  :can-cancel="false"
                                  :is-full-page="true"
@@ -157,9 +161,8 @@
 
                     vm.$http.post(UPLOAD_CHAT_FILE, formData).then((response) => {
                         vm.showMessage(true, response.data.message);
-                    }).catch((error) => {
+                    }).catch(() => {
                         vm.showMessage(false, "Uploading video failed. Note that video should not be larger than 100 MB");
-                        console.log("Upload Error ", error);
                     })
                 } else {
                     this.showMessage(false, 'Only a registered citizen can send chats!');
@@ -204,9 +207,18 @@
         width: 100% !important;
         border: 1px solid $dark-5;
         margin-top: 4px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        outline: none;
+        &:focus{
+            border: 1px solid deepskyblue;
+        }
     }
 
     .actions {
         margin-top: 16px;
+        button{
+            width: 96px;
+        }
     }
 </style>
