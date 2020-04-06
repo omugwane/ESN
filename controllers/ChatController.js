@@ -73,9 +73,7 @@ exports.saveChat = (req, res) => {
 
             chatRepository.saveChat(chat, (newChat) => {
                 if (newChat) {
-                    // chatBroadcaster.broadcast(newChat);
                     BroadcastAPI.broadcastEventToAll(newChat);
-
                     res.status(200).json({message: 'success', data: newChat});
                 } else
                     res.status(500).json({message: 'Saving the chat message failed', data: null});
@@ -99,44 +97,20 @@ exports.saveUpload = (req, res) => {
             if (Object.keys(req.files).length !== 0) {
                 let video = req.files.video;
 
-                chatRepository.saveChatWithFile(video, chat, (newChat) => {
+                chatRepository.saveChatWithFile(video, chat, (newChat,error) => {
                     if (newChat) {
-                        // chatBroadcaster.broadcast(newChat);
                         BroadcastAPI.broadcastEventToAll(newChat);
 
-                        res.status(200).json({message: 'success', data: newChat});
+                        res.status(200).json({message: 'Chat was successfull saved!', data: newChat});
                     } else
-                        res.status(500).json({message: 'Saving the chat message failed', data: null});
+                        res.status(500).json({message: 'Saving the chat message failed',error: error, data: null});
                 });
             }else {
 				res.status(400).json({message: 'File is missing!', data: null});
 			}
         } else {
-            res.status(500).json({message: 'Saving the chat message failed', data: null});
+            res.status(500).json({message: "Saving the chat message failed. Chat's sender not found!", data: null});
         }
     });
-};
-
-//delete a chat
-exports.deleteChat = async (req, res) => {
-    try {
-        const deletedMessage = Chat.remove({_id: req.params.chatId});
-        res.status(200).json({message: 'Chat deleted successfully'});
-    } catch (err) {
-        res.status(500).json({message: err});
-    }
-};
-
-//update a chat
-exports.updateChat = async (req, res) => {
-    try {
-        const updatedMessage = await Chat.updateOne(
-            {_id: req.params.chatId},
-            {$set: {content: req.body.content}}
-        );
-        res.status(200).json({message: 'chat updated'});
-    } catch (err) {
-        res.status(500).json({message: err});
-    }
 };
 

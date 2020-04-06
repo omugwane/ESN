@@ -44,7 +44,11 @@
             </div>
             <!--File selector. When clicked, opens up file explorer to select file. It is hidden and the click event
             is triggered programmatically by a function named: selectFile(fileType)-->
-            <input type="file" ref="fileSelector" id="file-selector" @change="onFileSelection">
+            <form ref="frmFileSelector">
+                <input type="file" ref="fileSelector" id="file-selector"
+                       @change="onFileSelection"
+                       accept="video/mp4,video/x-m4v,video/*">
+            </form>
         </div>
         <div id="chat-form">
             <div class="input-chat-box">
@@ -60,7 +64,9 @@
             </button>
         </div>
 
-        <FilePreview :file="selectedFile" :visible="showPreview" @closed="disposeFile" v-if="selectedFile"/>
+        <FilePreview :chat-details="chatDetails" :file="selectedFile" :visible="showPreview"
+                     @closed="disposeFile"
+                     v-if="selectedFile"/>
     </div>
 </template>
 
@@ -89,6 +95,7 @@
                 this.getPrivateChats()
             else
                 this.getPublicChats();
+
         },
         mounted() {
             // this.scrollToLatestMessage();
@@ -113,6 +120,14 @@
                 showPreview: false,
             }
         },
+        computed: {
+            chatDetails() {
+                return {
+                    chatReceiver: this.chatWithCitizen ? `${this.chatWithCitizen.username}` : null,
+                    chatSender: this.loggedInUsername
+                }
+            }
+        },
         watch: {
             chatWithCitizen: function (newVal) { //Detecting in private chat, when a citizen to chat with changes
                 if (newVal)
@@ -129,8 +144,10 @@
             },
             onFileSelection() {
                 this.selectedFile = this.$refs.fileSelector.files[0];
-                console.log(this.selectedFile)
+                // console.log(this.selectedFile)
                 this.showPreview = true
+
+                this.$refs.frmFileSelector.reset() // Resetting the field to caching problem when the same file is reselected
             },
             disposeFile() {
                 this.showPreview = false;
@@ -148,16 +165,17 @@
             postChat() {
                 let vm = this;
 
-                let chatReceiver = null
+                let chatReceiver = null;
 
                 if (vm.chatWithCitizen !== null)
-                    chatReceiver = vm.chatWithCitizen.username
+                    chatReceiver = vm.chatWithCitizen.username;
 
                 let newChat = {
                     sender: vm.loggedInUsername,
                     content: vm.newChat,
                     receiver: chatReceiver
-                }
+                };
+
                 if (vm.newChat.trim().length !== 0) {
                     vm.$http.post(api.SAVE_CHAT, newChat).then(() => {
                         // console.log(data)
@@ -166,8 +184,14 @@
                     }).catch((err) => {
                         alert(err)
                     })
-                } else
-                    alert("Can not post empty chat!")
+                } else {
+                    this.$swal({
+                        text: 'Can not post empty chat!',
+                        icon: 'error',
+                        toast: false,
+                        showConfirmButton: true,
+                    });
+                }
             },
             getPublicChats() {
                 let vm = this;
@@ -219,6 +243,7 @@
     @import "src/assets/colors";
     @import "src/assets/sizes";
     @import "src/assets/includes";
+
 
     #chat-room {
         background-color: #E6E6E6;
@@ -359,7 +384,7 @@
 
     #chat-form {
         background-color: $primary;
-        height: 64px;
+        height: $chat-form-height;
         display: flex;
         align-items: center;
         padding: 8px 16px;
@@ -413,10 +438,14 @@
         background-color: $primary;
         margin: 8px;
         padding: 8px 16px;
-        max-width: 240px;
-        position: relative;
+        min-width: 240px;
+        max-width: 400px;
         border: 2px solid $secondary;
         border-radius: 4px;
+        position: absolute;
+        bottom: $chat-form-height; //Offsetting chat form height
+        left: 4px;
+
 
         //The bottom arrow on the popup
         &:after {

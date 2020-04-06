@@ -14,11 +14,9 @@ const chatSchema = mongoose.Schema({
 
     content: {
         type: String,
-        required: true
     },
     status: {
         type: String,
-        required: false
     },
     postedAt: {
         type: Date, default: Date.now,

@@ -5,16 +5,13 @@ const Chat = require('../models/Chat');
 //it takes an object containing the details of a chat as an 
 //argument and a callback as arguments
 exports.saveChat = (chatData, callback) => {
-
     let chat = new Chat();
     chat.sender = chatData.sender;
     chat.content = chatData.content;
     chat.status = chatData.status;
     chat.receiver = chatData.receiver;
 
-
     let callback1 = (err) => {
-
         if (err) {
             callback(null);
         } else {
@@ -27,16 +24,13 @@ exports.saveChat = (chatData, callback) => {
 //method to retrive all chats from the database. it takes a callback
 //as an argument and returns an object of the retrived chats.
 exports.getAllChats = (callback) => {
-    let callback1 = (err, docs) => {
-
+    Chat.find({receiver: null}, (err, docs) => {
         if (err) {
             callback(null);
         } else {
             callback(docs);
         }
-
-    };
-    Chat.find({receiver: null}, callback1);
+    });
 };
 
 //a method to retrive chats from the database by username. it takes the 
@@ -84,9 +78,9 @@ exports.saveChatWithFile = (videoFile, chatData, callback) => {
 
         chat.save((err) => {
             if (err) {
-                callback(null);
+                callback(null, err);
             } else {
-                callback(chat);
+                callback(chat, null);
             }
         });
     })
