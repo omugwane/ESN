@@ -23,7 +23,7 @@
                     <div v-if="chat.type === 'video'" class="video-thumbnail">
                         <VideoPlayer :options="getVideoOptions(chat.fileUrl)"/>
                     </div>
-                    <div class="msg-body" :class="{caption: chat.type === 'video'}">
+                    <div v-show="chat.content.length !== 0" class="msg-body" :class="{caption: chat.type === 'video'}">
                         <small v-if="chat.type === 'video'" class="file-caption">Caption</small>
                         {{chat.content}}
                     </div>

@@ -8,8 +8,7 @@ const userRepository = require('../repositories/UserRepository');
 //any arguments. it call the chatRepository.getAllChats(callback) method
 exports.getAllChats = function (req, res) {
 
-    let callback = (docs) => {
-
+    chatRepository.getAllChats((docs) => {
         if (docs === null) {
             res.status(500).json({data: null});
         } else {
@@ -18,8 +17,7 @@ exports.getAllChats = function (req, res) {
             };
             res.status(200).json(responseObject);
         }
-    };
-    chatRepository.getAllChats(callback);
+    });
 
 };
 
@@ -91,23 +89,23 @@ exports.saveUpload = (req, res) => {
                 sender: user.username,
                 content: req.body.content,
                 status: user.status,
-                receiver: req.body.receiver
+                receiver: req.body.receiver === 'null' ? null : `${req.body.receiver}`
             };
 
             if (Object.keys(req.files).length !== 0) {
                 let video = req.files.video;
 
-                chatRepository.saveChatWithFile(video, chat, (newChat,error) => {
+                chatRepository.saveChatWithFile(video, chat, (newChat, error) => {
                     if (newChat) {
                         BroadcastAPI.broadcastEventToAll(newChat);
 
                         res.status(200).json({message: 'Chat was successfull saved!', data: newChat});
                     } else
-                        res.status(500).json({message: 'Saving the chat message failed',error: error, data: null});
+                        res.status(500).json({message: 'Saving the chat message failed', error: error, data: null});
                 });
-            }else {
-				res.status(400).json({message: 'File is missing!', data: null});
-			}
+            } else {
+                res.status(400).json({message: 'File is missing!', data: null});
+            }
         } else {
             res.status(500).json({message: "Saving the chat message failed. Chat's sender not found!", data: null});
         }
