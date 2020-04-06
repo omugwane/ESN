@@ -22,6 +22,9 @@
                     </div>
                     <div v-if="chat.type === 'video'" class="video-thumbnail">
                         <VideoPlayer :options="getVideoOptions(chat.fileUrl)"/>
+                        <button class="open-player" @click="showPlayer(chat.fileUrl)">
+                            Open player <span class="mdi mdi-arrow-expand"/>
+                        </button>
                     </div>
                     <div v-show="chat.content.length !== 0" class="msg-body" :class="{caption: chat.type === 'video'}">
                         <small v-if="chat.type === 'video'" class="file-caption">Caption</small>
@@ -67,6 +70,22 @@
         <FilePreview :chat-details="chatDetails" :file="selectedFile" :visible="showPreview"
                      @closed="disposeFile"
                      v-if="selectedFile"/>
+
+        <!--        Video Player Modal-->
+        <sweet-modal ref="modal"
+                     id="modal-player"
+                     enable-mobile-fullscreen
+                     overlay-theme="dark"
+                     modal-theme="dark"
+                     width="70%"
+                     blocking>
+            <template slot="title">
+                <h5 class="modal-title">Video Player</h5>
+            </template>
+            <div id="player">
+                <video-player :options="playerDetails" v-if="playerShown"/>
+            </div>
+        </sweet-modal>
     </div>
 </template>
 
@@ -76,10 +95,11 @@
     import {STATUSES} from '../helpers/statuses'
     import FilePreview from "./FilePreview";
     import VideoPlayer from "./VideoPlayer";
+    import {SweetModal} from 'sweet-modal-vue'
 
     export default {
         name: "ChatRoom",
-        components: {FilePreview, VideoPlayer},
+        components: {FilePreview, VideoPlayer, SweetModal},
         props: {
             chatWithCitizen: {
                 type: Object,
@@ -98,7 +118,6 @@
 
         },
         mounted() {
-            // this.scrollToLatestMessage();
             eventBus.$on('new-chat-message', (chat) => {
                 //Checking if the chat is from the citizen currently being chatted with
                 //and that the receiver is the loggedInUsername
@@ -108,6 +127,11 @@
                     this.chats = this.chats.concat(chat);
                 }
                 this.scrollToLatestMessage();
+            });
+
+            let btnClose = document.querySelector('#modal-player div.sweet-action-close');
+            btnClose.addEventListener('click', () => {
+                this.closePlayer();
             })
         },
         data() {
@@ -118,6 +142,18 @@
                 attachmentsPopupShown: false,
                 selectedFile: null,
                 showPreview: false,
+                playerShown: false,
+                playerDetails: {
+                    autoplay: true,
+                    controls: true,
+                    fluid: true,
+                    sources: [
+                        {
+                            src: '',
+                            type: "video/mp4"
+                        }
+                    ]
+                }
             }
         },
         computed: {
@@ -126,7 +162,7 @@
                     chatReceiver: this.chatWithCitizen ? `${this.chatWithCitizen.username}` : null,
                     chatSender: this.loggedInUsername
                 }
-            }
+            },
         },
         watch: {
             chatWithCitizen: function (newVal) { //Detecting in private chat, when a citizen to chat with changes
@@ -135,6 +171,14 @@
             }
         },
         methods: {
+            showPlayer(videoUrl) {
+                this.playerDetails.sources[0].src = api.getBaseURLFromOrigin() + videoUrl;
+                this.playerShown = true;
+                this.$refs.modal.open();
+            },
+            closePlayer() {
+                this.playerShown = false;
+            },
             selectFile(fileType) {
                 this.showPreview = false
                 if (fileType === 'video') {
@@ -219,7 +263,7 @@
                     fluid: true,
                     sources: [
                         {
-                            src: api.getBaseUrl() + relativeVideoUrl,
+                            src: api.getBaseURLFromOrigin() + relativeVideoUrl,
                             type: "video/mp4"
                         }
                     ]
@@ -294,9 +338,30 @@
             width: calc(100% - 4px);
             margin: 2px;
             border: 2px outset $dark-5;
+            position: relative;
 
             img {
                 width: 100%;
+            }
+
+            .open-player {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                background-color: $dark-5;
+                color: $primary;
+                padding: 4px 8px;
+                border: none;
+                outline: none;
+                border-radius: 4px;
+
+                @media (max-width: 600px) {
+                    display: none;
+                }
+
+                &:hover {
+                    background-color: $secondary;
+                }
             }
         }
 
@@ -491,6 +556,17 @@
 
         #file-selector {
             display: none;
+        }
+    }
+
+
+</style>
+<style lang="scss">
+    #modal-player {
+        .sweet-modal {
+            @media (max-width: 600px) {
+                width: 100% !important;
+            }
         }
     }
 </style>

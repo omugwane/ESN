@@ -26,7 +26,14 @@
                     <textarea name="caption" id="file-caption" v-model="fileCaption"/>
                     <div class="actions mb-4">
                         <button class="btn btn-primary mr-3" @click="submitChat">Send</button>
-                        <button class="btn btn-secondary" @click="closeModal">Cancel</button>
+                        <button class="btn btn-secondary" @click="closeModal">Close</button>
+                        <loading :active.sync="loader.loading"
+                                 :can-cancel="false"
+                                 :is-full-page="true"
+                                 :background-color="loader.backgroundColor"
+                                 :opacity="loader.opacity"
+                                 :loader="loader.loaderType"
+                                 :color="loader.color"></loading>
                     </div>
 
                     <b-alert v-model="response.success" variant="success" dismissible>
@@ -45,12 +52,15 @@
     import VideoPlayer from "./VideoPlayer";
     import {SweetModal} from 'sweet-modal-vue'
     import {UPLOAD_CHAT_FILE} from './../helpers/api'
+    import Loading from 'vue-loading-overlay';
+    import 'vue-loading-overlay/dist/vue-loading.css';
 
     export default {
         name: "FilePreview",
         components: {
             SweetModal,
-            VideoPlayer
+            VideoPlayer,
+            Loading
         },
         props: {
             file: {
@@ -71,7 +81,7 @@
             }
         },
         mounted() {
-            this.$refs.modal.open()
+            this.$refs.modal.open();
 
             let btnClose = document.querySelector('div.sweet-action-close');
             btnClose.addEventListener('click', () => {
@@ -85,7 +95,14 @@
                     success: false,
                     error: false,
                     message: '',
-                }
+                },
+                loader: {
+                    loading: false,
+                    backgroundColor: '#fff',
+                    opacity: 0.5,
+                    loaderType: 'dots',
+                    color: '#A90C1C'
+                },
             }
         },
         computed: {
@@ -114,6 +131,7 @@
                 this.response.error = false;
             },
             showMessage(success, message) {
+                this.loader.loading = false;
                 this.resetMessage();
                 this.response.message = message;
                 if (success)
@@ -135,17 +153,12 @@
                     formData.append('receiver', this.chatDetails.chatReceiver);
 
                     let vm = this;
+                    vm.loader.loading = true;
 
                     vm.$http.post(UPLOAD_CHAT_FILE, formData).then((response) => {
                         vm.showMessage(true, response.data.message);
                     }).catch((error) => {
-                        vm.showMessage(false, error.data.message);
-                        /*this.$swal({
-                            text: "Error occurred! ::" + error.message,
-                            icon: 'error',
-                            toast: false,
-                            showConfirmButton: true,
-                        });*/
+                        vm.showMessage(false, "Uploading video failed. Note that video should not be larger than 100 MB");
                         console.log("Upload Error ", error);
                     })
                 } else {
