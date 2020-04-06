@@ -1,12 +1,13 @@
 const devBaseUrl = 'http://localhost:3000/'
-const prodBaseUrl = 'https://esn-chat-app.herokuapp.com/'
+// const prodBaseUrl = 'https://esn-chat-app.herokuapp.com/'
 
 export const getBaseUrl = () => {
     // console.log("process.env.NODE_ENV ",process.env.NODE_ENV)
     if (process.env.NODE_ENV === 'development')
         return devBaseUrl;
 
-    return prodBaseUrl
+    // return prodBaseUrl
+    return '/' //Using relative URL to the serve
 };
 
 export const LOGIN = 'users/login';
