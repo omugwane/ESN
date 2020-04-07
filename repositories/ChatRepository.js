@@ -10,8 +10,8 @@ exports.saveChat = (chatData, callback) => {
 	chat.sender = chatData.sender;
 	chat.content = chatData.content;
 	chat.status = chatData.status;
-	chat.receiver = chatData.receiver;
-
+	//chat.receiver = chatData.receiver;
+	chat.filename = chatData.filename;
 
 	let callback1 = (err) => {
 
