@@ -10,6 +10,10 @@ const chatSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    filename: {
+        type: String,
+        required: false
+    },
     status: {
         type: String,
         required: false
