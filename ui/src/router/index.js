@@ -7,6 +7,7 @@ import AllCitizens from "../components/AllCitizens";
 import UserRegistration from "../views/UserRegistration";
 import PrivateChatRoom from "../components/PrivateChatRoom";
 import ShareStatus from "../components/ShareStatus";
+import ShareLocation from "../components/ShareLocation";
 import PostAnnouncement from "../components/PostAnnouncement";
 import SearchInformation from "../components/SearchInformation";
 
@@ -52,6 +53,14 @@ const routes = [
                 path: 'status',
                 name: 'share-status',
                 component: ShareStatus,
+                meta: {
+                    requiresAuth: true,
+                }
+            },
+            {
+                path: 'location',
+                name: 'share-location',
+                component: ShareLocation,
                 meta: {
                     requiresAuth: true,
                 }

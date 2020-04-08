@@ -11,6 +11,9 @@
                         <small class="citizen-status" :style="{color: getStatusColor(citizen.status)}">
                             (status: {{(citizen.status.toUpperCase() === 'UNDEFINED') ? 'Not available':`${citizen.status.toUpperCase()}`}})
                         </small>
+                        <small class="citizen-location">
+                            (location: {{(citizen.location.toUpperCase() === 'UNKNOWN') ? 'Not available':`${citizen.location.toUpperCase()}`}})
+                        </small>
                     </div>
                     <div class="citizen-details">
                         <small><span class="mdi mdi-email"/> {{citizen.email}}</small> <small><span
@@ -110,9 +113,6 @@
 
             @media (max-width: 600px) {
                 font-size: 12px;
-                span {
-                    /*display: none;*/
-                }
             }
         }
 
@@ -129,6 +129,10 @@
             }
         }
         .citizen-status {
+            margin-left: 8px;
+            font-size: 12px;
+        }
+        .citizen-location {
             margin-left: 8px;
             font-size: 12px;
         }
