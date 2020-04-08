@@ -20,7 +20,8 @@ const userForTest = {
 	email: 'email',
 	phone: 'phone',
 	role: 'Citizen',
-	status: 'OK'
+	status: 'OK',
+	location: '-1.9496959999999999, 30.1006848'
 };
 
 describe('user routes', () => {
@@ -68,6 +69,23 @@ describe('user routes', () => {
 		request(app).post('/users').send(userForTest).then(() => {
 			try {
 				request(app).put('/users/status/' + userForTest.username).send({status: 'Help'}).then((response) => {
+					try {
+						expect(response.statusCode).toBe(200);
+						done();
+					} catch (e) {
+						done.fail(e);
+					}
+				});
+			} catch (e) {
+				done.fail(e);
+			}
+		});
+	});
+
+	it('Should update a user\'s location', (done) => {
+		request(app).post('/users').send(userForTest).then(() => {
+			try {
+				request(app).put('/users/location/' + userForTest.username).send({location: '-1.9496959999999999, 30.1006848'}).then((response) => {
 					try {
 						expect(response.statusCode).toBe(200);
 						done();

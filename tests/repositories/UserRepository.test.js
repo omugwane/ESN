@@ -30,7 +30,8 @@ describe('User Repository', () => {
 			email: 'email',
 			phone: 'phone',
 			role: 'Citizen',
-			status: 'OK'
+			status: 'OK',
+			location: '-1.9496959999999999, 30.1006848'
 		};
 		UserRepository.registerUser(user, (result) => {
 			try {
@@ -51,7 +52,8 @@ describe('User Repository', () => {
 			email: 'email',
 			phone: 'phone',
 			role: 'Citizen',
-			status: 'OK'
+			status: 'OK',
+			location: '-1.9496959999999999, 30.1006848'
 		};
 		UserRepository.registerUser(user, (result) => {
 			try {
@@ -78,7 +80,8 @@ describe('User Repository', () => {
 			email: 'email',
 			phone: 'phone',
 			role: 'Citizen',
-			status: 'OK'
+			status: 'OK',
+			location: '-1.9496959999999999, 30.1006848'
 		};
 		UserRepository.registerUser(user, (savedUser) => {
 			try {
