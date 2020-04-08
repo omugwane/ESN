@@ -11,7 +11,7 @@ exports.saveChat = (userData, callback) => {
 	user.content = userData.content;
 	user.status = userData.status;
 	user.receiver = userData.receiver;
-
+	user.location = userData.location;
 
 	let callback1 = (err) => {
 
@@ -54,8 +54,9 @@ exports.registerUser = (userData, callback) => {
 	user.phone = userData.phone;
 	user.role = userData.role;
 	user.status = userData.status;
+	user.location = userData.location;
 
-	User.find({username: userData.username}, (err, users) => {
+	User.find({ username: userData.username }, (err, users) => {
 		if (users && users.length === 0) {
 			user.save((err) => {
 				// console.log("registerUser", err)
@@ -80,7 +81,7 @@ exports.getUserByUsername = (username, callback) => {
 		}
 	};
 
-	User.findOne({username: username}, callback1);
+	User.findOne({ username: username }, callback1);
 
 };
 
@@ -90,11 +91,31 @@ exports.updateUserStatus = async (username, status, callback) => {
 	// const filter = {username: username};
 	// const update = {status: status};
 
-	User.findOne({username: username}, (err, user) => {
+	User.findOne({ username: username }, (err, user) => {
 		if (err) {
 			callback(null);
 		} else {
 			user.status = status;
+			user.save((err) => {
+				if (err)
+					callback(null);
+				else
+					callback(user);
+			});
+		}
+	});
+};
+
+
+//a method to update the location of a user. It takes a username, location
+//and a callback as parameters and returns 
+exports.updateUserLocation = async (username, location, callback) => {
+
+	User.findOne({ username: username }, (err, user) => {
+		if (err) {
+			callback(null);
+		} else {
+			user.location = location;
 			user.save((err) => {
 				if (err)
 					callback(null);

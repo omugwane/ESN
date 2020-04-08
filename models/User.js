@@ -36,6 +36,14 @@ const userSchema = mongoose.Schema({
 		type: String,
 		default: 'Undefined'
 	},
+	location: {
+		type: String,
+		default: 'Unknown'
+	},
+	rescuer: {
+		type: String,
+		default: 'No'
+	},
 	timeStamp: {
 		type: Date, default: Date.now,
 	},

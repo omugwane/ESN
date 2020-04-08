@@ -77,5 +77,20 @@ exports.updateUserStatus = async (req, res) => {
 	});
 };
 
+exports.updateUserLocation = async (req, res) => {
+
+	await userRepository.updateUserLocation(req.params.username, req.body.location, function (user) {
+		if (user) {
+			res.status(200).json({message: 'Successfully update the user\'s location', data: user});
+		}
+		else {
+			res.status(500).json({
+				message: 'Updating the user\'s location failed.',
+				data: null
+			});
+		}
+	});
+};
+
 
 
