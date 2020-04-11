@@ -37,11 +37,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 // Enable files upload
 app.use(fileUpload({
     createParentPath: true,
-    limits: {fileSize: 100 * 1024 * 1024}, //Limit file size to 100 MB
+    limits: {fileSize: 30 * 1024 * 1024}, //Limit file size to 30 MB
 	safeFileNames: true, //Non-alphanumeric characters except dashes and underscores will be stripped
 	preserveExtension: 4, //Keep files with extension not greater than 4 characters in length
 	abortOnLimit: true,
-
 }));
 
 app.use(bodyParser.json());

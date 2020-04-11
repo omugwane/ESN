@@ -15,7 +15,7 @@
                     <div class="file-details">
                         <h3 class="subtitle">Details</h3>
                         <p>Name: {{file.name}}</p>
-                        <p style="color: #A90C1C;font-weight: bold">Size (max is 100 MB): {{((file.size/1024) /1024).toFixed(2)}} MB</p>
+                        <p style="color: #A90C1C;font-weight: bold">Size (max is 30 MB): {{getFileSize}} MB</p>
                         <p>Type: {{file.type}}</p>
                     </div>
                 </div>
@@ -23,7 +23,8 @@
             <div class="row">
                 <div class="col mt-3">
                     <label for="file-caption">Caption</label>
-                    <textarea name="caption" id="file-caption" v-model="fileCaption" placeholder="Type message here..."/>
+                    <textarea name="caption" id="file-caption" v-model="fileCaption"
+                              placeholder="Type message here..."/>
                     <div class="actions mb-4">
                         <button class="btn btn-secondary mr-3" @click="closeModal">
                             Close <span class="mdi mdi-close"/>
@@ -127,6 +128,11 @@
 
                 return null
             },
+            getFileSize() {
+                if (this.file)
+                    return ((this.file.size / 1024) / 1024).toFixed(2);
+                return null;
+            },
         },
         watch: {},
         methods: {
@@ -148,7 +154,8 @@
                 this.$emit('closed')
             },
             submitChat() {
-                if (this.chatDetails.chatSender) {
+                let fileSize = this.getFileSize || 0;
+                if (this.chatDetails.chatSender && fileSize > 0 && fileSize <= 30) {
                     let formData = new FormData();
                     formData.append('video', this.file, this.file.name);
                     formData.append('content', this.fileCaption);
@@ -165,13 +172,12 @@
                         vm.showMessage(false, "Uploading video failed. Note that video should not be larger than 100 MB");
                     })
                 } else {
-                    this.showMessage(false, 'Only a registered citizen can send chats!');
-                    /*this.$swal({
-                        text: 'Only a registered can send chats!',
-                        icon: 'error',
-                        toast: false,
-                        showConfirmButton: true,
-                    });*/
+                    if (fileSize > 30)
+                        this.showMessage(false, 'File is too big! Cannot submit a file larger than 30 MB');
+                    else if (fileSize <= 0)
+                        this.showMessage(false, 'File is too small! Cannot submit 0 MB file.');
+                    else
+                        this.showMessage(false, 'Only a registered citizen can send chats!');
                 }
             }
         }
@@ -210,14 +216,16 @@
         padding: 8px 16px;
         border-radius: 8px;
         outline: none;
-        &:focus{
+
+        &:focus {
             border: 1px solid deepskyblue;
         }
     }
 
     .actions {
         margin-top: 16px;
-        button{
+
+        button {
             width: 96px;
         }
     }
