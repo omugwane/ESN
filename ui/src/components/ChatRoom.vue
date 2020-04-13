@@ -1,4 +1,5 @@
 <template>
+
     <div id="chat-room">
         <div id="chats">
             <div v-for="chat in chats"
@@ -18,6 +19,11 @@
                         <small>{{new Date()}}</small>
                     </div>
                     <div class="msg-body"> {{chat.content}}</div>
+                    <div class="gallery">
+                       <div class="image" >
+                        <img v-bind:src="'http://localhost:3000/public/images/'+chat.filename">
+                       </div>
+                    </div>
                 </div>
             </div>
             <p v-if="chats.length < 1" class="text-center mt-3">
@@ -27,11 +33,13 @@
         <div id="chat-form">
             <input @keyup.enter="postChat"
                    v-model="newChat" class="input-chat" type="text" placeholder="Enter message">
-            <button @click="postChat" type="button" class="btn-post-chat">
+            <input type="file" name="image" id="image" accept="image/*"/>
+            <button @click="uploadForm" type="button" class="btn-post-chat">
                 <span class="mdi mdi-send mdi-24px"/>
             </button>
         </div>
     </div>
+    
 </template>
 
 <script>
@@ -95,19 +103,58 @@
                 let vm = this;
 
                 let chatReceiver = null
+                const image = document.getElementById("image").files[0];
 
+            
                 if (vm.chatWithCitizen !== null)
                     chatReceiver = vm.chatWithCitizen.username
 
                 let newChat = {
                     sender: vm.loggedInUsername,
                     content: vm.newChat,
-                    receiver: chatReceiver
+                    receiver: chatReceiver,
+                    image:image
                 }
                 if (vm.newChat.trim().length !== 0) {
                     vm.$http.post(api.SAVE_CHAT, newChat).then(() => {
                         // console.log(data)
                         // vm.chats = vm.chats.concat(newChat);
+                        vm.newChat = ''
+                    }).catch((err) => {
+                        alert(err)
+                    })
+                } else
+                    alert("Can not post empty chat!")
+            },
+            uploadForm: function(){
+                
+                let vm = this;
+
+                let chatReceiver = ""
+                if (vm.chatWithCitizen !== null)
+                    chatReceiver = vm.chatWithCitizen.username
+
+                const content = vm.newChat;
+                const image = document.getElementById("image").files[0];
+
+                if (image.size > 1024 * 1024) {
+        
+                    alert('File too big (> 1MB)');
+                    return;
+                }
+                if(document.getElementById("image").files[0]['type']!='image/jpeg')
+                {
+                    alert('this file is not an image');
+                    return;
+                }
+                let payload = new FormData();
+                payload.append("content",content);
+                payload.append("image",image);
+                payload.append("receiver",chatReceiver);
+                payload.append("sender",vm.loggedInUsername);
+
+                if (vm.newChat.trim().length !== 0) {
+                    vm.$http.post(api.SAVE_CHAT, payload).then(() => {
                         vm.newChat = ''
                     }).catch((err) => {
                         alert(err)
@@ -278,4 +325,22 @@
             border-radius: 4px;
         }
     }
+    .gallery{
+    display: flex;
+    flex-wrap: wrap;
+    width:100%;
+    max-width: 700px;
+    margin:0 auto;
+}
+.image{
+    max-width: 50%;
+    padding: 15px;
+    box-sizing:border-box;
+    position:relative;
+}
+img{
+    width: 100%;
+    display:block;
+    
+}
 </style>
