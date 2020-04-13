@@ -2,10 +2,11 @@
   <div class="content px-md-5">
     <h3 class="display-4">Share Location</h3>
     <p>
-      Latitude: <span id = "latitude"> </span>&deg;
-      <br />
-      Longitude: <span id = "longitude"> </span>&deg;
-      </p>
+      Latitude:
+      <span id="latitude"></span>&deg;
+      <br />Longitude:
+      <span id="longitude"></span>&deg;
+    </p>
     <form action>
       <div id="map"></div>
       <button
@@ -14,6 +15,9 @@
         class="mt-3"
         type="button"
       >Share Location</button>
+      <button @click="postChat" type="button" class="btn-post-chat">
+        Send Location to rescuers
+      </button>
     </form>
   </div>
 </template>
@@ -31,6 +35,11 @@ export default {
   created() {
     let user = this.$cookies.get("user");
     this.loggedInUsername = user.username;
+    this.getAllCitizens();
+    const citizens = this.citizens
+    const chatWithCitizen = citizens.some(citizen => citizen.rescuer.toUpperCase() == 'YES');
+    this.chatWithCitizen = chatWithCitizen;
+    console.log('Here it is' + chatWithCitizen)
     if ("geolocation" in navigator) {
       // console.log('Geolocation is available');
       navigator.geolocation.getCurrentPosition(position => {
@@ -48,7 +57,10 @@ export default {
   },
   data() {
     return {
-      loggedInUsername: '',
+      citizens: [],
+      loggedInUsername: "",
+      loading: false,
+      newChat: "" // should be the location
     };
   },
   methods: {
@@ -65,6 +77,44 @@ export default {
         .catch(err => {
           alert(err);
         });
+    },
+
+    getAllCitizens() {
+      let vm = this;
+      vm.$http
+        .get(api.GET_ALL_USERS)
+        .then(({ data }) => {
+          vm.citizens = data.data;
+          
+        })
+        .catch(err => {
+          alert(err);
+        });
+    },
+    postChat() {
+      let vm = this;
+      let chatReceiver = null; // = citizen.rescuer === 'yes'
+
+      if (vm.chatWithCitizen !== null)
+        chatReceiver = vm.chatWithCitizen.username;
+
+      let newChat = {
+        sender: vm.loggedInUsername,
+        content: vm.newChat,
+        receiver: chatReceiver
+      };
+      if (vm.newChat.trim().length !== 0) {
+        vm.$http
+          .post(api.SAVE_CHAT, newChat)
+          .then(() => {
+            // console.log(data)
+            // vm.chats = vm.chats.concat(newChat);
+            vm.newChat = vm.lat + ", " +vm.lon;
+          })
+          .catch(err => {
+            alert(err);
+          });
+      } else alert("Can not post empty chat!");
     }
   }
 };
@@ -73,6 +123,7 @@ export default {
 <style lang="scss" scoped>
 #btn-share-location {
   margin-left: 96px;
+  margin-right: 96px;
 
   @media (max-width: 600px) {
     margin-left: 0;
