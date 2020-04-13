@@ -21,7 +21,8 @@ const userForTest = {
 	phone: 'phone',
 	role: 'Citizen',
 	status: 'OK',
-	location: '-1.9496959999999999, 30.1006848'
+	location: '-1.9496959999999999, 30.1006848',
+	rescuer: 'Yes'
 };
 
 describe('user routes', () => {
@@ -85,7 +86,24 @@ describe('user routes', () => {
 	it('Should update a user\'s location', (done) => {
 		request(app).post('/users').send(userForTest).then(() => {
 			try {
-				request(app).put('/users/location/' + userForTest.username).send({location: '-1.9496959999999999, 30.1006848'}).then((response) => {
+				request(app).put('/users/location/' + userForTest.username).send({location: '-1.94969599999, 30.1006848'}).then((response) => {
+					try {
+						expect(response.statusCode).toBe(200);
+						done();
+					} catch (e) {
+						done.fail(e);
+					}
+				});
+			} catch (e) {
+				done.fail(e);
+			}
+		});
+	});
+
+	it('Should update a user\'s rescuing status', (done) => {
+		request(app).post('/users').send(userForTest).then(() => {
+			try {
+				request(app).put('/users/rescuer/' + userForTest.username).send({rescuer: 'Yes'}).then((response) => {
 					try {
 						expect(response.statusCode).toBe(200);
 						done();

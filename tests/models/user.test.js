@@ -28,7 +28,8 @@ describe('Testing User Model', () => {
 		user.role = 'Citizen';
 		user.status = 'OK';
 		user.location = '-1.9496959999999999, 30.1006848';
-		
+		user.rescuer= 'Yes';
+
 		user.save((err) => {
 			expect(err).toBeNull();
 			done();
