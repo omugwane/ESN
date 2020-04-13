@@ -1,0 +1,346 @@
+<template>
+
+    <div id="chat-room">
+        <div id="chats">
+            <div v-for="chat in chats"
+                 :key="chat._id"
+                 :class="(chat.sender === loggedInUsername)? 'sent-msg-box': 'received-msg-box'">
+                <div class="message"
+                     :class="(chat.sender === loggedInUsername)? 'sent': 'received'">
+                    <div class="heading">
+                        <div class="title">
+                            <h6 class="chat-owner">
+                                {{(chat.sender === loggedInUsername)? 'Me':`${chat.sender}`}}
+                            </h6>
+                            <small class="citizen-status" :style="{color: getStatusColor(chat.status)}">
+                                status: {{getStatusLabel(chat.status)}}
+                            </small>
+                        </div>
+                        <small>{{new Date()}}</small>
+                    </div>
+                    <div class="msg-body"> {{chat.content}}</div>
+                    <div class="gallery">
+                       <div class="image" >
+                        <img v-bind:src="'http://localhost:3000/public/images/'+chat.filename">
+                       </div>
+                    </div>
+                </div>
+            </div>
+            <p v-if="chats.length < 1" class="text-center mt-3">
+                <small>No chats available yet!</small>
+            </p>
+        </div>
+        <div id="chat-form">
+            <input @keyup.enter="postChat"
+                   v-model="newChat" class="input-chat" type="text" placeholder="Enter message">
+            <input type="file" name="image" id="image" accept="image/*"/>
+            <button @click="uploadForm" type="button" class="btn-post-chat">
+                <span class="mdi mdi-send mdi-24px"/>
+            </button>
+        </div>
+    </div>
+    
+</template>
+
+<script>
+    import * as api from "../helpers/api";
+    import {eventBus} from '../main'
+    import {STATUSES} from '../helpers/statuses'
+
+    export default {
+        name: "ChatRoom",
+        props: {
+            chatWithCitizen: {
+                type: Object,
+                default: null
+            },
+            loggedInUsername:{
+                type: String,
+                required: true
+            }
+        },
+        created() {
+            if (this.chatWithCitizen)
+                this.getPrivateChats()
+            else
+                this.getPublicChats();
+        },
+        mounted() {
+            eventBus.$on('new-chat-message', (chat) => {
+                //Checking if the chat is from the citizen currently being chatted with
+                //and that the receiver is the loggedInUsername
+                if (chat && this.chatWithCitizen && (chat.sender === this.chatWithCitizen.username || chat.sender === this.loggedInUsername)) {
+                    this.chats = this.chats.concat(chat);
+                } else if (chat && !chat.receiver) { //Checking if the chat is a public chat(Public chat has no receiver)
+                    this.chats = this.chats.concat(chat);
+                }
+            })
+        },
+        data() {
+            return {
+                loading: false,
+                newChat: '',
+                chats: []
+            }
+        },
+        watch: {
+            chatWithCitizen: function (newVal) { //Detecting in private chat, when a citizen to chat with changes
+                if (newVal)
+                    this.getPrivateChats()
+            }
+        },
+        methods: {
+            getStatusColor(status) {
+                return STATUSES[status.toUpperCase()].colorCode
+            },
+            getStatusLabel(status) {
+                if (status.toUpperCase() === 'UNDEFINED')
+                    return 'Not available'
+                else
+                    return status.toUpperCase()
+            },
+            postChat() {
+                let vm = this;
+
+                let chatReceiver = null
+                const image = document.getElementById("image").files[0];
+
+            
+                if (vm.chatWithCitizen !== null)
+                    chatReceiver = vm.chatWithCitizen.username
+
+                let newChat = {
+                    sender: vm.loggedInUsername,
+                    content: vm.newChat,
+                    receiver: chatReceiver,
+                    image:image
+                }
+                if (vm.newChat.trim().length !== 0) {
+                    vm.$http.post(api.SAVE_CHAT, newChat).then(() => {
+                        // console.log(data)
+                        // vm.chats = vm.chats.concat(newChat);
+                        vm.newChat = ''
+                    }).catch((err) => {
+                        alert(err)
+                    })
+                } else
+                    alert("Can not post empty chat!")
+            },
+            uploadForm: function(){
+                
+                let vm = this;
+
+                let chatReceiver = ""
+                if (vm.chatWithCitizen !== null)
+                    chatReceiver = vm.chatWithCitizen.username
+
+                const content = vm.newChat;
+                const image = document.getElementById("image").files[0];
+
+                if (image.size > 1024 * 1024) {
+        
+                    alert('File too big (> 1MB)');
+                    return;
+                }
+                if(document.getElementById("image").files[0]['type']!='image/jpeg')
+                {
+                    alert('this file is not an image');
+                    return;
+                }
+                let payload = new FormData();
+                payload.append("content",content);
+                payload.append("image",image);
+                payload.append("receiver",chatReceiver);
+                payload.append("sender",vm.loggedInUsername);
+
+                if (vm.newChat.trim().length !== 0) {
+                    vm.$http.post(api.SAVE_CHAT, payload).then(() => {
+                        vm.newChat = ''
+                    }).catch((err) => {
+                        alert(err)
+                    })
+                } else
+                    alert("Can not post empty chat!")
+            },
+            getPublicChats() {
+                let vm = this;
+                vm.$http.get(api.GET_ALL_CHATS).then(({data}) => {
+                    vm.chats = data.data
+                }).catch((err) => {
+                    alert(err)
+                })
+            },
+            getPrivateChats() {
+                let vm = this;
+                vm.$http.get(api.GET_ALL_CHATS + this.loggedInUsername + '/' + this.chatWithCitizen.username).then(({data}) => {
+                    vm.chats = data.data
+                }).catch((err) => {
+                    alert(err)
+                })
+            },
+        }
+    }
+</script>
+
+<style lang="scss" scoped>
+    @import "src/assets/colors";
+    @import "src/assets/sizes";
+    @import "src/assets/includes";
+
+    #chat-room {
+        background-color: #E6E6E6;
+        max-height: calc(100vh - #{$header-height});
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .message {
+        margin: 0 40px;
+        display: inline-block;
+        position: relative;
+        width: 40%;
+        height: auto;
+        @media (max-width: 600px) {
+            margin: 0 8px;
+            width: 100%;
+        }
+
+        &.received:after {
+            content: ' ';
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: -20px;
+            right: auto;
+            top: 0px;
+            bottom: auto;
+            border: 22px solid;
+            border-color: $received-chat-bg-color transparent transparent transparent;
+        }
+
+        &.sent:after {
+            content: ' ';
+            position: absolute;
+            width: 0;
+            height: 0;
+            right: -20px;
+            left: auto;
+            top: 0px;
+            bottom: auto;
+            border: 22px solid;
+            border-color: $sent-chat-bg-color transparent transparent transparent;
+        }
+
+        .msg-body {
+            padding: 1em;
+            text-align: left;
+            line-height: 1.5em;
+        }
+    }
+
+    .heading {
+        margin: 8px 16px -4px 16px;
+        padding-bottom: 8px;
+
+        .title {
+            display: flex;
+            flex-flow: wrap;
+            align-items: center;
+
+            .chat-owner {
+                text-transform: capitalize;
+            }
+
+            .citizen-status {
+                margin-left: 8px;
+            }
+        }
+    }
+
+    .received-msg-box {
+        .message {
+            background-color: $received-chat-bg-color;
+        }
+
+        .heading {
+            border-bottom: 1px solid $sent-chat-bg-color;
+        }
+    }
+
+    .sent-msg-box {
+        display: flex;
+        justify-content: flex-end;
+
+        .message {
+            background-color: $sent-chat-bg-color;
+        }
+
+        .heading {
+            //margin: 8px 16px -4px 16px;
+            //padding-bottom: 8px;
+            border-bottom: 1px solid $received-chat-bg-color;
+        }
+    }
+
+    .received-msg-box,
+    .sent-msg-box {
+        margin: 8px 0;
+    }
+
+    #chats {
+        padding: 8px 16px;
+        flex-grow: 1;
+        height: calc(100vh - #{$header-height} - #{$chat-form-height});
+        @include scroll-bar(0.3em);
+        overflow-y: auto;
+
+        @media (max-width: 600px) {
+            margin: 0 8px;
+        }
+
+    }
+
+    #chat-form {
+        background-color: $primary;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+
+        .input-chat {
+            border: 1px solid;
+            display: block;
+            width: 100%;
+            height: 48px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .btn-post-chat {
+            width: 64px;
+            height: 48px;
+            margin: 2px 4px;
+            border: 1px solid;
+            border-radius: 4px;
+        }
+    }
+    .gallery{
+    display: flex;
+    flex-wrap: wrap;
+    width:100%;
+    max-width: 700px;
+    margin:0 auto;
+}
+.image{
+    max-width: 50%;
+    padding: 15px;
+    box-sizing:border-box;
+    position:relative;
+}
+img{
+    width: 100%;
+    display:block;
+    
+}
+</style>
