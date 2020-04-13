@@ -34,6 +34,11 @@
                         </router-link>
                     </div>
                     <div class="menu-item">
+                        <router-link :to="{name: 'rescuer'}">
+                            <span class="mdi mdi-share-outline"/> <span class="menu-item-text">Become a rescuer </span>
+                        </router-link>
+                    </div>
+                    <div class="menu-item">
                         <router-link :to="{name: 'share-location'}">
                             <span class="mdi mdi-share-outline"/> <span class="menu-item-text">Share Location </span>
                         </router-link>

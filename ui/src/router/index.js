@@ -10,6 +10,7 @@ import ShareStatus from "../components/ShareStatus";
 import ShareLocation from "../components/ShareLocation";
 import PostAnnouncement from "../components/PostAnnouncement";
 import SearchInformation from "../components/SearchInformation";
+import Rescuer from "../components/Rescuer";
 
 Vue.use(VueRouter)
 
@@ -53,6 +54,14 @@ const routes = [
                 path: 'status',
                 name: 'share-status',
                 component: ShareStatus,
+                meta: {
+                    requiresAuth: true,
+                }
+            },
+            {
+                path: 'rescuer',
+                name: 'rescuer',
+                component: Rescuer,
                 meta: {
                     requiresAuth: true,
                 }

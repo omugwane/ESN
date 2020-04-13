@@ -24,6 +24,7 @@ export const UPDATE_USER = 'users/';
 export const REGISTER_USER = 'users/';
 export const UPDATE_USER_STATUS = 'users/status/';
 export const UPDATE_USER_LOCATION = 'users/location/';
+export const UPDATE_USER_RESCUER = 'users/rescuer/';
 
 export const GET_ALL_ANNOUNCEMENTS = 'announcements/';
 export const SAVE_ANNOUNCEMENT = 'announcements/';

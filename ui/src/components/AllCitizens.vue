@@ -8,11 +8,14 @@
                     <div class="citizen-names">
                         {{citizen.username}} <span v-if="citizen.firstName.trim()!==''">({{citizen.firstName+ ', '+citizen.lastName}})</span>
 
+                        <small class="citizen-rescuer">
+                            (Rescuer: {{(citizen.rescuer.toUpperCase() === 'NO') ? 'No':`${citizen.rescuer.toUpperCase()}`}})
+                        </small>
                         <small class="citizen-status" :style="{color: getStatusColor(citizen.status)}">
                             (status: {{(citizen.status.toUpperCase() === 'UNDEFINED') ? 'Not available':`${citizen.status.toUpperCase()}`}})
                         </small>
                         <small class="citizen-location">
-                            (location: {{(citizen.location.toUpperCase() === 'UNKNOWN') ? 'Not available':`${citizen.location.toUpperCase()}`}})
+                           (location: {{(citizen.location.toUpperCase() === 'UNKNOWN') ? 'Not available':`${citizen.location.toUpperCase()}`}})
                         </small>
                     </div>
                     <div class="citizen-details">
@@ -32,6 +35,7 @@
 <script>
     import * as api from '../helpers/api'
     import {STATUSES} from "../helpers/statuses";
+ //   import {RESCUERS} from "../helpers/rescuers";
 
     export default {
         name: "AllCitizens",
@@ -40,7 +44,7 @@
         },
         data() {
             return {
-                citizens: []
+                citizens: [] 
             }
         },
         methods: {
@@ -133,6 +137,10 @@
             font-size: 12px;
         }
         .citizen-location {
+            margin-left: 8px;
+            font-size: 12px;
+        }
+        .citizen-rescuer {
             margin-left: 8px;
             font-size: 12px;
         }
