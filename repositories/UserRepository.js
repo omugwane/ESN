@@ -12,6 +12,7 @@ exports.saveChat = (userData, callback) => {
 	user.status = userData.status;
 	user.receiver = userData.receiver;
 	user.location = userData.location;
+	user.rescuer = userData.rescuer;
 
 	let callback1 = (err) => {
 
@@ -55,6 +56,7 @@ exports.registerUser = (userData, callback) => {
 	user.role = userData.role;
 	user.status = userData.status;
 	user.location = userData.location;
+	user.rescuer = userData.rescuer;
 
 	User.find({ username: userData.username }, (err, users) => {
 		if (users && users.length === 0) {
@@ -116,6 +118,25 @@ exports.updateUserLocation = async (username, location, callback) => {
 			callback(null);
 		} else {
 			user.location = location;
+			user.save((err) => {
+				if (err)
+					callback(null);
+				else
+					callback(user);
+			});
+		}
+	});
+};
+
+//a method to update the if a user is a rescuer. It takes a username, rescuer
+//and a callback as parameters and returns 
+exports.updateUserRescuer = async (username, rescuer, callback) => {
+
+	User.findOne({ username: username }, (err, user) => {
+		if (err) {
+			callback(null);
+		} else {
+			user.rescuer = rescuer;
 			user.save((err) => {
 				if (err)
 					callback(null);

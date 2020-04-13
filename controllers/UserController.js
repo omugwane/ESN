@@ -13,7 +13,9 @@ exports.registerUser = function (req, res) {
 		email: req.body.email,
 		phone: req.body.phone,
 		role: Roles.CITIZEN,
-		status: req.body.status
+		status: req.body.status,
+		location: req.body.location,
+		rescuer: req.body.rescuer
 	};
 
 	userRepository.registerUser(user, (savedUser) => {
@@ -86,6 +88,22 @@ exports.updateUserLocation = async (req, res) => {
 		else {
 			res.status(500).json({
 				message: 'Updating the user\'s location failed.',
+				data: null
+			});
+		}
+	});
+};
+
+
+exports.updateUserRescuer = async (req, res) => {
+
+	await userRepository.updateUserRescuer(req.params.username, req.body.rescuer, function (user) {
+		if (user) {
+			res.status(200).json({message: 'Successfully update the user\'s rescuing status', data: user});
+		}
+		else {
+			res.status(500).json({
+				message: 'Updating the user\'s rescuing status failed.',
 				data: null
 			});
 		}
