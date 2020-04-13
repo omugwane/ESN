@@ -3,6 +3,10 @@ const BroadcastAPI = require('../lib/BroadcastAPI');
 // const App = require('../app');
 const chatRepository = require('../repositories/ChatRepository');
 const userRepository = require('../repositories/UserRepository');
+const fs = require("fs");
+const mv = require("mv");
+const path = require("path");
+const formidable = require("formidable");
 
 //a method to retrive all chats from the database. it does not take
 //any arguments. it call the chatRepository.getAllChats(callback) method
@@ -61,14 +65,31 @@ exports.getPrivateChats = function (req, res) {
 
 //method to save chats to the database. it takes as arguments request and response 
 //objects and returns a jason object. it calls chatRepository.saveChat method.
+let directory = path.join(__dirname,"../public/images");
 exports.saveChat = (req, res) => {
-	userRepository.getUserByUsername(req.body.sender, (user) => {
+	let form = new formidable.IncomingForm();
+	form.parse(req, function (err, fields, files) {
+		var filename =null
+		if(files.image!=null){
+			var oldpath = files.image.path;
+			var newpath = path.join(directory,files.image.name);
+			filename=files.image.name;
+			mv(oldpath, newpath, function (err) {
+				if (err) throw err; 
+			});
+		}
+		
+	  userRepository.getUserByUsername(fields.sender, (user) => {
 		if (user) {
+			var receiver =null
+			if(fields.reciever !="")
+			receiver=fields.reciever;
 			let chat = {
 				sender: user.username,
-				content: req.body.content,
+				content: fields.content,
 				status: user.status,
-				receiver: req.body.receiver
+				receiver:receiver,
+				filename: filename
 			};
 
 			chatRepository.saveChat(chat, (newChat) => {
@@ -84,6 +105,8 @@ exports.saveChat = (req, res) => {
 			res.status(500).json({message: 'Saving the chat message failed', data: null});
 		}
 	});
+	});
+	
 };
 
 
