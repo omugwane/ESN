@@ -218,15 +218,26 @@
                 this.attachmentsPopupShown = false;
             },
             onFileSelection() {
-                // size: 43510
-                // type: "image/png"
 
-                this.selectedFile = this.$refs.fileSelector.files[0];
+                let selectedFile = this.$refs.fileSelector.files[0];
 
-                if (this.typeOfFileSelected === 'video') {
-                    this.showPreview = true;
-                } else if (this.typeOfFileSelected === 'image') {
-                    this.$refs.inputChatText.focus()
+                let fileType = selectedFile.type.split('/')[0];
+
+                if (fileType !== this.typeOfFileSelected) {
+                    this.$swal({
+                        text: "Unexpected file chosen. The file must of type " + this.typeOfFileSelected,
+                        icon: 'error',
+                        toast: false,
+                        showConfirmButton: true,
+                    });
+                } else {
+                    this.selectedFile = selectedFile;
+
+                    if (this.typeOfFileSelected === 'video') {
+                        this.showPreview = true;
+                    } else if (this.typeOfFileSelected === 'image') {
+                        this.$refs.inputChatText.focus();
+                    }
                 }
 
                 this.$refs.frmFileSelector.reset(); // Resetting the field to caching problem when the same file is reselected
@@ -287,7 +298,7 @@
 
                 let imageSize = ((this.selectedFile.size / 1024) / 1024).toFixed(2);
 
-                if (imageSize > 5) {
+                if (imageSize <= 5) {
                     let chatReceiver = null;
 
                     if (vm.chatWithCitizen !== null)
@@ -321,13 +332,6 @@
                 this.playerShown = false;
             },
             showMessage(success, message) {
-                // this.loader.loading = false;
-                // this.resetMessage();
-                // this.response.message = message;
-                // if (success)
-                //     this.response.success = true;
-                // else
-                //     this.response.error = true;
                 this.$swal({
                     text: message,
                     icon: success ? 'success' : 'error',
