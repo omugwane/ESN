@@ -3,7 +3,8 @@
         <sweet-modal ref="modal"
                      enable-mobile-fullscreen
                      overlay-theme="dark"
-                     blocking>
+                     blocking
+                     v-if="visible">
             <template slot="title">
                 <h4 class="modal-title">Video Preview</h4>
             </template>
@@ -157,7 +158,7 @@
                 let fileSize = this.getFileSize || 0;
                 if (this.chatDetails.chatSender && fileSize > 0 && fileSize <= 30) {
                     let formData = new FormData();
-                    formData.append('video', this.file, this.file.name);
+                    formData.append('file', this.file, this.file.name);
                     formData.append('content', this.fileCaption);
 
                     formData.append('sender', this.chatDetails.chatSender);

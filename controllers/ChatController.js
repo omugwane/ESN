@@ -3,18 +3,14 @@ const BroadcastAPI = require('../lib/BroadcastAPI');
 // const App = require('../app');
 const chatRepository = require('../repositories/ChatRepository');
 const userRepository = require('../repositories/UserRepository');
-const fs = require("fs");
-const mv = require("mv");
-const path = require("path");
-const formidable = require("formidable");
 
 //a method to retrive all chats from the database. it does not take
 //any arguments. it call the chatRepository.getAllChats(callback) method
 exports.getAllChats = function (req, res) {
 
-    chatRepository.getAllChats((docs) => {
+    chatRepository.getAllChats((docs, error) => {
         if (docs === null) {
-            res.status(500).json({data: null});
+            res.status(500).json({data: null, error: error});
         } else {
             let responseObject = {
                 data: docs,
@@ -98,13 +94,15 @@ exports.saveUpload = (req, res) => {
             };
 
             if (Object.keys(req.files).length !== 0) {
-                let video = req.files.video;
+                let file = req.files.file;
 
-                chatRepository.saveChatWithFile(video, chat, (newChat, error) => {
+                console.log("Uploaded file", file);
+
+                chatRepository.saveChatWithFile(file, chat, (newChat, error) => {
                     if (newChat) {
                         BroadcastAPI.broadcastEventToAll(newChat);
 
-                        res.status(200).json({message: 'Chat was successfull saved!', data: newChat});
+                        res.status(200).json({message: 'Chat was successfully saved!', data: newChat});
                     } else
                         res.status(500).json({message: 'Saving the chat message failed', error: error, data: null});
                 });

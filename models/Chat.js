@@ -15,10 +15,6 @@ const chatSchema = mongoose.Schema({
     content: {
         type: String,
     },
-    filename: { // Image upload use case
-        type: String,
-        required: false
-    },
     status: {
         type: String,
     },

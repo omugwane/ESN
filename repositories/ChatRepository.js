@@ -29,9 +29,9 @@ exports.saveChat = (chatData, callback) => {
 exports.getAllChats = (callback) => {
     Chat.find({receiver: null}, (err, docs) => {
         if (err) {
-            callback(null);
+            callback(null, err);
         } else {
-            callback(docs);
+            callback(docs, err);
         }
     });
 };
@@ -70,14 +70,17 @@ exports.getPrivateChats = (username1, username2, callback) => {
 };
 
 exports.saveChatWithFile = (videoFile, chatData, callback) => {
-    storeVideo(videoFile, (filepath) => {
+    storeVideo(videoFile, (fileType, filepath, err) => {
         let chat = new Chat();
         chat.sender = chatData.sender;
         chat.content = chatData.content;
         chat.status = chatData.status;
         chat.receiver = chatData.receiver;
-        chat.type = 'video';
+        chat.type = fileType;
         chat.fileUrl = filepath;
+
+        if (err)
+            callback(null, err); //If the file type is not accepted
 
         chat.save((err) => {
             if (err) {
@@ -92,18 +95,24 @@ exports.saveChatWithFile = (videoFile, chatData, callback) => {
 /*
 ** Saves a file to the storage/hard disk and returns the relative filepath/filename
  */
-let storeVideo = (videoFile, callback) => {
-    // let video = request.files.video;
+let storeVideo = (uploadedFile, callback) => {
+    let fileName = uploadedFile.name;
+    let mimeType = uploadedFile.mimetype.split('/')[0];
 
-    // let videoName = video.name.replace(/\s+/g, ''); //Removing spaces
-    let videoName = videoFile.name;
-    videoName = new Date().getMilliseconds() + videoName; //Pre appending milliseconds just in cases files have same names
+    console.log("Image type", mimeType);
+    fileName = new Date().getMilliseconds() + fileName; //Pre appending milliseconds just in cases files have same names
 
-    // mimetype: 'video/mp4', mimetype is a property on the file
-    let filepath = 'public/uploads/videos/' + videoName;
+    let filepath = '';
 
-    //Move photo to uploads directory
-    videoFile.mv(filepath, () => {
-        callback(filepath)
+    if (mimeType === 'video') {
+        filepath = 'public/uploads/videos/' + fileName;
+    } else if (mimeType === 'image')
+        filepath = 'public/uploads/images/' + fileName;
+    else
+        callback(mimeType, null, {message: 'Unexpected file type.'})
+
+    //Move file to uploads directory
+    uploadedFile.mv(filepath, () => {
+        callback(mimeType, filepath, null)
     });
 };
