@@ -1,12 +1,18 @@
 const devBaseUrl = 'http://localhost:3000/'
-const prodBaseUrl = 'https://esn-chat-app.herokuapp.com/'
+// const prodBaseUrl = 'https://esn-chat-app.herokuapp.com/'
 
 export const getBaseUrl = () => {
-    // console.log("process.env.NODE_ENV ",process.env.NODE_ENV)
     if (process.env.NODE_ENV === 'development')
         return devBaseUrl;
 
-    return prodBaseUrl
+    // return prodBaseUrl
+    return '/' //Using relative URL to the serve
+};
+
+export const getBaseURLFromOrigin = () => {
+    if (process.env.NODE_ENV === 'development')
+        return devBaseUrl;
+    return window.location.protocol + "//" + window.location.host + "/"
 };
 
 export const LOGIN = 'users/login';
@@ -17,6 +23,7 @@ export const GET_CHAT_BY_ID = 'chats/';
 export const GET_CHATS_BY_USERNAME = 'chats/';
 export const DELETE_CHAT = 'chats/';
 export const UPDATE_CHAT = 'chats/';
+export const UPLOAD_CHAT_FILE = 'chats/upload/';
 
 export const GET_ALL_USERS = 'users/';
 export const DELETE_USER = 'users/';

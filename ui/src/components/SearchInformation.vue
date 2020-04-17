@@ -45,11 +45,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="search-result no-results" v-if="searchResults.length === 0 && searchText.trim() === ''">
-                        Select options to begin searching.
-                    </div>
-                    <div class="search-result no-results" v-else-if="searchResults.length === 0">
-                        <span class="mdi mdi-alert-outline mdi-24px"/> No results found! Try other search terms.
+                    <div class="search-result no-results" v-if="searchResults.length === 0">
+                        <span class="mdi mdi-alert-outline mdi-24px"/> No search results!
                     </div>
                 </div>
             </div>
@@ -112,7 +109,7 @@
         methods: {
             search() {
                 let searchText = this.filterOutStopWords(this.searchText);
-                searchText = searchText.join(' ');
+                searchText = searchText.join(' '); //Creating a string out of the array returned by filterOutStopWords()
 
                 if (this.selectedSearchOption) {
                     this.selectedSearchOption.searchText = searchText;

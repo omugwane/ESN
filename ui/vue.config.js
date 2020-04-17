@@ -6,4 +6,4 @@
 module.exports = {
     outputDir: '../views',
     assetsDir: "../public"
-}
+};

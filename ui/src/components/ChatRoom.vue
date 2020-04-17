@@ -1,9 +1,10 @@
 <template>
 
     <div id="chat-room">
-        <div id="chats">
+        <div id="chats" ref="chatsContainer">
             <div v-for="chat in chats"
                  :key="chat._id"
+                 class="chat"
                  :class="(chat.sender === loggedInUsername)? 'sent-msg-box': 'received-msg-box'">
                 <div class="message"
                      :class="(chat.sender === loggedInUsername)? 'sent': 'received'">
@@ -16,13 +17,19 @@
                                 status: {{getStatusLabel(chat.status)}}
                             </small>
                         </div>
-                        <small>{{new Date()}}</small>
+                        <small>
+                            {{ chat.postedAt | moment("dddd, MMMM Do YYYY, h:mm a") }}
+                        </small>
                     </div>
-                    <div class="msg-body"> {{chat.content}}</div>
-                    <div class="gallery">
-                       <div class="image" >
-                        <img v-bind:src="'http://localhost:3000/public/images/'+chat.filename">
-                       </div>
+                    <div v-if="chat.type === 'video'" class="video-thumbnail">
+                        <VideoPlayer :options="getVideoOptions(chat.fileUrl)"/>
+                        <button class="open-player" @click="showPlayer(chat.fileUrl)">
+                            Open player <span class="mdi mdi-arrow-expand"/>
+                        </button>
+                    </div>
+                    <div v-show="chat.content.length !== 0" class="msg-body" :class="{caption: chat.type === 'video'}">
+                        <small v-if="chat.type === 'video'" class="file-caption">Caption</small>
+                        {{chat.content}}
                     </div>
                 </div>
             </div>
@@ -30,14 +37,62 @@
                 <small>No chats available yet!</small>
             </p>
         </div>
+        <div id="file-attachments-popup" v-show="attachmentsPopupShown">
+            <div class="popup-header">
+                <small><i>Attach file</i></small>
+            </div>
+            <div class="attach-buttons">
+                <button type="button" @click="selectFile('video')">
+                    <span class="mdi mdi-video-plus"/>
+                </button>
+            </div>
+            <!--File selector. When clicked, opens up file explorer to select file. It is hidden and the click event
+            is triggered programmatically by a function named: selectFile(fileType)-->
+            <form ref="frmFileSelector">
+                <input type="file" ref="fileSelector" id="file-selector"
+                       @change="onFileSelection"
+                       accept="video/mp4,video/x-m4v,video/*">
+            </form>
+        </div>
         <div id="chat-form">
+<<<<<<< HEAD
             <input @keyup.enter="postChat"
                    v-model="newChat" class="input-chat" type="text" placeholder="Enter message">
             <input type="file" name="image" id="image" accept="image/*"/>
             <button @click="uploadForm" type="button" class="btn-post-chat">
+=======
+            <div class="input-chat-box">
+                <button @click="attachmentsPopupShown=!attachmentsPopupShown" type="button"
+                        id="btn-open-attachment-popup">
+                    <span class="mdi mdi-attachment mdi-24px"/>
+                </button>
+                <input @keyup.enter="postChat"
+                       v-model="newChat" class="input-chat" type="text" placeholder="Enter message">
+            </div>
+            <button @click="postChat" type="button" class="btn-post-chat">
+>>>>>>> share-video
                 <span class="mdi mdi-send mdi-24px"/>
             </button>
         </div>
+
+        <FilePreview :chat-details="chatDetails" :file="selectedFile" :visible="showPreview"
+                     @closed="disposeFile"
+                     v-if="selectedFile"/>
+        <!--        Video Player Modal-->
+        <sweet-modal ref="modal"
+                     id="modal-player"
+                     enable-mobile-fullscreen
+                     overlay-theme="dark"
+                     modal-theme="dark"
+                     width="70%"
+                     blocking>
+            <template slot="title">
+                <h5 class="modal-title">Video Player</h5>
+            </template>
+            <div id="player">
+                <video-player :options="playerDetails" v-if="playerShown"/>
+            </div>
+        </sweet-modal>
     </div>
     
 </template>
@@ -46,15 +101,19 @@
     import * as api from "../helpers/api";
     import {eventBus} from '../main'
     import {STATUSES} from '../helpers/statuses'
+    import FilePreview from "./FilePreview";
+    import VideoPlayer from "./VideoPlayer";
+    import {SweetModal} from 'sweet-modal-vue'
 
     export default {
         name: "ChatRoom",
+        components: {FilePreview, VideoPlayer, SweetModal},
         props: {
             chatWithCitizen: {
                 type: Object,
                 default: null
             },
-            loggedInUsername:{
+            loggedInUsername: {
                 type: String,
                 required: true
             }
@@ -64,6 +123,7 @@
                 this.getPrivateChats()
             else
                 this.getPublicChats();
+
         },
         mounted() {
             eventBus.$on('new-chat-message', (chat) => {
@@ -74,14 +134,43 @@
                 } else if (chat && !chat.receiver) { //Checking if the chat is a public chat(Public chat has no receiver)
                     this.chats = this.chats.concat(chat);
                 }
+                this.scrollToLatestMessage();
+            });
+
+            let btnClose = document.querySelector('#modal-player div.sweet-action-close');
+            btnClose.addEventListener('click', () => {
+                this.closePlayer();
             })
         },
         data() {
             return {
                 loading: false,
                 newChat: '',
-                chats: []
+                chats: [],
+                attachmentsPopupShown: false,
+                selectedFile: null,
+                showPreview: false,
+                playerShown: false,
+                playerDetails: {
+                    autoplay: true,
+                    controls: true,
+                    fluid: true,
+                    sources: [
+                        {
+                            src: '',
+                            type: "video/mp4"
+                        }
+                    ]
+                }
             }
+        },
+        computed: {
+            chatDetails() {
+                return {
+                    chatReceiver: this.chatWithCitizen ? `${this.chatWithCitizen.username}` : null,
+                    chatSender: this.loggedInUsername
+                }
+            },
         },
         watch: {
             chatWithCitizen: function (newVal) { //Detecting in private chat, when a citizen to chat with changes
@@ -90,6 +179,32 @@
             }
         },
         methods: {
+            showPlayer(videoUrl) {
+                this.playerDetails.sources[0].src = api.getBaseURLFromOrigin() + videoUrl;
+                this.playerShown = true;
+                this.$refs.modal.open();
+            },
+            closePlayer() {
+                this.playerShown = false;
+            },
+            selectFile(fileType) {
+                this.showPreview = false
+                if (fileType === 'video') {
+                    this.$refs.fileSelector.click(); // Triggering the click event on the input file selector
+                }
+                this.attachmentsPopupShown = false;
+            },
+            onFileSelection() {
+                this.selectedFile = this.$refs.fileSelector.files[0];
+                // console.log(this.selectedFile)
+                this.showPreview = true
+
+                this.$refs.frmFileSelector.reset() // Resetting the field to caching problem when the same file is reselected
+            },
+            disposeFile() {
+                this.showPreview = false;
+                this.selectedFile = null;
+            },
             getStatusColor(status) {
                 return STATUSES[status.toUpperCase()].colorCode
             },
@@ -102,19 +217,16 @@
             postChat() {
                 let vm = this;
 
-                let chatReceiver = null
-                const image = document.getElementById("image").files[0];
-
+                let chatReceiver = null;
             
                 if (vm.chatWithCitizen !== null)
-                    chatReceiver = vm.chatWithCitizen.username
+                    chatReceiver = vm.chatWithCitizen.username;
 
                 let newChat = {
                     sender: vm.loggedInUsername,
                     content: vm.newChat,
-                    receiver: chatReceiver,
-                    image:image
-                }
+                    receiver: chatReceiver
+                };
                 if (vm.newChat.trim().length !== 0) {
                     vm.$http.post(api.SAVE_CHAT, newChat).then(() => {
                         // console.log(data)
@@ -123,49 +235,20 @@
                     }).catch((err) => {
                         alert(err)
                     })
-                } else
-                    alert("Can not post empty chat!")
-            },
-            uploadForm: function(){
-                
-                let vm = this;
-
-                let chatReceiver = ""
-                if (vm.chatWithCitizen !== null)
-                    chatReceiver = vm.chatWithCitizen.username
-
-                const content = vm.newChat;
-                const image = document.getElementById("image").files[0];
-
-                if (image.size > 1024 * 1024) {
-        
-                    alert('File too big (> 1MB)');
-                    return;
+                } else {
+                    this.$swal({
+                        text: 'Can not post empty chat!',
+                        icon: 'error',
+                        toast: false,
+                        showConfirmButton: true,
+                    });
                 }
-                if(document.getElementById("image").files[0]['type']!='image/jpeg')
-                {
-                    alert('this file is not an image');
-                    return;
-                }
-                let payload = new FormData();
-                payload.append("content",content);
-                payload.append("image",image);
-                payload.append("receiver",chatReceiver);
-                payload.append("sender",vm.loggedInUsername);
-
-                if (vm.newChat.trim().length !== 0) {
-                    vm.$http.post(api.SAVE_CHAT, payload).then(() => {
-                        vm.newChat = ''
-                    }).catch((err) => {
-                        alert(err)
-                    })
-                } else
-                    alert("Can not post empty chat!")
             },
             getPublicChats() {
                 let vm = this;
                 vm.$http.get(api.GET_ALL_CHATS).then(({data}) => {
-                    vm.chats = data.data
+                    vm.chats = data.data;
+                    vm.scrollToLatestMessage();
                 }).catch((err) => {
                     alert(err)
                 })
@@ -173,11 +256,39 @@
             getPrivateChats() {
                 let vm = this;
                 vm.$http.get(api.GET_ALL_CHATS + this.loggedInUsername + '/' + this.chatWithCitizen.username).then(({data}) => {
-                    vm.chats = data.data
+                    vm.chats = data.data;
+                    vm.scrollToLatestMessage();
                 }).catch((err) => {
                     alert(err)
                 })
+            }, // Fetch private chats from server
+
+            //Options for the video player
+            getVideoOptions(relativeVideoUrl) {
+                return {
+                    autoplay: false,
+                    controls: true,
+                    fluid: true,
+                    sources: [
+                        {
+                            src: api.getBaseURLFromOrigin() + relativeVideoUrl,
+                            type: "video/mp4"
+                        }
+                    ]
+                }
             },
+
+            /* Method used to scroll to the bottom of the page in ChatRoom in order to see the the latest Chat*/
+            scrollToLatestMessage() {
+                this.$nextTick(() => {
+                    // let chats = document.querySelectorAll('#chats .chat');
+
+                    // $('#chat-room-messages').scrollTop($('#chat-room-messages')[0].scrollHeight);
+                    // this.$refs.chatsContainer.scrollTop = chats[chats.length - 1].scrollHeight;
+
+                    this.$refs.chatsContainer.scrollTop = this.$refs.chatsContainer.scrollHeight;
+                })
+            }
         }
     }
 </script>
@@ -186,6 +297,7 @@
     @import "src/assets/colors";
     @import "src/assets/sizes";
     @import "src/assets/includes";
+
 
     #chat-room {
         background-color: #E6E6E6;
@@ -232,10 +344,54 @@
             border-color: $sent-chat-bg-color transparent transparent transparent;
         }
 
+        .video-thumbnail {
+            width: calc(100% - 4px);
+            margin: 2px;
+            border: 2px outset $dark-5;
+            position: relative;
+
+            img {
+                width: 100%;
+            }
+
+            .open-player {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                background-color: $dark-5;
+                color: $primary;
+                padding: 4px 8px;
+                border: none;
+                outline: none;
+                border-radius: 4px;
+
+                @media (max-width: 600px) {
+                    display: none;
+                }
+
+                &:hover {
+                    background-color: $secondary;
+                }
+            }
+        }
+
         .msg-body {
-            padding: 1em;
+            padding: 8px 16px;
             text-align: left;
             line-height: 1.5em;
+
+            .file-caption {
+                display: block;
+                margin-top: -8px;
+                color: $secondary;
+                font-weight: bold;
+                font-style: italic;
+                font-size: 10px;
+            }
+
+            &.caption {
+                border-left: 4px solid $secondary;
+            }
         }
     }
 
@@ -303,17 +459,43 @@
 
     #chat-form {
         background-color: $primary;
-        height: 64px;
+        height: $chat-form-height;
         display: flex;
         align-items: center;
         padding: 8px 16px;
+
+        .input-chat-box {
+            display: flex;
+            width: 100%;
+
+            #btn-open-attachment-popup {
+                position: relative;
+                top: 0;
+                left: 0;
+                background-color: transparent;
+                border: none;
+                outline: none;
+
+                &:hover {
+                    color: $secondary;
+                }
+
+                span.mdi-attachment:hover {
+                    transform: scale(1.5)
+                }
+            }
+
+            .input-chat {
+                margin-left: -48px;
+            }
+        }
 
         .input-chat {
             border: 1px solid;
             display: block;
             width: 100%;
             height: 48px;
-            padding: 2px 8px;
+            padding: 2px 8px 2px 56px;
             border-radius: 4px;
         }
 
@@ -325,6 +507,7 @@
             border-radius: 4px;
         }
     }
+<<<<<<< HEAD
     .gallery{
     display: flex;
     flex-wrap: wrap;
@@ -343,4 +526,78 @@ img{
     display:block;
     
 }
+=======
+
+    // CSS for the popup when the attachment button in the Text Box is clicked
+    #file-attachments-popup {
+        background-color: $primary;
+        margin: 8px;
+        padding: 8px 16px;
+        min-width: 240px;
+        max-width: 400px;
+        border: 2px solid $secondary;
+        border-radius: 4px;
+        position: absolute;
+        bottom: $chat-form-height; //Offsetting chat form height
+        left: 4px;
+
+
+        //The bottom arrow on the popup
+        &:after {
+            content: ' ';
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: 0px;
+            right: auto;
+            /*top: auto;*/
+            bottom: -52px;
+            border: 24px solid;
+            border-color: $secondary transparent transparent transparent;
+        }
+
+        .attach-buttons {
+            display: flex;
+            flex-wrap: wrap;
+
+            button {
+                width: 42px;
+                height: 42px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                outline: none;
+                border: none;
+                background-color: transparent;
+
+                &:hover {
+                    background-color: $secondary-1;
+                }
+
+                span {
+                    &.mdi {
+                        line-height: 2px;
+                        font-size: 36px !important;
+                        color: $secondary !important;
+                    }
+                }
+            }
+        }
+
+        #file-selector {
+            display: none;
+        }
+    }
+
+
+</style>
+<style lang="scss">
+    #modal-player {
+        .sweet-modal {
+            @media (max-width: 600px) {
+                width: 100% !important;
+            }
+        }
+    }
+>>>>>>> share-video
 </style>

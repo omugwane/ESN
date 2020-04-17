@@ -19,19 +19,19 @@ afterEach(async () => await dbHandler.clearDatabase());
  */
 afterAll(async () => await dbHandler.closeDatabase());
 
+let user = {
+	username: 'me',
+	password: '1234',
+	firstName: 'firstName',
+	lastName: 'lastName',
+	email: 'email',
+	phone: 'phone',
+	role: 'Citizen',
+	status: 'OK'
+};
 
 describe('User Repository', () => {
 	 it('Should save a user successfully', done => {
-		let user = {
-			username: 'me',
-			password: '1234',
-			firstName: 'firstName',
-			lastName: 'lastName',
-			email: 'email',
-			phone: 'phone',
-			role: 'Citizen',
-			status: 'OK'
-		};
 		UserRepository.registerUser(user, (result) => {
 			try {
 				expect(result.username).toBe(user.username);
@@ -43,21 +43,11 @@ describe('User Repository', () => {
 	});
 
 	it('Should get Users by Username successfully', done => {
-		let user = {
-			username: 'me',
-			password: '1234',
-			firstName: 'firstName',
-			lastName: 'lastName',
-			email: 'email',
-			phone: 'phone',
-			role: 'Citizen',
-			status: 'OK'
-		};
 		UserRepository.registerUser(user, (result) => {
 			try {
-				UserRepository.getUserByUsername(user.username, (users) => {
+				UserRepository.getUserByUsername(user.username, (savedUser) => {
 					try {
-						expect(user.username).not.toBe(null);
+						expect(savedUser.username).toBe(user.username);
 						done();
 					} catch (error) {
 						done.fail(error);
@@ -70,16 +60,6 @@ describe('User Repository', () => {
 	});
 
 	it('Should get all users successfully', (done) => {
-		let user = {
-			username: 'me',
-			password: '1234',
-			firstName: 'firstName',
-			lastName: 'lastName',
-			email: 'email',
-			phone: 'phone',
-			role: 'Citizen',
-			status: 'OK'
-		};
 		UserRepository.registerUser(user, (savedUser) => {
 			try {
 				UserRepository.getAllUsers((users) => {
