@@ -78,7 +78,7 @@ describe('Chats routes', () => {
         });
     });
 
-    test('Should upload a video', (done) => {
+    test.only('Should upload a video', (done) => {
         const User = require('../../models/User');
 
         let user = new User();
@@ -93,7 +93,7 @@ describe('Chats routes', () => {
 
             request(app).post('/chats/upload')
                 .field({content: "This is caption", sender: user.username, receiver: 'null'})
-                .attach('video', 'tests/test_files/rufus.mp4')
+                .attach('file', 'tests/test_files/rufus.mp4')
                 .end(function (err, response) {
                     if (err) {
                         done.fail(err);

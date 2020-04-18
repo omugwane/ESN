@@ -357,7 +357,6 @@
                     alert(err)
                 })
             }, // Fetch private chats from server
-
             //Options for the video player
             getVideoOptions(relativeVideoUrl) {
                 return {

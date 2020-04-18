@@ -96,8 +96,6 @@ exports.saveUpload = (req, res) => {
             if (Object.keys(req.files).length !== 0) {
                 let file = req.files.file;
 
-                console.log("Uploaded file", file);
-
                 chatRepository.saveChatWithFile(file, chat, (newChat, error) => {
                     if (newChat) {
                         BroadcastAPI.broadcastEventToAll(newChat);
