@@ -78,7 +78,7 @@ describe('Chats routes', () => {
         });
     });
 
-    test.only('Should upload a video', (done) => {
+    test('Should upload a video', (done) => {
         const User = require('../../models/User');
 
         let user = new User();
