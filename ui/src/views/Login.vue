@@ -63,7 +63,8 @@
                     password: vm.password,
                 }).then(({data}) => {
                     //Setting cookies
-                    let user = {username: data.data.user.username};
+
+                    let user = {username: data.data.user.username,role: data.data.user.role};
                     vm.$cookies.config('1d');
                     vm.$cookies.set('user', user);
 
