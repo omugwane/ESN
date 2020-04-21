@@ -27,6 +27,7 @@ describe('Testing User Model', () => {
 		user.phone = 'phone';
 		user.role = 'Citizen';
 		user.status = 'OK';
+		user.active = true;
 		user.save((err) => {
 			expect(err).toBeNull();
 			done();
