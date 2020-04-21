@@ -321,8 +321,6 @@
                 } else {
                     vm.showMessage(false, `Image size (${imageSize}) selected is bigger than 5 MB. Please, select a smaller size image.`);
                 }
-
-
             },
             resetChatForm() {
                 this.selectedFile = null;
