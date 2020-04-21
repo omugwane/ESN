@@ -56,7 +56,6 @@ exports.getChatsByUsername = (username, callback) => {
 //a method to retrieve private chats from the database given username of the users .
 exports.getPrivateChats = (username1, username2, callback) => {
     let callback1 = (err, docs) => {
-
         if (err) {
             callback(null);
         } else {

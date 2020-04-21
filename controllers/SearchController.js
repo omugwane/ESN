@@ -6,12 +6,11 @@ exports.search = function (req, res) {
     let context = req.body.context;
     let target = req.body.criteria;
     let value = req.body.searchText;
+    let username = req.body.username;
 
     const factory = new SearchCriteriaFactory();
 
-    let criteria = factory.createCriteria(context, target, value);
-
-    console.log("Criteria from factory", criteria);
+    let criteria = factory.createCriteria(username,context, target, value);
 
     if (criteria) {
         searchCriteriaExecutor.execute(criteria, (err, results) => {
