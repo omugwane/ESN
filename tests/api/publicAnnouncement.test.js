@@ -113,7 +113,7 @@ describe('public announcement routes', () => {
                 } catch (e) {
                     done.fail(e);
                 }
-            }); //Added condition to restrict users who can post an announcement
+            });
         });
     });
     test('An Administrator should post an announcement', (done) => {
