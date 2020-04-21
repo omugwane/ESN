@@ -84,6 +84,19 @@ exports.getUserByUsername = (username, callback) => {
 
 };
 
+//check if admin user exists
+exports.getUserByUserRole = (role, callback) => {
+	let callback1 = (err, user) => {
+		if (err) {
+			callback(null);
+		} else {
+			callback(user);
+		}
+	};
+	User.findOne({role: role}, callback1);
+};
+
+
 //a method to update the status of a user. It takes a username, status
 //and a callback as parameters and returns 
 exports.updateUserStatus = async (username, status, callback) => {

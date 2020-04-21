@@ -64,6 +64,41 @@ exports.getAllUsers = function (req, res) {
 	userRepository.getAllUsers(callback);
 };
 
+//check if admin user exits
+exports.login = async (req, res) => {
+	userRepository.getUserByUserRole('admin', (user) => {
+		if (user === null) {
+			res.status(401).json({status: 'error', message: 'Username admin not found', data: null});
+		} else {
+			res.status(200).json({status: 'success', message: 'user admin found!!!', data: {user: user}});
+		}
+	});
+};
+
+//Register Default admin
+exports.registerUser = function (req, res) {
+	let user = {
+		username: 'ESNAdmin',
+		password: 'admin',
+		firstName: '',
+		lastName: '',
+		email: '',
+		//phone: req.body.phone,
+		role:'admin',
+		status: 'OK'
+	};
+	userRepository.registerUser(user, (savedUser) => {
+		if (savedUser)
+			res.status(200).json({'message': 'success', data: savedUser});
+		else
+			res.status(500).json({
+				'message': 'Registration failed! It might be that the username is already taken.',
+				data: null
+			});
+	});
+};
+
+
 exports.updateUserStatus = async (req, res) => {
 
 	await userRepository.updateUserStatus(req.params.username, req.body.status, function (user) {
