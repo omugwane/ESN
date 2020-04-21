@@ -4,6 +4,7 @@ const app = require('../../app');
 const dbHandler = require('../../config/db-handler');
 const Roles = require("../../lib/Role");
 const User = require('../../models/User');
+const Announcement = require('../../models/PublicAnnouncements');
 
 /**
  * Clear all test data after every test.
@@ -18,22 +19,42 @@ afterAll(async () => await dbHandler.closeDatabase());
 
 describe('public announcement routes', () => {
     test('Should get all saved public announcements', (done) => {
-        request(app).get('/publicAnnouncement').then((response) => {
-            try {
-                expect(response.statusCode).toBe(200);
-                done();
-            } catch (e) {
-                done.fail(e);
+        let announcement = new Announcement();
+        announcement.sender = 'user';
+        announcement.content = 'This an announcement';
+        announcement.save((err) => {
+            if (!err) {
+                request(app).get('/announcements').then((response) => {
+                    try {
+                        expect(response.statusCode).toBe(200);
+                        done();
+                    } catch (e) {
+                        done.fail(e);
+                    }
+                });
+            }
+            else {
+                done.fail(err)
             }
         });
     });
-    test('Should get chats by content', (done) => {
-        request(app).get('/chats/Hello').then((response) => {
-            try {
-                expect(response.statusCode).toBe(200);
-                done();
-            } catch (e) {
-                done.fail(e);
+    test('Should get announcements by content', (done) => {
+
+        let announcement = new Announcement();
+        announcement.sender = 'user';
+        announcement.content = 'This an announcement';
+        announcement.save((err) => {
+            if (!err){
+                request(app).get('/announcements/announcement').then((response) => {
+                    try {
+                        expect(response.statusCode).toBe(200);
+                        done();
+                    } catch (e) {
+                        done.fail(e);
+                    }
+                });
+            }else {
+                done.fail(err);
             }
         });
     });
