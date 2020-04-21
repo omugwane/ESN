@@ -104,3 +104,57 @@ exports.updateUserStatus = async (username, status, callback) => {
 		}
 	});
 };
+
+//a method to update the username of a user. It takes a username, new username
+//and a callback as parameters and returns 
+exports.updateUserUsername = async (username, newUsername, callback) => {
+	User.findOne({username: username}, (err, user) => {
+		if (err) {
+			callback(null);
+		} else {
+			user.username = newUsername;
+			user.save((err) => {
+				if (err)
+					callback(null);
+				else
+					callback(user);
+			});
+		}
+	});
+};
+
+//a method to update the password of a user. It takes a username, password
+//and a callback as parameters and returns 
+exports.updateUserPassword = async (username, password, callback) => {
+	User.findOne({username: username}, (err, user) => {
+		if (err) {
+			callback(null);
+		} else {
+			user.password = password;
+			user.save((err) => {
+				if (err)
+					callback(null);
+				else
+					callback(user);
+			});
+		}
+	});
+};
+
+//a method to update the role of a user. It takes a username, role
+//and a callback as parameters and returns 
+exports.updateUserRole = async (username, role, callback) => {
+	User.findOne({username: username}, (err, user) => {
+		if (err) {
+			callback(null);
+		} else {
+			user.role = role;
+			user.save((err) => {
+				if (err)
+					callback(null);
+				else
+					callback(user);
+			});
+		}
+	});
+};

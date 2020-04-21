@@ -2,6 +2,7 @@ require('dotenv').config();
 const Roles = require('../lib/Role');
 const jwt = require('jsonwebtoken');
 const userRepository = require('../repositories/UserRepository');
+//const BroadcastAPI = require('../lib/BroadcastAPI');
 
 // Register User
 exports.registerUser = function (req, res) {
@@ -13,7 +14,8 @@ exports.registerUser = function (req, res) {
 		email: req.body.email,
 		phone: req.body.phone,
 		role: Roles.CITIZEN,
-		status: req.body.status
+		status: req.body.status,
+		active: req.body.active
 	};
 
 	userRepository.registerUser(user, (savedUser) => {
@@ -76,6 +78,89 @@ exports.updateUserStatus = async (req, res) => {
 		}
 	});
 };
+
+// Updating user's username
+exports.updateUserUsername = async (req, res) => {
+
+	await userRepository.updateUserUsername(req.params.username, req.body.username, function (user) {
+		if (user) {
+			if ((user.role === Roles.ADMINISTRATOR) && user.active) {
+				BroadcastAPI.broadcastUserEventToAll(user);
+				res.status(200).json({message: 'success', data: user});
+			}
+			else{
+				// 401 Unauthorized
+                res.status(401).json({
+                    error: true,
+                    message: 'Only active administrators are allowed to modify user\'s usernames',
+                    data: null
+                });
+			}
+		}
+		else {
+			res.status(500).json({
+				message: 'Updating user status failed. It might be that the username is incorrect',
+				data: null
+			});
+		}
+	});
+};
+
+// Updating the user's password
+exports.updateUserPassword = async (req, res) => {
+
+	await userRepository.updateUserPassword(req.params.username, req.body.password, function (user) {
+		if (user) {
+			if ((user.role === Roles.ADMINISTRATOR) && user.active) {
+				BroadcastAPI.broadcastUserEventToAll(user);
+				res.status(200).json({message: 'success', data: user});
+			}
+			else{
+				// 401 Unauthorized
+                res.status(401).json({
+                    error: true,
+                    message: 'Only active administrators are allowed to modify user\'s password',
+                    data: null
+                });
+			}
+		}
+		else {
+			res.status(500).json({
+				message: 'Updating user status failed. It might be that the username is incorrect',
+				data: null
+			});
+		}
+	});
+};
+
+// Updating the user's role or privilege level
+exports.updateUserRole = async (req, res) => {
+
+	await userRepository.updateUserRole(req.params.username, req.body.role, function (user) {
+		if (user) {
+			if ((user.role === Roles.ADMINISTRATOR) && user.active) {
+				BroadcastAPI.broadcastUserEventToAll(user);
+				res.status(200).json({message: 'success', data: user});
+			}
+			else{
+				// 401 Unauthorized
+                res.status(401).json({
+                    error: true,
+                    message: 'Only active administrators are allowed to modify user\'s privilege level',
+                    data: null
+                });
+			}
+		}
+		else {
+			res.status(500).json({
+				message: 'Updating user status failed. It might be that the username is incorrect',
+				data: null
+			});
+		}
+	});
+};
+
+
 
 
 
