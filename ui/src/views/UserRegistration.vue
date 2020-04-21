@@ -13,7 +13,7 @@
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" v-model="password" placeholder="Enter password"
+                        <input @click="register" type="password" v-model="password" placeholder="Enter password"
                                class="form-control" id="password">
                     </div>
 
@@ -76,6 +76,15 @@
             }
         },
         methods: {
+            showAlertMessage(message){
+                this.$swal({
+                    title: 'Alert',
+                    text: message,
+                    icon: 'error',
+                    toast: false,
+                    showConfirmButton: true,
+                });
+            },
             register() {
                 let vm = this;
                 let data = {
@@ -86,16 +95,30 @@
                     email: this.email,
                     phone: this.phone,
                     status: 'Undefined'
-                }
+                };
 
                 if (vm.username.trim().length > 0 && vm.password.trim().length > 0) {
-                    vm.$http.post(api.REGISTER_USER, data).then(function () {
+                    vm.$http.post(api.REGISTER_USER, data).then(() => {
+                        // response
+                        vm.$swal({
+                            // title: 'Alert',
+                            text: 'Successfully registered. Now login to continue...',
+                            icon: 'success',
+                            toast: true,
+                            position: 'top',
+                            showConfirmButton: false,
+                            timer: 10000,
+                            timerProgressBar: true,
+                        });
+
+                        vm.$cookies.set('newUser', vm.username);
+
                         vm.$router.push({name: 'all-citizens'})
                     }).catch(() => {
-                        alert("Sorry! An error occurred while trying to register")
+                        vm.showAlertMessage("Sorry! An error occurred while trying to register");
                     })
                 } else {
-                    alert("Username and Password are required!")
+                    vm.showAlertMessage("Username and Password are required!");
                 }
             }
         }
@@ -117,5 +140,30 @@
 
     .login-card {
         width: 400px;
+    }
+</style>
+<style lang="scss">
+    @import "src/assets/colors";
+
+    .swal2-popup {
+        &.swal2-toast {
+            //background-color: darkgreen !important;
+            //color: white !important;
+
+            .swal2-icon {
+
+            }
+
+            .swal2-content {
+                //color: $secondary !important;
+                margin-left: 4px;
+            }
+        }
+
+        .swal2-success-fix,
+        .swal2-success-circular-line-left,
+        .swal2-success-circular-line-right{
+            display: none;
+        }
     }
 </style>

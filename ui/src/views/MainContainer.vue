@@ -64,8 +64,21 @@
     export default {
         name: "MainContainer",
         created() {
-            let user = this.$cookies.get('user')
+            let user = this.$cookies.get('user');
+            let newRegisteredUsername = this.$cookies.get('newUser');
             this.loggedInUsername = user.username;
+
+            if (user.username === newRegisteredUsername) {
+                this.$swal({
+                    title: 'Greeting',
+                    text: newRegisteredUsername.toUpperCase() + ', welcome to ESN community! Click on this alert to close it.',
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                });
+
+                window.$cookies.remove('newUser');
+            }
         },
         data() {
             return {

@@ -124,17 +124,11 @@
                         username: this.loggedInUsername
                     };
 
-                    this.$http.post(api.SEARCH, searchData)
-                        .then(({data}) => {
+                    this.$http.post(api.SEARCH, searchData).then(({data}) => {
                             this.searchResults = data.data;
                             this.searchText = '';
-                        }).catch(() => {
-                        this.$swal({
-                            text: "Search failed! An error occurred.",
-                            icon: 'error',
-                            toast: false,
-                            showConfirmButton: true,
-                        })
+                        }
+                    ).catch(() => {
                     })
                 }
             },
