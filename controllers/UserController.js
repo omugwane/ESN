@@ -89,7 +89,7 @@ exports.registerUser = function (req, res) {
 	};
 	userRepository.registerUser(user, (savedUser) => {
 		if (savedUser)
-			res.status(200).json({'message': 'success', data: savedUser});
+			res.status(200).json({'message':'success', data: savedUser});
 		else
 			res.status(500).json({
 				'message': 'Registration failed! It might be that the username is already taken.',

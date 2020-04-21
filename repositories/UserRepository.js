@@ -80,7 +80,7 @@ exports.getUserByUsername = (username, callback) => {
 		}
 	};
 
-	User.findOne({username: username}, callback1);
+	User.findOne({username:username}, callback1);
 
 };
 
