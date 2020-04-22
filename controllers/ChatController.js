@@ -8,14 +8,13 @@ const userRepository = require('../repositories/UserRepository');
 //any arguments. it call the chatRepository.getAllChats(callback) method
 exports.getAllChats = function (req, res) {
 
-    chatRepository.getAllChats((docs, error) => {
-        if (docs === null) {
+    chatRepository.getAllChats((chats, error) => {
+        if (chats === null) {
             res.status(500).json({data: null, error: error});
         } else {
-            let responseObject = {
-                data: docs,
-            };
-            res.status(200).json(responseObject);
+            filterOutChatsForInactiveUser(chats,(docs) => {
+                res.status(200).json({data: docs});
+            });
         }
     });
 
@@ -25,14 +24,13 @@ exports.getAllChats = function (req, res) {
 //response and request object as arguments and returns a jason object of the retrived
 //chats. it call chatRepository.getChatsByUsername(filter,callback) method
 exports.getChatsByUsername = function (req, res) {
-    let callback = (docs) => {
-        if (docs === null) {
+    let callback = (chats) => {
+        if (chats === null) {
             res.status(500).json({data: null});
         } else {
-            let responseObject = {
-                data: docs,
-            };
-            res.status(200).json(responseObject);
+            filterOutChatsForInactiveUser(chats,(docs) => {
+                res.status(200).json({data: docs});
+            });
         }
     };
     chatRepository.getChatsByUsername(req.params.username, callback);
@@ -44,14 +42,13 @@ exports.getPrivateChats = function (req, res) {
     let username2 = req.params.username2;
 
 
-    let callback = (docs) => {
-        if (docs === null) {
+    let callback = (chats) => {
+        if (chats === null) {
             res.status(500).json({data: null});
         } else {
-            let responseObject = {
-                data: docs,
-            };
-            res.status(200).json(responseObject);
+            filterOutChatsForInactiveUser(chats,(docs) => {
+                res.status(200).json({data: docs});
+            });
         }
     };
     chatRepository.getPrivateChats(username1, username2, callback);
@@ -71,7 +68,7 @@ exports.saveChat = (req, res) => {
 
             chatRepository.saveChat(chat, (newChat) => {
                 if (newChat) {
-                    BroadcastAPI.broadcastEventToAll(newChat);
+                    BroadcastAPI.broadcastChatEventToAll(newChat);
                     res.status(200).json({message: 'success', data: newChat});
                 } else
                     res.status(500).json({message: 'Saving the chat message failed', data: null});
@@ -98,7 +95,7 @@ exports.saveUpload = (req, res) => {
 
                 chatRepository.saveChatWithFile(file, chat, (newChat, error) => {
                     if (newChat) {
-                        BroadcastAPI.broadcastEventToAll(newChat);
+                        BroadcastAPI.broadcastChatEventToAll(newChat);
 
                         res.status(200).json({message: 'Chat was successfully saved!', data: newChat});
                     } else
@@ -110,6 +107,26 @@ exports.saveUpload = (req, res) => {
         } else {
             res.status(500).json({message: "Saving the chat message failed. Chat's sender not found!", data: null});
         }
+    });
+};
+
+
+let filterOutChatsForInactiveUser = (chats, callback) => {
+    userRepository.getInactiveUsers((err, users) => {
+        let filteredChats = [];
+
+        if (users && users.length === 0) {
+            filteredChats = chats;
+        } else {
+            users.forEach((user) => {
+                let fChats = chats.filter(function (chat) {
+                    return !(chat.sender === user.username || chat.receiver === user.username);
+                });
+
+                filteredChats.push(...fChats); //Appending new filtered chats
+            });
+        }
+        callback(filteredChats);
     });
 };
 

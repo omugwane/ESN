@@ -2,6 +2,8 @@
 const request = require('supertest');
 const app = require('../../app');
 const dbHandler = require('../../config/db-handler');
+const Announcement = require('../../models/PublicAnnouncements');
+const User = require('../../models/User');
 
 /**
  * Clear all test data after every test.
@@ -15,55 +17,86 @@ afterAll(async () => await dbHandler.closeDatabase());
 
 
 describe('public announcement routes', () => {
-	test('Should get all saved public announcements', (done) => {
-		request(app).get('/publicAnnouncement').then((response) => {
-			try {
-				expect(response.statusCode).toBe(200);
-				done();
-			} catch (e) {
-				done.fail(e);
-			}
-		});
-	});
+    it('Should get all saved public announcements', (done) => {
+        request(app).get('/publicAnnouncement').then((response) => {
+            try {
+                expect(response.statusCode).toBe(200);
+                done();
+            } catch (e) {
+                done.fail(e);
+            }
+        });
+    });
 
-	test('Should get chats by content', (done) => {
-		request(app).get('/chats/Hello').then((response) => {
-			try {
-				expect(response.statusCode).toBe(200);
-				done();
-			} catch (e) {
-				done.fail(e);
-			}
-		});
-	});
+    it('Should get chats by content', (done) => {
+        request(app).get('/chats/Hello').then((response) => {
+            try {
+                expect(response.statusCode).toBe(200);
+                done();
+            } catch (e) {
+                done.fail(e);
+            }
+        });
+    });
 
-	test('Should save an announcement', (done) => {
-		const User = require('../../models/User');
+    it('Should save an announcement', (done) => {
+        let user = new User();
+        user.username = 'Alain';
+        user.password = '1234';
+        user.role = 'Citizen';
+        user.status = 'undefined';
 
-		let user = new User();
-		user.username = 'Alain';
-		user.password = '1234';
-		user.role = 'Citizen';
-		user.status = 'undefined';
+        user.save((err) => {
+            if (err)
+                done.fail(err);
 
-		user.save((err) => {
-			if (err)
-				done.fail(err);
+            request(app).post('/publicAnnouncement')
+                .send({
+                    sender: user.username,
+                    content: 'emergency, stay indoors'
+                }).then((response) => {
+                try {
+                    // expect(response.statusCode).toBe(200);
+                    done();
+                } catch (e) {
+                    done.fail(e);
+                }
 
-			request(app).post('/publicAnnouncement')
-				.send({
-					sender: user.username,
-					content: 'emergency, stay indoors'
-				}).then((response) => {
-					try {
-						// expect(response.statusCode).toBe(200);
-						done();
-					} catch (e) {
-						done.fail(e);
-					}
+            });
+        });
+    });
 
-				});
-		});
-	});
+    it('Should search announcements', (done) => {
+        let user = new User();
+        user.username = 'Alain';
+        user.password = '1234';
+        user.role = 'Citizen';
+        user.status = 'undefined';
 
+        user.save((err) => {
+            if (err)
+                done.fail(err);
+
+            let announcement = new Announcement();
+            announcement.sender = user.username;
+            announcement.content = 'emergency, stay indoors';
+
+            announcement.save((err) => {
+                request(app).post('/search')
+                    .send({
+                        context: 'announcements',
+                        criteria: '',
+                        searchText: 'stay'
+                    }).then((response) => {
+                    try {
+                        expect(response.body.data.length).toBe(1);
+                        done();
+                    } catch (e) {
+                        done.fail(e);
+                    }
+
+                });
+            });
+        });
+    });
 });

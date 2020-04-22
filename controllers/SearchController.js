@@ -11,8 +11,6 @@ exports.search = function (req, res) {
 
     let criteria = factory.createCriteria(context, target, value);
 
-    console.log("Criteria from factory", criteria);
-
     if (criteria) {
         searchCriteriaExecutor.execute(criteria, (err, results) => {
             if (!err)

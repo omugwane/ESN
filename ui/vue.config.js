@@ -3,7 +3,7 @@
    relative to Nodejs back-end root directory
  */
 
-module.exports = {
+/*module.exports = {
     outputDir: '../views',
     assetsDir: "../public"
-};
+};*/

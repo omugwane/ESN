@@ -38,6 +38,13 @@
     export default {
         name: "PostAnnouncement",
         created() {
+            eventBus.$on('updateUserProfile', (data) => {
+                if (data.isMe) {
+                    this.user.username = data.user.username;
+                    this.user.role = data.user.role;
+                }
+            });
+
             let user = this.$cookies.get("user");
             this.user.username = user.username;
             this.user.role = user.role;
