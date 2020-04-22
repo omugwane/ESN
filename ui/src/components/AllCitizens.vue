@@ -4,7 +4,7 @@
         <div class="wrapper">
             <ul class="list-group" v-if="citizens.length > 0">
                 <li class="list-group-item"
-                    v-for="citizen in citizens" :key="citizen.username">
+                    v-for="citizen in filterCitizens" :key="citizen.username">
                     <div>
                         <div class="citizen-names">
                             {{citizen.username}} <span v-if="citizen.firstName.trim()!==''">({{citizen.firstName+ ', '+citizen.lastName}})</span>
@@ -150,6 +150,16 @@
                 errors: [],
                 oldUsername: '',
                 loggedInUserRole: '',
+            }
+        },
+        computed: {
+            filterCitizens() {
+                if (this.loggedInUserRole !== 'Administrator') {
+                    return this.citizens.filter((citizen) => {
+                        return citizen.active === true;
+                    })
+                } else
+                    return this.citizens;
             }
         },
         methods: {

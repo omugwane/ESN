@@ -123,7 +123,7 @@ exports.initializeDBWithADMIN = (callback) => {
         lastName: '',
         email: '',
         phone: '',
-        role: 'admin',
+        role: ROLES.ADMINISTRATOR,
         status: 'Undefined'
     };
 
