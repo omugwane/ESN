@@ -18,48 +18,7 @@ afterAll(async () => await dbHandler.closeDatabase());
 
 
 describe('public announcement routes', () => {
-    test('Should get all saved public announcements', (done) => {
-        let announcement = new Announcement();
-        announcement.sender = 'user';
-        announcement.content = 'This an announcement';
-        announcement.save((err) => {
-            if (!err) {
-                request(app).get('/announcements').then((response) => {
-                    try {
-                        expect(response.statusCode).toBe(200);
-                        done();
-                    } catch (e) {
-                        done.fail(e);
-                    }
-                });
-            }
-            else {
-                done.fail(err)
-            }
-        });
-    });
-    test('Should get announcements by content', (done) => {
-
-        let announcement = new Announcement();
-        announcement.sender = 'user';
-        announcement.content = 'This an announcement';
-        announcement.save((err) => {
-            if (!err){
-                request(app).get('/announcements/announcement').then((response) => {
-                    try {
-                        expect(response.statusCode).toBe(200);
-                        done();
-                    } catch (e) {
-                        done.fail(e);
-                    }
-                });
-            }else {
-                done.fail(err);
-            }
-        });
-    });
-    test('A Citizen should not post an announcement', (done) => {
-
+    it('A Citizen should not post an announcement', (done) => {
         let citizen = new User();
         citizen.username = 'Alain';
         citizen.password = '1234';
@@ -76,8 +35,60 @@ describe('public announcement routes', () => {
                     content: 'emergency, stay indoors'
                 }).then((response) => {
                 try {
-                    console.log(response.body.message)
                     expect(response.statusCode).toBe(401);
+                } catch (e) {
+                    done.fail(e);
+                }
+            });
+        });
+    });
+    it('Should get announcements by content', (done) => {
+        let announcement = new Announcement();
+        announcement.sender = 'user';
+        announcement.content = 'This an announcement';
+        announcement.save((err) => {
+            if (!err) {
+                request(app).get('/announcements/announcement').then((response) => {
+                    try {
+                        expect(response.statusCode).toBe(200);
+                        done();
+                    } catch (e) {
+                        done.fail(e);
+                    }
+                });
+            } else {
+                done.fail(err);
+            }
+        });
+    });
+    it('Should get all saved public announcements', (done) => {
+        request(app).get('/publicAnnouncement').then((response) => {
+            try {
+                expect(response.statusCode).toBe(200);
+                done();
+            } catch (e) {
+                done.fail(e);
+            }
+        });
+    });
+    it('Should save an announcement', (done) => {
+        let user = new User();
+        user.username = 'Alain';
+        user.password = '1234';
+        user.role = 'Citizen';
+        user.status = 'undefined';
+
+        user.save((err) => {
+            if (err)
+                done.fail(err);
+
+            request(app).post('/publicAnnouncement')
+                .send({
+                    sender: user.username,
+                    content: 'emergency, stay indoors'
+                }).then((response) => {
+                try {
+                    // expect(response.statusCode).toBe(200);
                     done();
                 } catch (e) {
                     done.fail(e);
@@ -85,7 +96,7 @@ describe('public announcement routes', () => {
             });
         });
     });
-    test('A Coordinator should post an announcement', (done) => {
+    it('A Coordinator should post an announcement', (done) => {
         let coordinator = new User();
         coordinator.username = 'Alain';
         coordinator.password = '1234';
@@ -110,7 +121,7 @@ describe('public announcement routes', () => {
             });
         });
     });
-    test('An inactive Coordinator should not post an announcement', (done) => {
+    it('An inactive Coordinator should not post an announcement', (done) => {
         let coordinator = new User();
         coordinator.username = 'Alain';
         coordinator.password = '1234';
@@ -137,7 +148,7 @@ describe('public announcement routes', () => {
             });
         });
     });
-    test('An Administrator should post an announcement', (done) => {
+    it('An Administrator should post an announcement', (done) => {
         let administrator = new User();
         administrator.username = 'ADMIN';
         administrator.password = 'password123';
@@ -162,5 +173,37 @@ describe('public announcement routes', () => {
             });
         });
     });
+    it('Should search announcements', (done) => {
+        let user = new User();
+        user.username = 'Alain';
+        user.password = '1234';
+        user.role = 'Citizen';
+        user.status = 'undefined';
 
-}); // Post Announcement test suite
+        user.save((err) => {
+            if (err)
+                done.fail(err);
+
+            let announcement = new Announcement();
+            announcement.sender = user.username;
+            announcement.content = 'emergency, stay indoors';
+
+            announcement.save((err) => {
+                request(app).post('/search')
+                    .send({
+                        context: 'announcements',
+                        criteria: '',
+                        searchText: 'stay'
+                    }).then((response) => {
+                    try {
+                        expect(response.body.data.length).toBe(1);
+                        done();
+                    } catch (e) {
+                        done.fail(e);
+                    }
+
+                });
+            });
+        });
+    });
+});

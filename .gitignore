@@ -1,5 +1,5 @@
 # Excluding uploaded videos during development
-public/uploads/videos/
+public/uploads/
 
 .idea/
 # OS X

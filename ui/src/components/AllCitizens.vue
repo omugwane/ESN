@@ -4,7 +4,7 @@
         <div class="wrapper">
             <ul class="list-group" v-if="citizens.length > 0">
                 <li class="list-group-item"
-                    v-for="citizen in citizens" :key="citizen.username">
+                    v-for="citizen in filterCitizens" :key="citizen.username">
                     <div>
                         <div class="citizen-names">
                             {{citizen.username}} <span v-if="citizen.firstName.trim()!==''">({{citizen.firstName+ ', '+citizen.lastName}})</span>
@@ -24,7 +24,8 @@
                     </div>
 
                     <button type="button" id="btn-update-user" title="Click to update"
-                            @click="getUserProfileInfo(citizen.username)">
+                            @click="getUserProfileInfo(citizen.username)"
+                            v-if="loggedInUserRole === 'Administrator'">
                         <span class="mdi mdi-account-edit mdi-24px"/>
                     </button>
                 </li>
@@ -46,7 +47,7 @@
             <form>
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" v-model="selectedUser.username" placeholder="Enter username"
+                    <input ref="username" type="text" v-model="selectedUser.username" placeholder="Enter username"
                            class="form-control"
                            id="username">
                 </div>
@@ -86,12 +87,12 @@
 
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="activation"
-                               v-model="selectedUser.active" id="active" value="1">
+                               v-model="selectedUser.active" id="active" value="true">
                         <label class="form-check-label" for="active">Active</label>
                     </div>
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="activation"
-                               v-model="selectedUser.active" id="inactive" value="0">
+                               v-model="selectedUser.active" id="inactive" value="false">
                         <label class="form-check-label" for="inactive">Inactive</label>
                     </div>
                 </div>
@@ -113,15 +114,28 @@
 </template>
 
 <script>
-    import * as api from '../helpers/api'
+    import {GET_ALL_USERS, GET_USER, UPDATE_USER} from '../helpers/api'
     import {STATUSES} from "../helpers/statuses";
     import {SweetModal} from "sweet-modal-vue";
+    import {eventBus} from "../main";
 
     export default {
         name: "AllCitizens",
         components: {SweetModal},
         created() {
-            this.getAllCitizens()
+            this.getAllCitizens();
+
+            eventBus.$on('updateUserProfile', (data) => {
+                this.citizens.forEach((citizen) => {
+                    if (citizen._id === data.user._id)
+                        citizen.username = data.user.username;
+                    citizen.active = data.user.active;
+                    citizen.role = data.user.role;
+                });
+            });
+
+            let user = this.$cookies.get("user");
+            this.loggedInUserRole = user.role;
         },
         data() {
             return {
@@ -131,17 +145,41 @@
                     password: '',
                     verifyPassword: '',
                     role: 'Citizen',
-                    active: 1
+                    active: true
                 },
                 errors: [],
+                oldUsername: '',
+                loggedInUserRole: '',
+            }
+        },
+        computed: {
+            filterCitizens() {
+                if (this.loggedInUserRole !== 'Administrator') {
+                    return this.citizens.filter((citizen) => {
+                        return citizen.active === true;
+                    })
+                } else
+                    return this.citizens;
             }
         },
         methods: {
             getUserProfileInfo(username) {
+                //http request
+                let vm = this;
+                vm.oldUsername = username;
+                vm.$http.get(GET_USER + username).then(({data}) => {
+                    vm.selectedUser.username = data.data.username;
+                    vm.selectedUser.role = data.data.role;
+                    vm.selectedUser.active = data.data.active;
+
+                    vm.$refs.username.focus(); //Setting focus to the field for username
+                }).catch((err) => {
+                    console.log(err);
+                });
+
                 this.$refs.modal.open();
 
-                this.selectedUser.username = username;
-                //http request
+                // setTimeout((),1000);
             },
             closeModal() {
                 this.$refs.modal.close();
@@ -151,25 +189,40 @@
                     password: '',
                     verifyPassword: '',
                     role: 'Citizen',
-                    active: 1
+                    active: true
                 };
                 this.errors = [];
             },
+
             updateProfile() {
-                this.errors = [];
+                let vm = this;
+                vm.errors = [];
                 // this.errors.splice(0, this.errors.length); //Clearing all errors
 
                 let errors = this.validateData(this.selectedUser);
 
                 if (errors.length === 0) {
-                    this.closeModal();
+                    vm.selectedUser.active = (vm.selectedUser.active === 'true' || vm.selectedUser.active === true);
 
-                    this.$swal({
-                        text: "Profile was successfully updated",
-                        icon: 'success',
-                        toast: false,
-                        showConfirmButton: true,
-                    });
+                    vm.errors = [];
+                    vm.$http.put(UPDATE_USER + vm.oldUsername, vm.selectedUser).then((response) => {
+                        console.log(response);
+
+                        vm.closeModal();
+                        vm.$swal({
+                            text: "Profile was successfully updated",
+                            icon: 'success',
+                            toast: false,
+                            showConfirmButton: true,
+                        });
+                    }).catch((err) => {
+                        if (err.response)
+                            vm.errors.push(err.response.data.message);
+                        else
+                            vm.errors.push("Error occurred! Update failed.");
+                        console.log(err);
+                    })
+
                 } else {
                     this.errors = errors;
                 }
@@ -193,7 +246,7 @@
             },
             getAllCitizens() {
                 let vm = this;
-                vm.$http.get(api.GET_ALL_USERS).then(({data}) => {
+                vm.$http.get(GET_ALL_USERS).then(({data}) => {
                     vm.citizens = data.data
                 }).catch((err) => {
                     alert(err)

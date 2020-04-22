@@ -63,8 +63,11 @@
                     password: vm.password,
                 }).then(({data}) => {
                     //Setting cookies
-
-                    let user = {username: data.data.user.username,role: data.data.user.role};
+                    let user = {
+                        username: data.data.user.username,
+                        role: data.data.user.role,
+                        userId: data.data.user._id
+                    };
                     vm.$cookies.config('1d');
                     vm.$cookies.set('user', user);
 
@@ -73,22 +76,19 @@
                     vm.$router.push({name: 'chat'});
 
                 }).catch(error => {
-                    this.notify(error)
-                }).finally(() => {
+                    if (error.response)
+                        this.notify(error.response.data.message, true);
+                    else
+                        this.notify(error);
                 });
             },
-            notify(error){
-                console.log(error);
-
+            notify(error, showMessage) {
                 this.$swal({
                     title: 'Error',
-                    text: 'Either username or password is incorrect!',
+                    text: showMessage ? error : 'Either username or password is incorrect!',
                     icon: 'error',
                     toast: false,
-                    // position: 'top',
                     showConfirmButton: true,
-                    // timer: 50000,
-                    // timerProgressBar: true,
                 });
             }
         }

@@ -19,7 +19,7 @@
                 <div class="announcement" v-for="(announcement, index) in announcements" :key="index">
                     <h4>{{announcement.sender}}</h4>
                     <div class="announcement-content">{{announcement.content}}</div>
-                    <small>{{announcement.postedAt}}</small>
+                    <small>{{announcement.postedAt | moment("dddd, MMMM Do YYYY, h:mm a")}}</small>
                 </div>
                 <p v-if="announcements.length < 1" class="text-center mt-3">
                     <small>No announcements available yet!</small>
@@ -38,6 +38,13 @@
     export default {
         name: "PostAnnouncement",
         created() {
+            eventBus.$on('updateUserProfile', (data) => {
+                if (data.isMe) {
+                    this.user.username = data.user.username;
+                    this.user.role = data.user.role;
+                }
+            });
+
             let user = this.$cookies.get("user");
             this.user.username = user.username;
             this.user.role = user.role;

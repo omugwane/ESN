@@ -79,10 +79,13 @@
 
                 window.$cookies.remove('newUser');
             }
+            this.loggedInUsername = user.username;
+            this.loggedInUserId = user.userId;
         },
         data() {
             return {
                 loggedInUsername: '',
+                loggedInUserId: '',
             }
         },
         sockets: {
@@ -99,6 +102,31 @@
             },
             newAnnouncement(announcement) {
                 eventBus.$emit('newAnnouncement', announcement);
+            },
+            updatedUser(user) {
+                let isMe = false;
+                if (!user.active && this.loggedInUserId === user._id) {
+                    this.logout();
+
+                    this.$swal({
+                        text: "Sorry! Your account has been deactivated by one of the admins. Contact an admin to re-activate your account.",
+                        icon: 'info',
+                        toast: false,
+                        showConfirmButton: true,
+                    });
+                } else if (this.loggedInUserId === user._id) {
+                    //Updating cookie Data
+                    let updatedCookie = {
+                        username: user.username,
+                        role: user.role,
+                        userId: user._id
+                    };
+                    this.$cookies.set('user', updatedCookie);
+
+                    this.loggedInUsername = user.username;
+                    isMe = true;
+                }
+                eventBus.$emit('updateUserProfile', {user: user, isMe: isMe});
             }
         },
         methods: {

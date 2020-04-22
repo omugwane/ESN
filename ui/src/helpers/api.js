@@ -26,6 +26,7 @@ export const UPDATE_CHAT = 'chats/';
 export const UPLOAD_CHAT_FILE = 'chats/upload/';
 
 export const GET_ALL_USERS = 'users/';
+export const GET_USER = 'users/';
 export const DELETE_USER = 'users/';
 export const UPDATE_USER = 'users/';
 export const REGISTER_USER = 'users/';
@@ -38,4 +39,4 @@ export const GET_ANNOUNCEMENTS_BY_USERNAME = 'announcements/';
 export const DELETE_ANNOUNCEMENT = 'announcements/';
 export const UPDATE_ANNOUNCEMENT = 'announcements/';
 
-export const SEARCH = 'search'
+export const SEARCH = 'search';
