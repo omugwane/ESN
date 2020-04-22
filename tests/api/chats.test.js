@@ -159,7 +159,8 @@ describe('Chats routes', () => {
                     .send({
                         context: 'public_chats',
                         criteria: '',
-                        searchText: 'music'
+                        searchText: 'music',
+                        username: user.username
                     }).then((response) => {
                     try {
                         expect(response.body.data.length).toBe(1);
@@ -174,30 +175,21 @@ describe('Chats routes', () => {
     });
 
     it('Should search private chats', (done) => {
-        let user = new User();
-        user.username = 'Alain';
-        user.password = '1234';
-        user.role = 'Citizen';
-        user.status = 'undefined';
-
-        user.save((err) => {
-            if (err)
-                done.fail(err);
-
-            let chat = new Chat();
-            chat.sender = user.username;
-            chat.content = 'This is music';
-            chat.status = user.status;
-            chat.receiver = 'bapt';
-
-            chat.save((err) => {
-                request(app).post('/search')
-                    .send({
-                        context: 'private_chats',
-                        criteria: '',
-                        searchText: 'music'
-                    }).then((response) => {
+        let chat = new Chat();
+        chat.sender = 'Alain';
+        chat.content = 'This is music';
+        chat.status = 'OK';
+        chat.receiver = 'bapt';
+        chat.save((err) => {
+            if (!err){
+                request(app).post('/search').send({
+                    context: 'private_chats',
+                    criteria: '',
+                    searchText: 'music',
+                    username: 'Alain'
+                }).then((response) => {
                     try {
+                        console.log(response.body);
                         expect(response.body.data.length).toBe(1);
                         done();
                     } catch (e) {
@@ -205,7 +197,9 @@ describe('Chats routes', () => {
                     }
 
                 });
-            });
+            } else {
+                done.fail(err);
+            }
         });
     });
 });

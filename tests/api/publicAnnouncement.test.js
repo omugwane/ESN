@@ -36,6 +36,7 @@ describe('public announcement routes', () => {
                 }).then((response) => {
                 try {
                     expect(response.statusCode).toBe(401);
+                    done();
                 } catch (e) {
                     done.fail(e);
                 }
@@ -193,7 +194,8 @@ describe('public announcement routes', () => {
                     .send({
                         context: 'announcements',
                         criteria: '',
-                        searchText: 'stay'
+                        searchText: 'stay',
+                        username: user.username
                     }).then((response) => {
                     try {
                         expect(response.body.data.length).toBe(1);
