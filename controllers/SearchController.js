@@ -10,6 +10,7 @@ exports.search = function (req, res) {
 
     const factory = new SearchCriteriaFactory();
 
+
     let criteria = factory.createCriteria(username,context, target, value);
 
     if (criteria) {
