@@ -14,7 +14,7 @@ const BroadcastAPI = require('../lib/BroadcastAPI');
  */
 const port = process.env.PORT || 3000;
 
-console.log("process.env.PORT ",port)
+// console.log("process.env.PORT ",port)
 
 // app.set('port', port);
 /**

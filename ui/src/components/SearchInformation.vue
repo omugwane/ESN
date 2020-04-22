@@ -36,7 +36,8 @@
                 <div class="search-results">
                     <div class="search-result" v-for="(result,index) in searchResults" :key="index">
                         <div class="heading">
-                            {{(result.sender)? `${result.sender}`:`${result.username}`}} {{(result.status)? `(status: ${result.status} )`: ''}}
+                            {{(result.sender)? `${result.sender}`:`${result.username}`}} {{(result.status)? `(status:
+                            ${result.status} )`: ''}}
                         </div>
                         <div class="body">
                             <small v-if="result.postedAt">{{result.postedAt}}</small>
@@ -45,11 +46,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="search-result no-results" v-if="searchResults.length === 0 && searchText.trim() === ''">
-                        Select options to begin searching.
-                    </div>
-                    <div class="search-result no-results" v-else-if="searchResults.length === 0">
-                        <span class="mdi mdi-alert-outline mdi-24px"/> No results found! Try other search terms.
+                    <div class="search-result no-results" v-if="searchResults.length === 0">
+                        <span class="mdi mdi-alert-outline mdi-24px"/> No search results!
                     </div>
                 </div>
             </div>
@@ -64,6 +62,8 @@
     export default {
         name: "SearchInformation",
         created() {
+            let user = this.$cookies.get('user');
+            this.loggedInUsername = user.username;
         },
         data() {
             return {
@@ -107,20 +107,29 @@
                 selectedSearchOption: null,
                 searchText: '',
                 searchResults: [],
+                loggedInUsername: ''
             }
         },
         methods: {
             search() {
                 let searchText = this.filterOutStopWords(this.searchText);
-                searchText = searchText.join(' ');
+                searchText = searchText.join(' '); //Creating a string out of the array returned by filterOutStopWords()
 
                 if (this.selectedSearchOption) {
-                    this.selectedSearchOption.searchText = searchText;
-                    this.$http.post(api.SEARCH, this.selectedSearchOption)
-                        .then(({data}) => {
+
+                    let searchData = {
+                        context: this.selectedSearchOption.context,
+                        criteria: this.selectedSearchOption.criteria,
+                        searchText: searchText,
+                        username: this.loggedInUsername
+                    };
+
+                    this.$http.post(api.SEARCH, searchData).then(({data}) => {
                             this.searchResults = data.data;
                             this.searchText = '';
-                        })
+                        }
+                    ).catch(() => {
+                    })
                 }
             },
             filterOutStopWords(searchText) {

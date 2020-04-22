@@ -64,12 +64,28 @@
     export default {
         name: "MainContainer",
         created() {
-            let user = this.$cookies.get('user')
+            let user = this.$cookies.get('user');
+            let newRegisteredUsername = this.$cookies.get('newUser');
             this.loggedInUsername = user.username;
+
+            if (user.username === newRegisteredUsername) {
+                this.$swal({
+                    title: 'Greeting',
+                    text: newRegisteredUsername.toUpperCase() + ', welcome to ESN community! Click on this alert to close it.',
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                });
+
+                window.$cookies.remove('newUser');
+            }
+            this.loggedInUsername = user.username;
+            this.loggedInUserId = user.userId;
         },
         data() {
             return {
                 loggedInUsername: '',
+                loggedInUserId: '',
             }
         },
         sockets: {
@@ -86,6 +102,31 @@
             },
             newAnnouncement(announcement) {
                 eventBus.$emit('newAnnouncement', announcement);
+            },
+            updatedUser(user) {
+                let isMe = false;
+                if (!user.active && this.loggedInUserId === user._id) {
+                    this.logout();
+
+                    this.$swal({
+                        text: "Sorry! Your account has been deactivated by one of the admins. Contact an admin to re-activate your account.",
+                        icon: 'info',
+                        toast: false,
+                        showConfirmButton: true,
+                    });
+                } else if (this.loggedInUserId === user._id) {
+                    //Updating cookie Data
+                    let updatedCookie = {
+                        username: user.username,
+                        role: user.role,
+                        userId: user._id
+                    };
+                    this.$cookies.set('user', updatedCookie);
+
+                    this.loggedInUsername = user.username;
+                    isMe = true;
+                }
+                eventBus.$emit('updateUserProfile', {user: user, isMe: isMe});
             }
         },
         methods: {
@@ -96,11 +137,7 @@
                 }
             },
             notifyUser(chat) {
-                /*this.$notify({
-                    group: 'new',
-                    title: 'New chat',
-                    text: 'Received a new chat message from  ' + chat.sender
-                });*/
+
                 let options = {
                     // title: 'Alert',
                     text: ' Received a new public chat message from  ' + chat.sender.toUpperCase(),

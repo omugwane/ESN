@@ -1,25 +1,25 @@
 <template>
     <div id="post-announcemnt">
         <div id="wrapper">
-            <div id="announcement-form">
+            <form id="announcement-form"
+                  v-if="user.role === 'Coordinator' || user.role === 'Administrator'">
         <textarea
                 @keyup.enter="postAnnouncement"
                 v-model="newAnnouncement"
                 class="input-announcement"
                 rows="5"
-                placeholder="Enter announcement"
-        />
+                placeholder="Enter announcement"/>
                 <button @click="postAnnouncement" type="button" class="btn-post-announcement">
                     Post Announcement
                     <span class="mdi mdi-send"/>
                 </button>
-            </div>
+            </form>
             <h3>List of announcements</h3>
             <div id="announcements">
                 <div class="announcement" v-for="(announcement, index) in announcements" :key="index">
                     <h4>{{announcement.sender}}</h4>
                     <div class="announcement-content">{{announcement.content}}</div>
-                    <small>{{announcement.postedAt}}</small>
+                    <small>{{announcement.postedAt | moment("dddd, MMMM Do YYYY, h:mm a")}}</small>
                 </div>
                 <p v-if="announcements.length < 1" class="text-center mt-3">
                     <small>No announcements available yet!</small>
@@ -37,22 +37,29 @@
 
     export default {
         name: "PostAnnouncement",
-        // components: {ChatRoom},
         created() {
+            eventBus.$on('updateUserProfile', (data) => {
+                if (data.isMe) {
+                    this.user.username = data.user.username;
+                    this.user.role = data.user.role;
+                }
+            });
+
             let user = this.$cookies.get("user");
-            this.loggedInUsername = user.username;
+            this.user.username = user.username;
+            this.user.role = user.role;
             this.getAllAnnouncements();
         },
         mounted() {
             eventBus.$on('newAnnouncement', (announcement) => {
-                if (announcement.sender !== this.loggedInUsername) {
-                  this.announcements = this.announcements.concat(announcement);
+                if (announcement.sender !== this.user.username) {
+                    this.announcements = this.announcements.concat(announcement);
                 }
             })
         },
         data() {
             return {
-                loggedInUsername: "",
+                user: {username: '', role: ''},
                 newAnnouncement: "",
                 announcements: []
             };
@@ -66,7 +73,7 @@
             postAnnouncement() {
                 let vm = this;
                 let newAnn = {
-                    sender: vm.loggedInUsername,
+                    sender: vm.user.username,
                     content: vm.newAnnouncement,
                     //postedAt: Date.now
                 };

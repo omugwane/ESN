@@ -1,3 +1,6 @@
+# Excluding uploaded videos during development
+public/uploads/
+
 .idea/
 # OS X
 .DS_Store*
