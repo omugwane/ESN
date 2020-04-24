@@ -6,8 +6,6 @@ checks:
     argument-count:
         enabled: false
 plugins:
-    rubocop:
-        enabled: true
     eslint:
         enabled: true
 exclude_patterns:
