@@ -28,9 +28,7 @@
                         </button>
                     </div>
                     <div v-if="chat.type === 'image'" class="chat-image">
-                        <object style="width: 100%" data="../assets/placeholder.jpg" type="image/jpg">
-                            <img :src="getAbsoluteURL(chat.fileUrl)" alt="Chat image">
-                        </object>
+                        <img :src="getAbsoluteURL(chat.fileUrl)" alt="Chat image">
                     </div>
                     <div v-show="chat.content.length !== 0" class="msg-body" :class="{caption: chat.type !== 'text'}">
                         <small v-if="chat.type === 'video'" class="file-caption">Caption</small>
