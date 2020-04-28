@@ -1,0 +1,10 @@
+****** Heroku CLI *****
+***********************
+
+##### Accessing Filesystem of an app (APPNAME) hosted at Heroku #######
+heroku login
+heroku run bash -a APPNAME
+$ cd app
+
+##### To tail the logs live or see the latest logs live #######
+heroku logs -t 
